@@ -1,0 +1,51 @@
+{
+  "name": "lipdjs",
+  "version": "0.0.1",
+  "description": "A JavaScript library for reading and writing LiPD (Linked Paleo Data) files",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "lipd",
+    "paleo",
+    "paleoclimate",
+    "data",
+    "json",
+    "rdf",
+    "linked-data"
+  ],
+  "author": "LiPD Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LinkedEarth/lipdjs.git"
+  },
+  "dependencies": {
+    "@comunica/query-sparql-rdfjs": "^4.1.0",
+    "@types/adm-zip": "^0.5.7",
+    "@types/papaparse": "^5.3.15",
+    "@types/uuid": "^10.0.0",
+    "adm-zip": "^0.5.16",
+    "dataframe-js": "^1.4.4",
+    "n3": "^1.17.0",
+    "papaparse": "^5.5.2",
+    "rdf-stores": "^2.1.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/dataframe-js": "^1.4.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.1",
+    "typescript": "^5.3.3"
+  }
+}
