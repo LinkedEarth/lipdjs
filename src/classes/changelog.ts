@@ -1,56 +1,157 @@
 
 // Auto-generated. Do not edit.
+import { uniqid } from "../utils/utils";
+import { parseVariableValues } from "../utils/utils";
 
 
-type ChangeLogProperty = boolean | null | number | string;
 
 export class ChangeLog {
-    [key: string]: ChangeLogProperty | ChangeLogProperty[] | Record<string, unknown> | unknown | ((...args: unknown[]) => unknown);
-    private _id: string;
-    private _type: string;
-    private _misc: Record<string, unknown>;
-    private _ontns: string;
-    private _ns: string;
-    private changes: string | null = null;
-    private notes: string | null = null;
+
+    protected changes: null | null;
+    protected notes: string | null;
+    protected _id: string;
+    protected _type: string;
+    protected _misc: Record<string, any>;
+    protected _ontns: string;
+    protected _ns: string;
 
     constructor() {
-        this._id = "";
-        this._type = "";
+        this.changes = null;
+        this.notes = null;
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
-        this._ns = "http://linked.earth/data#";
+        this._ns = "https://linked.earth/lipd";
+        this._type = "http://linked.earth/ontology#ChangeLog";
+        this._id = this._ns + "/" + uniqid("ChangeLog");
     }
 
-    public getChanges(): string | null {
-        return this.changes;
+    public getId(): string {
+        return this._id;
     }
 
-    public setChanges(value: string | null): void {
-        this.changes = value;
+    public getType(): string {
+        return this._type;
+    }    
+
+    public getMisc(): Record<string, any> {
+        return this._misc;
+    }
+    
+    public static fromData(id: string, data: Record<string, any>): ChangeLog {
+        const thisObj = new ChangeLog();
+        thisObj._id = id;
+        const mydata = data[id] as any;
+        for (const [key, value] of Object.entries(mydata)) {
+            if (key === "type") {
+                for (const val of value as any[]) {
+                    thisObj._type = val["@id"];
+                }
+                continue;
+            }
+            
+            else if (key === "hasChanges") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    obj = val["@id"];
+                    thisObj.changes = obj;
+                }
+            }
+            
+            else if (key === "hasNotes") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.notes = obj;
+                }
+            }
+            // Store unknown properties in misc
+            for (const val of value as any[]) {
+                let obj: any;
+                if ("@id" in val) {
+                    obj = data[val["@id"]];
+                } else if ("@value" in val) {
+                    obj = val["@value"];
+                }
+                thisObj._misc[key] = obj;
+            }
+        }
+        return thisObj;
     }
 
-    public getNotes(): string | null {
-        return this.notes;
-    }
 
-    public setNotes(value: string | null): void {
-        this.notes = value;
-    }
-
-    public toJson(): Record<string, unknown> {
-        const data: Record<string, unknown> = {
-            "@id": this._id
-        };
-
+    public toData(data: Record<string, any> = {}): Record<string, any> {
+        data[this._id] = {};
+        data[this._id]["type"] = [
+            {
+                "@id": this._type,
+                "@type": "uri"
+            }
+        ]
         if (this.changes !== null) {
-            data["changes"] = this.changes;
+            const valueObj = this.changes;
+            const obj = {
+                "@id": valueObj,
+                "@type": "uri"
+            }
+            data[this._id]["hasChanges"] = [obj];
         }
-
         if (this.notes !== null) {
-            data["notes"] = this.notes;
+            const valueObj = this.notes;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasNotes"] = [obj];
         }
+        // Add misc properties
+        for (const [key, value] of Object.entries(this._misc)) {
+            data[this._id][key] = [];
+            let ptype: string | null = null;
+            const tp = typeof value;
+            if (tp === "number") {
+                if (Number.isInteger(value)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#integer";
+                } else {
+                    ptype = "http://www.w3.org/2001/XMLSchema#float";
+                }
+            } else if (tp === "string") {
+                if (/\d{4}-\d{2}-\d{2}( |T)\d{2}:\d{2}:\d{2}/.test(value as string)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#datetime";
+                } else if (/\d{4}-\d{2}-\d{2}/.test(value as string)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#date";
+                } else {
+                    ptype = "http://www.w3.org/2001/XMLSchema#string";
+                }
+            } else if (tp === "boolean") {
+                ptype = "http://www.w3.org/2001/XMLSchema#boolean";
+            }
 
+            data[this._id][key].push({
+                "@value": value,
+                "@type": "literal",
+                "@datatype": ptype
+            });
+        }
+        return data;
+    }
+
+    public toJson(): Record<string, any> {
+        const data: Record<string, any> = {
+            "@id": this._id
+        }
+        if (this.changes !== null) {
+            const valueObj = this.changes;
+                const obj = valueObj
+            data["changes"] = obj;
+        }
+        if (this.notes !== null) {
+            const valueObj = this.notes;
+                const obj = valueObj
+            data["notes"] = obj;
+        }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
             data[key] = value;
@@ -58,27 +159,68 @@ export class ChangeLog {
         return data;
     }
 
-    public static fromJson(data: Record<string, unknown>): ChangeLog {
-        const obj = new ChangeLog();
+    public static fromJson(data: Record<string, any>): ChangeLog {
+        const thisObj = new ChangeLog();
         for (const [key, value] of Object.entries(data)) {
             if (key === "@id") {
-                obj._id = value as string;
+                thisObj._id = value as string;
                 continue;
             }
-
             if (key === "changes") {
-                obj.changes = value ? value as string : null;
+                let obj: any = null;
+                    obj = value
+                thisObj.changes = obj;
                 continue;
             }
-
             if (key === "notes") {
-                obj.notes = value ? value as string : null;
+                let obj: any = null;
+                    obj = value
+                thisObj.notes = obj;
                 continue;
             }
-
             // Store unknown properties in misc
-            obj._misc[key] = value;
+            thisObj._misc[key] = value;
         }
-        return obj;
+        return thisObj;
+    }
+
+    public setNonStandardProperty(key: string, value: unknown): void {
+        this._misc[key] = value;
+    }
+    
+    public getNonStandardProperty(key: string): unknown {
+        return this._misc[key];
+    }
+                
+    public getAllNonStandardProperties(): Record<string, unknown> {
+        return this._misc;
+    }
+
+    public addNonStandardProperty(key: string, value: unknown): void {
+        if (!(key in this._misc)) {
+            this._misc[key] = [];
+        }
+        (this._misc[key] as unknown[]).push(value);
+    }
+    
+    getChanges(): null | null {
+        return this.changes;
+    }
+
+    setChanges(changes: null): void {
+        // if (!(changes instanceof null)) {
+        //     throw new Error(`Error: '${changes}' is not of type null`);
+        // }
+        this.changes = changes;
+    }
+    getNotes(): string | null {
+        return this.notes;
+    }
+
+    setNotes(notes: string): void {
+        // if (!(notes instanceof string)) {
+        //     throw new Error(`Error: '${notes}' is not of type string`);
+        // }
+        this.notes = notes;
     }
 }

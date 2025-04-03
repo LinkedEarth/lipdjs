@@ -1,95 +1,240 @@
 
 // Auto-generated. Do not edit.
+import { uniqid } from "../utils/utils";
+import { parseVariableValues } from "../utils/utils";
 import { DataTable } from "./datatable";
 
 
-type ModelProperty = DataTable | boolean | null | number | string;
 
 export class Model {
-    [key: string]: ModelProperty | ModelProperty[] | Record<string, unknown> | unknown | ((...args: unknown[]) => unknown);
-    private _id: string;
-    private _type: string;
-    private _misc: Record<string, unknown>;
-    private _ontns: string;
-    private _ns: string;
-    private code: string | null = null;
-    private summaryTables: DataTable[] = [];
-    private ensembleTables: DataTable[] = [];
-    private distributionTables: DataTable[] = [];
+
+    protected code: string | null;
+    protected distributionTables: DataTable[];
+    protected ensembleTables: DataTable[];
+    protected summaryTables: DataTable[];
+    protected _id: string;
+    protected _type: string;
+    protected _misc: Record<string, any>;
+    protected _ontns: string;
+    protected _ns: string;
 
     constructor() {
-        this._id = "";
-        this._type = "";
+        this.code = null;
+        this.distributionTables = [];
+        this.ensembleTables = [];
+        this.summaryTables = [];
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
-        this._ns = "http://linked.earth/data#";
+        this._ns = "https://linked.earth/lipd";
+        this._type = "http://linked.earth/ontology#Model";
+        this._id = this._ns + "/" + uniqid("Model");
     }
 
-    public getCode(): string | null {
-        return this.code;
+    public getId(): string {
+        return this._id;
     }
 
-    public setCode(value: string | null): void {
-        this.code = value;
+    public getType(): string {
+        return this._type;
+    }    
+
+    public getMisc(): Record<string, any> {
+        return this._misc;
+    }
+    
+    public static fromData(id: string, data: Record<string, any>): Model {
+        const thisObj = new Model();
+        thisObj._id = id;
+        const mydata = data[id] as any;
+        for (const [key, value] of Object.entries(mydata)) {
+            if (key === "type") {
+                for (const val of value as any[]) {
+                    thisObj._type = val["@id"];
+                }
+                continue;
+            }
+            
+            else if (key === "hasCode") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.code = obj;
+                }
+            }
+            
+            else if (key === "hasDistributionTable") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@id" in val) {
+                        obj = DataTable.fromData(val["@id"], data);
+                    } else {
+                        obj = val["@value"];
+                    }
+                    thisObj.distributionTables.push(obj);
+                }
+            }
+            
+            else if (key === "hasEnsembleTable") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@id" in val) {
+                        obj = DataTable.fromData(val["@id"], data);
+                    } else {
+                        obj = val["@value"];
+                    }
+                    thisObj.ensembleTables.push(obj);
+                }
+            }
+            
+            else if (key === "hasSummaryTable") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@id" in val) {
+                        obj = DataTable.fromData(val["@id"], data);
+                    } else {
+                        obj = val["@value"];
+                    }
+                    thisObj.summaryTables.push(obj);
+                }
+            }
+            // Store unknown properties in misc
+            for (const val of value as any[]) {
+                let obj: any;
+                if ("@id" in val) {
+                    obj = data[val["@id"]];
+                } else if ("@value" in val) {
+                    obj = val["@value"];
+                }
+                thisObj._misc[key] = obj;
+            }
+        }
+        return thisObj;
     }
 
-    public getSummaryTables(): DataTable[] {
-        return this.summaryTables;
-    }
 
-    public setSummaryTables(value: DataTable[]): void {
-        this.summaryTables = value;
-    }
-
-    public addSummaryTable(value: DataTable): void {
-        this.summaryTables.push(value);
-    }
-
-    public getEnsembleTables(): DataTable[] {
-        return this.ensembleTables;
-    }
-
-    public setEnsembleTables(value: DataTable[]): void {
-        this.ensembleTables = value;
-    }
-
-    public addEnsembleTable(value: DataTable): void {
-        this.ensembleTables.push(value);
-    }
-
-    public getDistributionTables(): DataTable[] {
-        return this.distributionTables;
-    }
-
-    public setDistributionTables(value: DataTable[]): void {
-        this.distributionTables = value;
-    }
-
-    public addDistributionTable(value: DataTable): void {
-        this.distributionTables.push(value);
-    }
-
-    public toJson(): Record<string, unknown> {
-        const data: Record<string, unknown> = {
-            "@id": this._id
-        };
-
+    public toData(data: Record<string, any> = {}): Record<string, any> {
+        data[this._id] = {};
+        data[this._id]["type"] = [
+            {
+                "@id": this._type,
+                "@type": "uri"
+            }
+        ]
         if (this.code !== null) {
-            data["method"] = this.code;
+            const valueObj = this.code;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasCode"] = [obj];
         }
-
-        if (this.summaryTables.length > 0) {
-            data["summaryTable"] = this.summaryTables.map(value => value.toJson());
-        }
-
-        if (this.ensembleTables.length > 0) {
-            data["ensembleTable"] = this.ensembleTables.map(value => value.toJson());
-        }
-
         if (this.distributionTables.length > 0) {
-            data["distributionTable"] = this.distributionTables.map(value => value.toJson());
+            data[this._id]["hasDistributionTable"] = [];
+            for (const valueObj of this.distributionTables) {
+            const obj = typeof valueObj === "string" ? {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            } : {
+                "@id": valueObj.getId(),
+                "@type": "uri"
+            }
+                data[this._id]["hasDistributionTable"].push(obj);
+            }
         }
+        if (this.ensembleTables.length > 0) {
+            data[this._id]["hasEnsembleTable"] = [];
+            for (const valueObj of this.ensembleTables) {
+            const obj = typeof valueObj === "string" ? {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            } : {
+                "@id": valueObj.getId(),
+                "@type": "uri"
+            }
+                data[this._id]["hasEnsembleTable"].push(obj);
+            }
+        }
+        if (this.summaryTables.length > 0) {
+            data[this._id]["hasSummaryTable"] = [];
+            for (const valueObj of this.summaryTables) {
+            const obj = typeof valueObj === "string" ? {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            } : {
+                "@id": valueObj.getId(),
+                "@type": "uri"
+            }
+                data[this._id]["hasSummaryTable"].push(obj);
+            }
+        }
+        // Add misc properties
+        for (const [key, value] of Object.entries(this._misc)) {
+            data[this._id][key] = [];
+            let ptype: string | null = null;
+            const tp = typeof value;
+            if (tp === "number") {
+                if (Number.isInteger(value)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#integer";
+                } else {
+                    ptype = "http://www.w3.org/2001/XMLSchema#float";
+                }
+            } else if (tp === "string") {
+                if (/\d{4}-\d{2}-\d{2}( |T)\d{2}:\d{2}:\d{2}/.test(value as string)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#datetime";
+                } else if (/\d{4}-\d{2}-\d{2}/.test(value as string)) {
+                    ptype = "http://www.w3.org/2001/XMLSchema#date";
+                } else {
+                    ptype = "http://www.w3.org/2001/XMLSchema#string";
+                }
+            } else if (tp === "boolean") {
+                ptype = "http://www.w3.org/2001/XMLSchema#boolean";
+            }
 
+            data[this._id][key].push({
+                "@value": value,
+                "@type": "literal",
+                "@datatype": ptype
+            });
+        }
+        return data;
+    }
+
+    public toJson(): Record<string, any> {
+        const data: Record<string, any> = {
+            "@id": this._id
+        }
+        if (this.code !== null) {
+            const valueObj = this.code;
+                const obj = valueObj
+            data["method"] = obj;
+        }
+        if (this.distributionTables.length > 0) {
+            data["distributionTable"] = [];
+            for (const valueObj of this.distributionTables) {
+                const obj = valueObj.toJson()
+                data["distributionTable"].push(obj);
+            }
+        }
+        if (this.ensembleTables.length > 0) {
+            data["ensembleTable"] = [];
+            for (const valueObj of this.ensembleTables) {
+                const obj = valueObj.toJson()
+                data["ensembleTable"].push(obj);
+            }
+        }
+        if (this.summaryTables.length > 0) {
+            data["summaryTable"] = [];
+            for (const valueObj of this.summaryTables) {
+                const obj = valueObj.toJson()
+                data["summaryTable"].push(obj);
+            }
+        }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
             data[key] = value;
@@ -97,37 +242,136 @@ export class Model {
         return data;
     }
 
-    public static fromJson(data: Record<string, unknown>): Model {
-        const obj = new Model();
+    public static fromJson(data: Record<string, any>): Model {
+        const thisObj = new Model();
         for (const [key, value] of Object.entries(data)) {
             if (key === "@id") {
-                obj._id = value as string;
+                thisObj._id = value as string;
                 continue;
             }
-
-            if (key === "method") {
-                obj.code = value ? value as string : null;
-                continue;
-            }
-
-            if (key === "summaryTable") {
-                obj.summaryTables = Array.isArray(value) ? value.map(item => DataTable.fromJson(item as Record<string, unknown>)) : [];
-                continue;
-            }
-
-            if (key === "ensembleTable") {
-                obj.ensembleTables = Array.isArray(value) ? value.map(item => DataTable.fromJson(item as Record<string, unknown>)) : [];
-                continue;
-            }
-
             if (key === "distributionTable") {
-                obj.distributionTables = Array.isArray(value) ? value.map(item => DataTable.fromJson(item as Record<string, unknown>)) : [];
+                let obj: any = null;
+                if (Array.isArray(value)) {
+                    obj = DataTable.fromJson(value)
+                    thisObj.distributionTables.push(obj);
+                }
                 continue;
             }
-
+            if (key === "ensembleTable") {
+                let obj: any = null;
+                if (Array.isArray(value)) {
+                    obj = DataTable.fromJson(value)
+                    thisObj.ensembleTables.push(obj);
+                }
+                continue;
+            }
+            if (key === "method") {
+                let obj: any = null;
+                    obj = value
+                thisObj.code = obj;
+                continue;
+            }
+            if (key === "summaryTable") {
+                let obj: any = null;
+                if (Array.isArray(value)) {
+                    obj = DataTable.fromJson(value)
+                    thisObj.summaryTables.push(obj);
+                }
+                continue;
+            }
             // Store unknown properties in misc
-            obj._misc[key] = value;
+            thisObj._misc[key] = value;
         }
-        return obj;
+        return thisObj;
+    }
+
+    public setNonStandardProperty(key: string, value: unknown): void {
+        this._misc[key] = value;
+    }
+    
+    public getNonStandardProperty(key: string): unknown {
+        return this._misc[key];
+    }
+                
+    public getAllNonStandardProperties(): Record<string, unknown> {
+        return this._misc;
+    }
+
+    public addNonStandardProperty(key: string, value: unknown): void {
+        if (!(key in this._misc)) {
+            this._misc[key] = [];
+        }
+        (this._misc[key] as unknown[]).push(value);
+    }
+    
+    getCode(): string | null {
+        return this.code;
+    }
+
+    setCode(code: string): void {
+        // if (!(code instanceof string)) {
+        //     throw new Error(`Error: '${code}' is not of type string`);
+        // }
+        this.code = code;
+    }
+    getDistributionTables(): DataTable[] {
+        return this.distributionTables;
+    }
+
+    setDistributionTables(distributionTables: DataTable[]): void {
+        // if (!Array.isArray(distributionTables)) {
+        //     throw new Error("Error: distributionTables is not an array");
+        // }
+        // if (!distributionTables.every(x => x instanceof DataTable)) {
+        //     throw new Error(`Error: '${distributionTables}' is not of type DataTable`);
+        // }
+        this.distributionTables = distributionTables;
+    }
+
+    addDistributionTable(distributionTables: DataTable): void {
+        // if (!(distributionTables instanceof DataTable)) {
+        //     throw new Error(`Error: '${distributionTables}' is not of type DataTable`);
+        // }
+        this.distributionTables.push(distributionTables);
+    }
+    getEnsembleTables(): DataTable[] {
+        return this.ensembleTables;
+    }
+
+    setEnsembleTables(ensembleTables: DataTable[]): void {
+        // if (!Array.isArray(ensembleTables)) {
+        //     throw new Error("Error: ensembleTables is not an array");
+        // }
+        // if (!ensembleTables.every(x => x instanceof DataTable)) {
+        //     throw new Error(`Error: '${ensembleTables}' is not of type DataTable`);
+        // }
+        this.ensembleTables = ensembleTables;
+    }
+
+    addEnsembleTable(ensembleTables: DataTable): void {
+        // if (!(ensembleTables instanceof DataTable)) {
+        //     throw new Error(`Error: '${ensembleTables}' is not of type DataTable`);
+        // }
+        this.ensembleTables.push(ensembleTables);
+    }
+    getSummaryTables(): DataTable[] {
+        return this.summaryTables;
+    }
+
+    setSummaryTables(summaryTables: DataTable[]): void {
+        // if (!Array.isArray(summaryTables)) {
+        //     throw new Error("Error: summaryTables is not an array");
+        // }
+        // if (!summaryTables.every(x => x instanceof DataTable)) {
+        //     throw new Error(`Error: '${summaryTables}' is not of type DataTable`);
+        // }
+        this.summaryTables = summaryTables;
+    }
+
+    addSummaryTable(summaryTables: DataTable): void {
+        // if (!(summaryTables instanceof DataTable)) {
+        //     throw new Error(`Error: '${summaryTables}' is not of type DataTable`);
+        // }
+        this.summaryTables.push(summaryTables);
     }
 }

@@ -31,14 +31,12 @@
     "@types/papaparse": "^5.3.15",
     "@types/uuid": "^10.0.0",
     "adm-zip": "^0.5.16",
-    "dataframe-js": "^1.4.4",
     "n3": "^1.17.0",
     "papaparse": "^5.5.2",
     "rdf-stores": "^2.1.1",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/dataframe-js": "^1.4.3",
     "@types/jest": "^29.5.14",
     "@types/node": "18.x",
     "@typescript-eslint/eslint-plugin": "^6.21.0",

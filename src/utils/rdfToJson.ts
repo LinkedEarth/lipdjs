@@ -92,10 +92,27 @@ export class RDFToJSON {
 
     /**
      * Get indexed facts for a given ID and its related objects
+     * Recursively retrieves facts for all related objects
      * @param id The ID to get indexed facts for
      */
     private _getIndexedFacts(id: string): void {
-        this.facts[id] = this._getFacts(id);
+        // Skip if we've already processed this ID
+        if (id in this.facts) {
+            return;
+        }
+
+        // Get facts for this ID
+        const facts = this._getFacts(id);
+        this.facts[id] = facts;
+
+        // Recursively process all URI objects except for type predicates
+        for (const [pname, pfacts] of Object.entries(facts)) {
+            for (const pfact of pfacts) {
+                if (pfact["@type"] === "uri" && pname !== "type") {
+                    this._getIndexedFacts(pfact["@id"] as string);
+                }
+            }
+        }
     }
 
     /**

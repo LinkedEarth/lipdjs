@@ -1,6 +1,7 @@
 import { Variable } from '../variable';
 import { parseVariableValues } from "../../utils/utils";
 
+// START TYPES
 interface VariableMetadata {
     hasValues?: boolean;
     [key: string]: any;
@@ -14,6 +15,7 @@ interface DataFrame {
     data: DataFrameData;
     metadata: Record<string, VariableMetadata>;
 }
+// END TYPES
 
 export class DataTable {
     private variables: Variable[] = [];

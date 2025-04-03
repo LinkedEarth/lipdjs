@@ -18,6 +18,8 @@ import {
 
 import { multiLoadLipd } from './utils/multiProcessing';
 import { sanitizeId, serializeStore } from './utils/utils';
+import { Dataset } from './classes/dataset';
+import { RDFToJSON } from './utils/rdfToJson';
 
 const logger = Logger.getInstance();
 
@@ -168,6 +170,36 @@ export class LiPD extends RDFGraph {
     public async getAllArchiveTypes(): Promise<string[]> {
         const [qres] = await this.query(QUERY_UNIQUE_ARCHIVE_TYPE);
         return qres.map((row: { archiveType: string }) => String(row.archiveType));
+    }
+
+    /**
+     * Get all datasets as Dataset class instances
+     * @returns List of Dataset objects
+     * 
+     * @example
+     * ```typescript
+     * const lipd = new LiPD();
+     * lipd.load('path/to/file.lpd').then(() => {
+     *   lipd.getDatasets().then(datasets => {
+     *     // Work with dataset objects
+     *     console.log(datasets[0].getName());
+     *   });
+     * });
+     * ```
+     */
+    public async getDatasets(): Promise<Dataset[]> {
+        const datasets: Dataset[] = [];
+        const datasetNames = await this.getAllDatasetNames();
+        
+        for (const dsname of datasetNames) {
+            let dsuri = NSURL + "/" + dsname
+            let r2j = new RDFToJSON(dsuri, this.store)
+            let data = JSON.parse(r2j.toJson())
+            let ds = Dataset.fromData(dsuri, data)
+            datasets.push(ds)
+        }
+        
+        return datasets;
     }
 
     /**

@@ -50,7 +50,6 @@ function expandSchema(schema: any): any {
 }
 
 export class LipdToRDF {
-    // Using rdf-stores for the graph
     public store: Store;
     public graphUrl: string;
     public namespaces: {
@@ -204,9 +203,7 @@ export class LipdToRDF {
         
         if (this.store) {
             try {
-                // Serialize the graph using rdf-stores' serializer
                 const serialized = await serializeStore(this.store, type, logger);
-                
                 fs.writeFileSync(toPath, serialized);
                 logger.debug('Successfully wrote graph to: %s', toPath);
             } catch (error) {
@@ -228,8 +225,6 @@ export class LipdToRDF {
         if (this.store) {
             try {
                 let serialized: string | undefined;
-                
-                // Serialize the graph using rdf-stores' serializer
                 serialized = await serializeStore(this.store, type, logger);
                 
                 return serialized || '';

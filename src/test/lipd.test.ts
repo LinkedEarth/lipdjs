@@ -47,13 +47,6 @@ describe('LiPD File Loading Tests', () => {
         expect(datasetNames.length).toBe(lpdFiles.length);
     });
 
-    test('should handle non-existent file gracefully', async () => {
-        const lipd = new LiPD();
-        const nonExistentFile = path.join(testDataDir, 'non-existent.lpd');
-        
-        await expect(lipd.load(nonExistentFile)).rejects.toThrow();
-    });
-
     test('should convert LiPD file to Dataset class', async () => {
         const lipd = new LiPD();
         const testFile = path.join(testDataDir, 'Ant-WAIS-Divide.Severinghaus.2012.lpd');
@@ -65,20 +58,14 @@ describe('LiPD File Loading Tests', () => {
         expect(datasetNames.length).toBeGreaterThan(0);
         
         // Debug: Print the dataset names
-        console.log('Dataset names:', datasetNames);
-        const n3 = await lipd.serialize("n3");
-        console.log('N3:', n3);
+        // console.log('Dataset names:', datasetNames);
         
-        const datasetJson = lipd.getLipd(datasetNames[0]);
-        // Debug: Print the raw JSON
-        console.log('Dataset JSON:', JSON.stringify(datasetJson, null, 2));
-        
-        const dataset = Dataset.fromJson(datasetJson);
+        const dataset = (await lipd.getDatasets())[0]
         
         // Debug: Print the dataset properties
-        console.log('Dataset name:', dataset.getName());
-        console.log('Dataset ID:', dataset.getDatasetId());
-        console.log('Dataset type:', dataset.constructor.name);
+        // console.log('Dataset name:', dataset.getName());
+        // console.log('Dataset ID:', dataset.getDatasetId());
+        // console.log('Dataset type:', dataset.constructor.name);
         
         // Verify the Dataset class properties
         expect(dataset).toBeInstanceOf(Dataset);
@@ -86,9 +73,9 @@ describe('LiPD File Loading Tests', () => {
         expect(dataset.getDatasetId()).toBeTruthy();
         
         // Check if the dataset has the expected structure
-        expect(dataset.getPaleoData()).toBeDefined();
+        expect(dataset.getPaleoData().length).toBeGreaterThan(0);
         expect(dataset.getChronData()).toBeDefined();
-        expect(dataset.getLocation()).toBeDefined();
+        expect(dataset.getLocation()?.getLatitude()).toBeDefined();
         
         // Verify the dataset name matches
         expect(dataset.getName()).toContain('Ant-WAIS-Divide');

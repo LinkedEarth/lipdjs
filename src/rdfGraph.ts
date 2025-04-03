@@ -1,7 +1,6 @@
-import { DataFactory, Store } from 'n3';
+import { Store } from 'n3';
 import { QueryEngine } from '@comunica/query-sparql-rdfjs';
 import { Logger } from './utils/logger';
-import { serializeStore } from './utils/utils';
 
 const logger = Logger.getInstance();
 

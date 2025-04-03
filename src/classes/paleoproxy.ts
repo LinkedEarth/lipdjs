@@ -1,41 +1,40 @@
 
-interface PaleoProxySynonym {
-    id: string;
-    label: string;
-}
-
-interface PaleoProxySynonyms {
-    [key: string]: PaleoProxySynonym;
-}
+// Auto-generated. Do not edit.
+import { SYNONYMS } from "../globals/synonyms";
 
 export class PaleoProxy {
     private id: string;
     private label: string;
-    static synonyms: PaleoProxySynonyms = {'accumulation rate': {'id': 'http://linked.earth/ontology/paleo_proxy#accumulation_rate', 'label': 'accumulation rate'}, 'accumulation_rate': {'id': 'http://linked.earth/ontology/paleo_proxy#accumulation_rate', 'label': 'accumulation rate'}, 'sed accumulation': {'id': 'http://linked.earth/ontology/paleo_proxy#accumulation_rate', 'label': 'accumulation rate'}, 'acl': {'id': 'http://linked.earth/ontology/paleo_proxy#ACL', 'label': 'ACL'}, 'average chain length': {'id': 'http://linked.earth/ontology/paleo_proxy#ACL', 'label': 'ACL'}, 'al2o3': {'id': 'http://linked.earth/ontology/paleo_proxy#Al2O3', 'label': 'Al2O3'}, 'aluminum oxide': {'id': 'http://linked.earth/ontology/paleo_proxy#Al2O3', 'label': 'Al2O3'}, 'alkenone': {'id': 'http://linked.earth/ontology/paleo_proxy#alkenone', 'label': 'alkenone'}, 'amoeba': {'id': 'http://linked.earth/ontology/paleo_proxy#amoeba', 'label': 'amoeba'}, 'testate amoeba': {'id': 'http://linked.earth/ontology/paleo_proxy#amoeba', 'label': 'amoeba'}, 'ba/al': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Al', 'label': 'Ba/Al'}, 'ba_al': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Al', 'label': 'Ba/Al'}, 'barium/aluminum': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Al', 'label': 'Ba/Al'}, 'ba/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Ca', 'label': 'Ba/Ca'}, 'ba_ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Ca', 'label': 'Ba/Ca'}, 'barium/calcium': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Ca', 'label': 'Ba/Ca'}, 'baca': {'id': 'http://linked.earth/ontology/paleo_proxy#Ba_Ca', 'label': 'Ba/Ca'}, 'biomarker': {'id': 'http://linked.earth/ontology/paleo_proxy#biomarker', 'label': 'biomarker'}, 'organic compound': {'id': 'http://linked.earth/ontology/paleo_proxy#biomarker', 'label': 'biomarker'}, 'c15 fatty alcohols': {'id': 'http://linked.earth/ontology/paleo_proxy#biomarker', 'label': 'biomarker'}, 'c37.concentration': {'id': 'http://linked.earth/ontology/paleo_proxy#biomarker', 'label': 'biomarker'}, 'bit': {'id': 'http://linked.earth/ontology/paleo_proxy#BIT', 'label': 'BIT'}, 'branched and isoprenoid tetraether index': {'id': 'http://linked.earth/ontology/paleo_proxy#BIT', 'label': 'BIT'}, 'bitindex': {'id': 'http://linked.earth/ontology/paleo_proxy#BIT', 'label': 'BIT'}, 'borehole': {'id': 'http://linked.earth/ontology/paleo_proxy#borehole', 'label': 'borehole'}, 'bsi': {'id': 'http://linked.earth/ontology/paleo_proxy#BSi', 'label': 'BSi'}, 'biogenic silica': {'id': 'http://linked.earth/ontology/paleo_proxy#BSi', 'label': 'BSi'}, 'bubble frequency': {'id': 'http://linked.earth/ontology/paleo_proxy#bubble_frequency', 'label': 'bubble frequency'}, 'bubble_frequency': {'id': 'http://linked.earth/ontology/paleo_proxy#bubble_frequency', 'label': 'bubble frequency'}, 'bulk density': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_density', 'label': 'bulk density'}, 'bulk_density': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_density', 'label': 'bulk density'}, 'gamma': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_density', 'label': 'bulk density'}, 'bulk sediment': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_sediment', 'label': 'bulk sediment'}, 'bulk_sediment': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_sediment', 'label': 'bulk sediment'}, 'dry sediment': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_sediment', 'label': 'bulk sediment'}, 'bulksed': {'id': 'http://linked.earth/ontology/paleo_proxy#bulk_sediment', 'label': 'bulk sediment'}, 'c/n': {'id': 'http://linked.earth/ontology/paleo_proxy#C_N', 'label': 'C/N'}, 'c_n': {'id': 'http://linked.earth/ontology/paleo_proxy#C_N', 'label': 'C/N'}, 'carbon/nitrogen': {'id': 'http://linked.earth/ontology/paleo_proxy#C_N', 'label': 'C/N'}, 'ca/k': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_K', 'label': 'Ca/K'}, 'ca_k': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_K', 'label': 'Ca/K'}, 'calcium/potassium': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_K', 'label': 'Ca/K'}, 'ca/ti': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_Ti', 'label': 'Ca/Ti'}, 'ca_ti': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_Ti', 'label': 'Ca/Ti'}, 'calcium/titanium': {'id': 'http://linked.earth/ontology/paleo_proxy#Ca_Ti', 'label': 'Ca/Ti'}, 'caco3': {'id': 'http://linked.earth/ontology/paleo_proxy#CaCO3', 'label': 'CaCO3'}, 'calcium carbonate': {'id': 'http://linked.earth/ontology/paleo_proxy#CaCO3', 'label': 'CaCO3'}, 'calcification rate': {'id': 'http://linked.earth/ontology/paleo_proxy#calcification_rate', 'label': 'calcification rate'}, 'calcification_rate': {'id': 'http://linked.earth/ontology/paleo_proxy#calcification_rate', 'label': 'calcification rate'}, 'calcification': {'id': 'http://linked.earth/ontology/paleo_proxy#calcification_rate', 'label': 'calcification rate'}, 'calcite': {'id': 'http://linked.earth/ontology/paleo_proxy#calcite', 'label': 'calcite'}, 'carbonate': {'id': 'http://linked.earth/ontology/paleo_proxy#carbonate', 'label': 'carbonate'}, 'authigenic carbonate': {'id': 'http://linked.earth/ontology/paleo_proxy#carbonate', 'label': 'carbonate'}, 'carbonate content': {'id': 'http://linked.earth/ontology/paleo_proxy#carbonate', 'label': 'carbonate'}, 'cellulose': {'id': 'http://linked.earth/ontology/paleo_proxy#cellulose', 'label': 'cellulose'}, 'charcoal': {'id': 'http://linked.earth/ontology/paleo_proxy#charcoal', 'label': 'charcoal'}, 'chironomid': {'id': 'http://linked.earth/ontology/paleo_proxy#chironomid', 'label': 'chironomid'}, 'midge': {'id': 'http://linked.earth/ontology/paleo_proxy#chironomid', 'label': 'chironomid'}, 'chlorophyll': {'id': 'http://linked.earth/ontology/paleo_proxy#chlorophyll', 'label': 'chlorophyll'}, 'chrysophyte assemblage': {'id': 'http://linked.earth/ontology/paleo_proxy#chrysophyte_assemblage', 'label': 'chrysophyte assemblage'}, 'chrysophyte_assemblage': {'id': 'http://linked.earth/ontology/paleo_proxy#chrysophyte_assemblage', 'label': 'chrysophyte assemblage'}, 'chrysophyte': {'id': 'http://linked.earth/ontology/paleo_proxy#chrysophyte_assemblage', 'label': 'chrysophyte assemblage'}, 'cladoceran': {'id': 'http://linked.earth/ontology/paleo_proxy#cladoceran', 'label': 'cladoceran'}, 'cladocera': {'id': 'http://linked.earth/ontology/paleo_proxy#cladoceran', 'label': 'cladoceran'}, 'coccolithophore': {'id': 'http://linked.earth/ontology/paleo_proxy#coccolithophore', 'label': 'coccolithophore'}, 'coccolith': {'id': 'http://linked.earth/ontology/paleo_proxy#coccolithophore', 'label': 'coccolithophore'}, 'd13c': {'id': 'http://linked.earth/ontology/paleo_proxy#d13C', 'label': 'd13C'}, 'delta 13c': {'id': 'http://linked.earth/ontology/paleo_proxy#d13C', 'label': 'd13C'}, 'd13cwax': {'id': 'http://linked.earth/ontology/paleo_proxy#d13C', 'label': 'd13C'}, 'd15n': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N', 'label': 'd15N'}, 'delta 15n': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N', 'label': 'd15N'}, 'd15n/d40ar': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N_d40Ar', 'label': 'd15N/d40Ar'}, 'd15n_d40ar': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N_d40Ar', 'label': 'd15N/d40Ar'}, '15n/40ar fractionation': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N_d40Ar', 'label': 'd15N/d40Ar'}, 'd15nd40ar': {'id': 'http://linked.earth/ontology/paleo_proxy#d15N_d40Ar', 'label': 'd15N/d40Ar'}, 'd18o': {'id': 'http://linked.earth/ontology/paleo_proxy#d18O', 'label': 'd18O'}, 'delta 18o': {'id': 'http://linked.earth/ontology/paleo_proxy#d18O', 'label': 'd18O'}, 'cellulose d18o': {'id': 'http://linked.earth/ontology/paleo_proxy#d18O', 'label': 'd18O'}, 'delta18o': {'id': 'http://linked.earth/ontology/paleo_proxy#d18O', 'label': 'd18O'}, 'foram d18o': {'id': 'http://linked.earth/ontology/paleo_proxy#d18O', 'label': 'd18O'}, 'dd': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'delta 2h': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'd2h': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'ddwax': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'leaf wax': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'leafwax': {'id': 'http://linked.earth/ontology/paleo_proxy#dD', 'label': 'dD'}, 'deuterium excess': {'id': 'http://linked.earth/ontology/paleo_proxy#deuterium_excess', 'label': 'deuterium excess'}, 'deuterium_excess': {'id': 'http://linked.earth/ontology/paleo_proxy#deuterium_excess', 'label': 'deuterium excess'}, 'deterium excess': {'id': 'http://linked.earth/ontology/paleo_proxy#deuterium_excess', 'label': 'deuterium excess'}, 'dx': {'id': 'http://linked.earth/ontology/paleo_proxy#deuterium_excess', 'label': 'deuterium excess'}, 'diatom': {'id': 'http://linked.earth/ontology/paleo_proxy#diatom', 'label': 'diatom'}, 'dinocyst': {'id': 'http://linked.earth/ontology/paleo_proxy#dinocyst', 'label': 'dinocyst'}, 'dinoflagellate': {'id': 'http://linked.earth/ontology/paleo_proxy#dinocyst', 'label': 'dinocyst'}, 'dynocist mat': {'id': 'http://linked.earth/ontology/paleo_proxy#dinocyst', 'label': 'dinocyst'}, 'dry bulk density': {'id': 'http://linked.earth/ontology/paleo_proxy#dry_bulk_density', 'label': 'dry bulk density'}, 'dry_bulk_density': {'id': 'http://linked.earth/ontology/paleo_proxy#dry_bulk_density', 'label': 'dry bulk density'}, 'dbd': {'id': 'http://linked.earth/ontology/paleo_proxy#dry_bulk_density', 'label': 'dry bulk density'}, 'eu/zr': {'id': 'http://linked.earth/ontology/paleo_proxy#Eu_Zr', 'label': 'Eu/Zr'}, 'eu_zr': {'id': 'http://linked.earth/ontology/paleo_proxy#Eu_Zr', 'label': 'Eu/Zr'}, 'fe': {'id': 'http://linked.earth/ontology/paleo_proxy#Fe', 'label': 'Fe'}, 'iron': {'id': 'http://linked.earth/ontology/paleo_proxy#Fe', 'label': 'Fe'}, 'fe/al': {'id': 'http://linked.earth/ontology/paleo_proxy#Fe_Al', 'label': 'Fe/Al'}, 'fe_al': {'id': 'http://linked.earth/ontology/paleo_proxy#Fe_Al', 'label': 'Fe/Al'}, 'iron/aluminum': {'id': 'http://linked.earth/ontology/paleo_proxy#Fe_Al', 'label': 'Fe/Al'}, 'foraminifera': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'foraminifer': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'benthic foraminifers': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'n. dutertrei': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'planktonic foraminifera': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'transfer function': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'uvigerina mediterranea': {'id': 'http://linked.earth/ontology/paleo_proxy#foraminifera', 'label': 'foraminifera'}, 'gdgt': {'id': 'http://linked.earth/ontology/paleo_proxy#GDGT', 'label': 'GDGT'}, 'glycerol dialkyl glycerol tetraether': {'id': 'http://linked.earth/ontology/paleo_proxy#GDGT', 'label': 'GDGT'}, 'brgdgt': {'id': 'http://linked.earth/ontology/paleo_proxy#GDGT', 'label': 'GDGT'}, 'grain size': {'id': 'http://linked.earth/ontology/paleo_proxy#grain_size', 'label': 'grain size'}, 'grain_size': {'id': 'http://linked.earth/ontology/paleo_proxy#grain_size', 'label': 'grain size'}, 'particle size': {'id': 'http://linked.earth/ontology/paleo_proxy#grain_size', 'label': 'grain size'}, 'hbi': {'id': 'http://linked.earth/ontology/paleo_proxy#HBI', 'label': 'HBI'}, 'highly-branched isoprenoid alkene': {'id': 'http://linked.earth/ontology/paleo_proxy#HBI', 'label': 'HBI'}, 'historical': {'id': 'http://linked.earth/ontology/paleo_proxy#historical', 'label': 'historical'}, 'documentary': {'id': 'http://linked.earth/ontology/paleo_proxy#historical', 'label': 'historical'}, 'historic': {'id': 'http://linked.earth/ontology/paleo_proxy#historical', 'label': 'historical'}, 'humification': {'id': 'http://linked.earth/ontology/paleo_proxy#humification', 'label': 'humification'}, 'humification index': {'id': 'http://linked.earth/ontology/paleo_proxy#humification', 'label': 'humification'}, 'ice accumulation': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_accumulation', 'label': 'ice accumulation'}, 'ice_accumulation': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_accumulation', 'label': 'ice accumulation'}, 'ice melt': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_melt', 'label': 'ice melt'}, 'ice_melt': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_melt', 'label': 'ice melt'}, 'melt': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_melt', 'label': 'ice melt'}, 'melt layer': {'id': 'http://linked.earth/ontology/paleo_proxy#ice_melt', 'label': 'ice melt'}, 'inorganic carbon': {'id': 'http://linked.earth/ontology/paleo_proxy#inorganic_carbon', 'label': 'inorganic carbon'}, 'inorganic_carbon': {'id': 'http://linked.earth/ontology/paleo_proxy#inorganic_carbon', 'label': 'inorganic carbon'}, 'tic': {'id': 'http://linked.earth/ontology/paleo_proxy#inorganic_carbon', 'label': 'inorganic carbon'}, 'ip25': {'id': 'http://linked.earth/ontology/paleo_proxy#IP25', 'label': 'IP25'}, 'ice proxy with 25 carbon atoms': {'id': 'http://linked.earth/ontology/paleo_proxy#IP25', 'label': 'IP25'}, 'lake level': {'id': 'http://linked.earth/ontology/paleo_proxy#lake_level', 'label': 'lake level'}, 'lake_level': {'id': 'http://linked.earth/ontology/paleo_proxy#lake_level', 'label': 'lake level'}, 'lake stratigraphy and radiocarbon dating of macrofossils': {'id': 'http://linked.earth/ontology/paleo_proxy#lake_level', 'label': 'lake level'}, 'lakelevel': {'id': 'http://linked.earth/ontology/paleo_proxy#lake_level', 'label': 'lake level'}, 'lakestatus': {'id': 'http://linked.earth/ontology/paleo_proxy#lake_level', 'label': 'lake level'}, 'latewood cellulose': {'id': 'http://linked.earth/ontology/paleo_proxy#latewood_cellulose', 'label': 'latewood cellulose'}, 'latewood_cellulose': {'id': 'http://linked.earth/ontology/paleo_proxy#latewood_cellulose', 'label': 'latewood cellulose'}, 'late-wood cellulose': {'id': 'http://linked.earth/ontology/paleo_proxy#latewood_cellulose', 'label': 'latewood cellulose'}, 'ldi': {'id': 'http://linked.earth/ontology/paleo_proxy#LDI', 'label': 'LDI'}, 'long-chain diol index': {'id': 'http://linked.earth/ontology/paleo_proxy#LDI', 'label': 'LDI'}, 'long chain diol': {'id': 'http://linked.earth/ontology/paleo_proxy#LDI', 'label': 'LDI'}, 'macrofossils': {'id': 'http://linked.earth/ontology/paleo_proxy#macrofossils', 'label': 'macrofossils'}, 'plant macrofossils': {'id': 'http://linked.earth/ontology/paleo_proxy#macrofossils', 'label': 'macrofossils'}, 'magnetic': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic', 'label': 'magnetic'}, 'arm/irm': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic', 'label': 'magnetic'}, 'irm': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic', 'label': 'magnetic'}, 'magnetic susceptibility': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic_susceptibility', 'label': 'magnetic susceptibility'}, 'magnetic_susceptibility': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic_susceptibility', 'label': 'magnetic susceptibility'}, 'ms': {'id': 'http://linked.earth/ontology/paleo_proxy#magnetic_susceptibility', 'label': 'magnetic susceptibility'}, 'mass accumulation rate': {'id': 'http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate', 'label': 'mass accumulation rate'}, 'mass_accumulation_rate': {'id': 'http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate', 'label': 'mass accumulation rate'}, 'mass per area per time unit': {'id': 'http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate', 'label': 'mass accumulation rate'}, 'mar': {'id': 'http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate', 'label': 'mass accumulation rate'}, 'maximum latewood density': {'id': 'http://linked.earth/ontology/paleo_proxy#maximum_latewood_density', 'label': 'maximum latewood density'}, 'maximum_latewood_density': {'id': 'http://linked.earth/ontology/paleo_proxy#maximum_latewood_density', 'label': 'maximum latewood density'}, 'latewood density': {'id': 'http://linked.earth/ontology/paleo_proxy#maximum_latewood_density', 'label': 'maximum latewood density'}, 'delta density': {'id': 'http://linked.earth/ontology/paleo_proxy#maximum_latewood_density', 'label': 'maximum latewood density'}, 'mxd': {'id': 'http://linked.earth/ontology/paleo_proxy#maximum_latewood_density', 'label': 'maximum latewood density'}, 'mg': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg', 'label': 'Mg'}, 'magnesium': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg', 'label': 'Mg'}, 'mg/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg_Ca', 'label': 'Mg/Ca'}, 'mg_ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg_Ca', 'label': 'Mg/Ca'}, 'magnesium/calcium': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg_Ca', 'label': 'Mg/Ca'}, 'foram mg/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg_Ca', 'label': 'Mg/Ca'}, 'mgca': {'id': 'http://linked.earth/ontology/paleo_proxy#Mg_Ca', 'label': 'Mg/Ca'}, 'multiproxy': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'multiple proxies': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'hybrid': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'hybrid grain size': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'hybrid-ice': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'hybrid-lake': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'pore ice d2h and d18o': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'ti': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti', 'label': 'Ti'}, 'ca': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'k': {'id': 'http://linked.earth/ontology/paleo_proxy#multiproxy', 'label': 'multiproxy'}, 'needs to be changed': {'id': 'http://linked.earth/ontology/paleo_proxy#needs_to_be_changed', 'label': 'needs to be changed'}, 'needs_to_be_changed': {'id': 'http://linked.earth/ontology/paleo_proxy#needs_to_be_changed', 'label': 'needs to be changed'}, 'pca': {'id': 'http://linked.earth/ontology/paleo_proxy#needs_to_be_changed', 'label': 'needs to be changed'}, 'needstobechanged': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, '((( calcium carbonate ))) accumulation /// null': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, '3-oh-fatty acids': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'age': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'cas': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'cia': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'coral': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'element': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'element ratio': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'ice': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'isotope': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'isotope diffusion': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'mg0': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'middle-wood cellulose': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'mineral': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'mineralogy': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'percent': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'sediment': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'tds': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'trace element / ca': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'traceelement': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'u cluster 2': {'id': 'http://linked.earth/ontology/paleo_proxy#needsToBeChanged', 'label': 'needsToBeChanged'}, 'ostracod': {'id': 'http://linked.earth/ontology/paleo_proxy#ostracod', 'label': 'ostracod'}, 'p-aqueous': {'id': 'http://linked.earth/ontology/paleo_proxy#P-aqueous', 'label': 'P-aqueous'}, 'paq': {'id': 'http://linked.earth/ontology/paleo_proxy#P-aqueous', 'label': 'P-aqueous'}, 'peat ash': {'id': 'http://linked.earth/ontology/paleo_proxy#peat_ash', 'label': 'peat ash'}, 'peat_ash': {'id': 'http://linked.earth/ontology/paleo_proxy#peat_ash', 'label': 'peat ash'}, 'ph': {'id': 'http://linked.earth/ontology/paleo_proxy#pH', 'label': 'pH'}, 'pollen': {'id': 'http://linked.earth/ontology/paleo_proxy#pollen', 'label': 'pollen'}, 'aquatic palynomorphs': {'id': 'http://linked.earth/ontology/paleo_proxy#pollen', 'label': 'pollen'}, 'radiolaria': {'id': 'http://linked.earth/ontology/paleo_proxy#radiolaria', 'label': 'radiolaria'}, 'radiolarian': {'id': 'http://linked.earth/ontology/paleo_proxy#radiolaria', 'label': 'radiolaria'}, 'rb': {'id': 'http://linked.earth/ontology/paleo_proxy#Rb', 'label': 'Rb'}, 'rubidium': {'id': 'http://linked.earth/ontology/paleo_proxy#Rb', 'label': 'Rb'}, 'rb/sr': {'id': 'http://linked.earth/ontology/paleo_proxy#Rb_Sr', 'label': 'Rb/Sr'}, 'rb_sr': {'id': 'http://linked.earth/ontology/paleo_proxy#Rb_Sr', 'label': 'Rb/Sr'}, 'reflectance': {'id': 'http://linked.earth/ontology/paleo_proxy#reflectance', 'label': 'reflectance'}, 'ring width': {'id': 'http://linked.earth/ontology/paleo_proxy#ring_width', 'label': 'ring width'}, 'ring_width': {'id': 'http://linked.earth/ontology/paleo_proxy#ring_width', 'label': 'ring width'}, 'trw': {'id': 'http://linked.earth/ontology/paleo_proxy#ring_width', 'label': 'ring width'}, 'sr': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr', 'label': 'Sr'}, 'strontium': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr', 'label': 'Sr'}, 'sr/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'sr_ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'strontium/calcium': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'ca/sr': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'coral sr/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'srca': {'id': 'http://linked.earth/ontology/paleo_proxy#Sr_Ca', 'label': 'Sr/Ca'}, 'stratigraphy': {'id': 'http://linked.earth/ontology/paleo_proxy#stratigraphy', 'label': 'stratigraphy'}, 'minerogenic layers': {'id': 'http://linked.earth/ontology/paleo_proxy#stratigraphy', 'label': 'stratigraphy'}, 'plant detrital layers': {'id': 'http://linked.earth/ontology/paleo_proxy#stratigraphy', 'label': 'stratigraphy'}, 'sulfur': {'id': 'http://linked.earth/ontology/paleo_proxy#sulfur', 'label': 'sulfur'}, 's': {'id': 'http://linked.earth/ontology/paleo_proxy#sulfur', 'label': 'sulfur'}, 'tex86': {'id': 'http://linked.earth/ontology/paleo_proxy#TEX86', 'label': 'TEX86'}, 'tetraether index of 86 carbon atoms': {'id': 'http://linked.earth/ontology/paleo_proxy#TEX86', 'label': 'TEX86'}, 'titanium': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti', 'label': 'Ti'}, 'ti/al': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Al', 'label': 'Ti/Al'}, 'ti_al': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Al', 'label': 'Ti/Al'}, 'titanium/aluminum': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Al', 'label': 'Ti/Al'}, 'ti/ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Ca', 'label': 'Ti/Ca'}, 'ti_ca': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Ca', 'label': 'Ti/Ca'}, 'titanium/calcium': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Ca', 'label': 'Ti/Ca'}, 'ln(ti/ca)': {'id': 'http://linked.earth/ontology/paleo_proxy#Ti_Ca', 'label': 'Ti/Ca'}, 'toc': {'id': 'http://linked.earth/ontology/paleo_proxy#TOC', 'label': 'TOC'}, 'organic carbon': {'id': 'http://linked.earth/ontology/paleo_proxy#TOC', 'label': 'TOC'}, 'total nitrogen': {'id': 'http://linked.earth/ontology/paleo_proxy#total_nitrogen', 'label': 'total nitrogen'}, 'total_nitrogen': {'id': 'http://linked.earth/ontology/paleo_proxy#total_nitrogen', 'label': 'total nitrogen'}, 'tn': {'id': 'http://linked.earth/ontology/paleo_proxy#total_nitrogen', 'label': 'total nitrogen'}, 'varve thickness': {'id': 'http://linked.earth/ontology/paleo_proxy#varve_thickness', 'label': 'varve thickness'}, 'varve_thickness': {'id': 'http://linked.earth/ontology/paleo_proxy#varve_thickness', 'label': 'varve thickness'}, 'varve': {'id': 'http://linked.earth/ontology/paleo_proxy#varve_thickness', 'label': 'varve thickness'}, 'varve property': {'id': 'http://linked.earth/ontology/paleo_proxy#varve_thickness', 'label': 'varve thickness'}, 'varves': {'id': 'http://linked.earth/ontology/paleo_proxy#varve_thickness', 'label': 'varve thickness'}};
+    static synonyms: any = SYNONYMS.PROXIES?.PaleoProxy;
 
     constructor(id: string, label: string) {
         this.id = id;
         this.label = label;
     }
 
-    getId(): string {
-        return this.id;
+    equals(value: PaleoProxy): boolean {
+        return this.id === value.id;
     }
 
     getLabel(): string {
         return this.label;
     }
 
-    toData(): Record<string, any> {
-        return {
-            [this.id]: {
-                label: [{
+    getId(): string {
+        return this.id;
+    }
+
+    toData(data: Record<string, any> = {}): Record<string, any> {
+        data[this.id] = {
+            "label": [
+                {
                     "@datatype": null,
                     "@type": "literal",
                     "@value": this.label
-                }]
-            }
+                }
+            ]
         };
+        return data;
     }
 
     toJson(): string {
@@ -52,89 +51,89 @@ export class PaleoProxy {
     }
 }
 
-export const PaleoProxyConstants = {
-    accumulation_rate: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#accumulation_rate", "accumulation rate" ),
-    ACL: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#ACL", "ACL" ),
-    Al2O3: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Al2O3", "Al2O3" ),
-    alkenone: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#alkenone", "alkenone" ),
-    amoeba: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#amoeba", "amoeba" ),
-    Ba_Al: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ba_Al", "Ba/Al" ),
-    Ba_Ca: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ba_Ca", "Ba/Ca" ),
-    biomarker: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#biomarker", "biomarker" ),
-    BIT: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#BIT", "BIT" ),
-    borehole: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#borehole", "borehole" ),
-    BSi: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#BSi", "BSi" ),
-    bubble_frequency: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#bubble_frequency", "bubble frequency" ),
-    bulk_density: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#bulk_density", "bulk density" ),
-    bulk_sediment: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#bulk_sediment", "bulk sediment" ),
-    C_N: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#C_N", "C/N" ),
-    Ca_K: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ca_K", "Ca/K" ),
-    Ca_Ti: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ca_Ti", "Ca/Ti" ),
-    CaCO3: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#CaCO3", "CaCO3" ),
-    calcification_rate: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#calcification_rate", "calcification rate" ),
-    calcite: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#calcite", "calcite" ),
-    carbonate: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#carbonate", "carbonate" ),
-    cellulose: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#cellulose", "cellulose" ),
-    charcoal: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#charcoal", "charcoal" ),
-    chironomid: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#chironomid", "chironomid" ),
-    chlorophyll: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#chlorophyll", "chlorophyll" ),
-    chrysophyte_assemblage: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#chrysophyte_assemblage", "chrysophyte assemblage" ),
-    cladoceran: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#cladoceran", "cladoceran" ),
-    coccolithophore: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#coccolithophore", "coccolithophore" ),
-    d13C: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#d13C", "d13C" ),
-    d15N: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#d15N", "d15N" ),
-    d15N_d40Ar: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#d15N_d40Ar", "d15N/d40Ar" ),
-    d18O: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#d18O", "d18O" ),
-    dD: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#dD", "dD" ),
-    deuterium_excess: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#deuterium_excess", "deuterium excess" ),
-    diatom: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#diatom", "diatom" ),
-    dinocyst: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#dinocyst", "dinocyst" ),
-    dry_bulk_density: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#dry_bulk_density", "dry bulk density" ),
-    Eu_Zr: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Eu_Zr", "Eu/Zr" ),
-    Fe: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Fe", "Fe" ),
-    Fe_Al: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Fe_Al", "Fe/Al" ),
-    foraminifera: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#foraminifera", "foraminifera" ),
-    GDGT: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#GDGT", "GDGT" ),
-    grain_size: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#grain_size", "grain size" ),
-    HBI: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#HBI", "HBI" ),
-    historical: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#historical", "historical" ),
-    humification: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#humification", "humification" ),
-    ice_accumulation: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#ice_accumulation", "ice accumulation" ),
-    ice_melt: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#ice_melt", "ice melt" ),
-    inorganic_carbon: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#inorganic_carbon", "inorganic carbon" ),
-    IP25: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#IP25", "IP25" ),
-    lake_level: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#lake_level", "lake level" ),
-    latewood_cellulose: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#latewood_cellulose", "latewood cellulose" ),
-    LDI: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#LDI", "LDI" ),
-    macrofossils: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#macrofossils", "macrofossils" ),
-    magnetic: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#magnetic", "magnetic" ),
-    magnetic_susceptibility: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#magnetic_susceptibility", "magnetic susceptibility" ),
-    mass_accumulation_rate: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate", "mass accumulation rate" ),
-    maximum_latewood_density: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#maximum_latewood_density", "maximum latewood density" ),
-    Mg: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Mg", "Mg" ),
-    Mg_Ca: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Mg_Ca", "Mg/Ca" ),
-    multiproxy: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#multiproxy", "multiproxy" ),
-    Ti: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ti", "Ti" ),
-    needs_to_be_changed: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#needs_to_be_changed", "needs to be changed" ),
-    needsToBeChanged: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#needsToBeChanged", "needsToBeChanged" ),
-    ostracod: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#ostracod", "ostracod" ),
-    P_aqueous: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#P-aqueous", "P-aqueous" ),
-    peat_ash: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#peat_ash", "peat ash" ),
-    pH: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#pH", "pH" ),
-    pollen: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#pollen", "pollen" ),
-    radiolaria: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#radiolaria", "radiolaria" ),
-    Rb: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Rb", "Rb" ),
-    Rb_Sr: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Rb_Sr", "Rb/Sr" ),
-    reflectance: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#reflectance", "reflectance" ),
-    ring_width: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#ring_width", "ring width" ),
-    Sr: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Sr", "Sr" ),
-    Sr_Ca: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Sr_Ca", "Sr/Ca" ),
-    stratigraphy: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#stratigraphy", "stratigraphy" ),
-    sulfur: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#sulfur", "sulfur" ),
-    TEX86: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#TEX86", "TEX86" ),
-    Ti_Al: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ti_Al", "Ti/Al" ),
-    Ti_Ca: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#Ti_Ca", "Ti/Ca" ),
-    TOC: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#TOC", "TOC" ),
-    total_nitrogen: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#total_nitrogen", "total nitrogen" ),
-    varve_thickness: new PaleoProxy( "http://linked.earth/ontology/paleo_proxy#varve_thickness", "varve thickness" ),
-};
+export class PaleoProxyConstants {
+    static accumulation_rate = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#accumulation_rate", "accumulation rate");
+    static ACL = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#ACL", "ACL");
+    static Al2O3 = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Al2O3", "Al2O3");
+    static alkenone = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#alkenone", "alkenone");
+    static amoeba = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#amoeba", "amoeba");
+    static Ba_Al = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ba_Al", "Ba/Al");
+    static Ba_Ca = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ba_Ca", "Ba/Ca");
+    static biomarker = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#biomarker", "biomarker");
+    static BIT = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#BIT", "BIT");
+    static borehole = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#borehole", "borehole");
+    static BSi = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#BSi", "BSi");
+    static bubble_frequency = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#bubble_frequency", "bubble frequency");
+    static bulk_density = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#bulk_density", "bulk density");
+    static bulk_sediment = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#bulk_sediment", "bulk sediment");
+    static C_N = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#C_N", "C/N");
+    static Ca_K = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ca_K", "Ca/K");
+    static Ca_Ti = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ca_Ti", "Ca/Ti");
+    static CaCO3 = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#CaCO3", "CaCO3");
+    static calcification_rate = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#calcification_rate", "calcification rate");
+    static calcite = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#calcite", "calcite");
+    static carbonate = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#carbonate", "carbonate");
+    static cellulose = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#cellulose", "cellulose");
+    static charcoal = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#charcoal", "charcoal");
+    static chironomid = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#chironomid", "chironomid");
+    static chlorophyll = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#chlorophyll", "chlorophyll");
+    static chrysophyte_assemblage = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#chrysophyte_assemblage", "chrysophyte assemblage");
+    static cladoceran = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#cladoceran", "cladoceran");
+    static coccolithophore = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#coccolithophore", "coccolithophore");
+    static d13C = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#d13C", "d13C");
+    static d15N = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#d15N", "d15N");
+    static d15N_d40Ar = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#d15N_d40Ar", "d15N/d40Ar");
+    static d18O = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#d18O", "d18O");
+    static dD = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#dD", "dD");
+    static deuterium_excess = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#deuterium_excess", "deuterium excess");
+    static diatom = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#diatom", "diatom");
+    static dinocyst = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#dinocyst", "dinocyst");
+    static dry_bulk_density = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#dry_bulk_density", "dry bulk density");
+    static Eu_Zr = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Eu_Zr", "Eu/Zr");
+    static Fe = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Fe", "Fe");
+    static Fe_Al = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Fe_Al", "Fe/Al");
+    static foraminifera = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#foraminifera", "foraminifera");
+    static GDGT = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#GDGT", "GDGT");
+    static grain_size = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#grain_size", "grain size");
+    static HBI = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#HBI", "HBI");
+    static historical = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#historical", "historical");
+    static humification = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#humification", "humification");
+    static ice_accumulation = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#ice_accumulation", "ice accumulation");
+    static ice_melt = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#ice_melt", "ice melt");
+    static inorganic_carbon = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#inorganic_carbon", "inorganic carbon");
+    static IP25 = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#IP25", "IP25");
+    static lake_level = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#lake_level", "lake level");
+    static latewood_cellulose = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#latewood_cellulose", "latewood cellulose");
+    static LDI = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#LDI", "LDI");
+    static macrofossils = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#macrofossils", "macrofossils");
+    static magnetic = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#magnetic", "magnetic");
+    static magnetic_susceptibility = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#magnetic_susceptibility", "magnetic susceptibility");
+    static mass_accumulation_rate = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#mass_accumulation_rate", "mass accumulation rate");
+    static maximum_latewood_density = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#maximum_latewood_density", "maximum latewood density");
+    static Mg = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Mg", "Mg");
+    static Mg_Ca = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Mg_Ca", "Mg/Ca");
+    static multiproxy = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#multiproxy", "multiproxy");
+    static Ti = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ti", "Ti");
+    static needs_to_be_changed = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#needs_to_be_changed", "needs to be changed");
+    static needsToBeChanged = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#needsToBeChanged", "needsToBeChanged");
+    static ostracod = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#ostracod", "ostracod");
+    static P_aqueous = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#P-aqueous", "P-aqueous");
+    static peat_ash = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#peat_ash", "peat ash");
+    static pH = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#pH", "pH");
+    static pollen = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#pollen", "pollen");
+    static radiolaria = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#radiolaria", "radiolaria");
+    static Rb = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Rb", "Rb");
+    static Rb_Sr = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Rb_Sr", "Rb/Sr");
+    static reflectance = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#reflectance", "reflectance");
+    static ring_width = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#ring_width", "ring width");
+    static Sr = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Sr", "Sr");
+    static Sr_Ca = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Sr_Ca", "Sr/Ca");
+    static stratigraphy = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#stratigraphy", "stratigraphy");
+    static sulfur = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#sulfur", "sulfur");
+    static TEX86 = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#TEX86", "TEX86");
+    static Ti_Al = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ti_Al", "Ti/Al");
+    static Ti_Ca = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#Ti_Ca", "Ti/Ca");
+    static TOC = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#TOC", "TOC");
+    static total_nitrogen = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#total_nitrogen", "total nitrogen");
+    static varve_thickness = new PaleoProxy("http://linked.earth/ontology/paleo_proxy#varve_thickness", "varve thickness");
+}
