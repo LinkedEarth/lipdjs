@@ -24,3 +24,6 @@ export * from './classes/person';
 export * from './classes/paleodata';
 export * from './classes/physicalsample';
 export * from './classes/funding';
+
+// Export interfaces for consumers
+export type { SynonymEntry, SynonymCollection, InterpretationTypes, ProxyTypes, SynonymsType } from './globals/synonyms-types';
