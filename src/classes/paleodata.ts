@@ -224,14 +224,14 @@ export class PaleoData {
 
     public static fromJson(data: Record<string, any>): PaleoData {
         const thisObj = new PaleoData();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "measurementTable") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.measurementTables.push(obj);
                 }
@@ -239,7 +239,7 @@ export class PaleoData {
             }
             if (key === "model") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Model.fromJson(value)
                     thisObj.modeledBy.push(obj);
                 }
@@ -247,12 +247,13 @@ export class PaleoData {
             }
             if (key === "paleoDataName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.name = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

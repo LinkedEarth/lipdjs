@@ -238,26 +238,28 @@ export class Funding {
 
     public static fromJson(data: Record<string, any>): Funding {
         const thisObj = new Funding();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "agency") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.fundingAgency = obj;
                 continue;
             }
             if (key === "country") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.fundingCountry = obj;
                 continue;
             }
             if (key === "grant") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.grants.push(obj);
                 }
@@ -265,14 +267,14 @@ export class Funding {
             }
             if (key === "investigator") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.investigators.push(obj);
                 }
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

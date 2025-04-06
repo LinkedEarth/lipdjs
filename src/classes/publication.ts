@@ -617,20 +617,21 @@ export class Publication {
 
     public static fromJson(data: Record<string, any>): Publication {
         const thisObj = new Publication();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "abstract") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.abstract = obj;
                 continue;
             }
             if (key === "author") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.authors.push(obj);
                 }
@@ -638,19 +639,21 @@ export class Publication {
             }
             if (key === "citation") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.citation = obj;
                 continue;
             }
             if (key === "citeKey") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.citeKey = obj;
                 continue;
             }
             if (key === "dataUrl") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.dataUrls.push(obj);
                 }
@@ -658,67 +661,77 @@ export class Publication {
             }
             if (key === "doi") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.dOI = obj;
                 continue;
             }
             if (key === "firstauthor") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = Person.fromJson(value)
                 thisObj.firstAuthor = obj;
                 continue;
             }
             if (key === "institution") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.institution = obj;
                 continue;
             }
             if (key === "issue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.issue = obj;
                 continue;
             }
             if (key === "journal") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.journal = obj;
                 continue;
             }
             if (key === "pages") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.pages = obj;
                 continue;
             }
             if (key === "publisher") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.publisher = obj;
                 continue;
             }
             if (key === "report") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.report = obj;
                 continue;
             }
             if (key === "title") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.title = obj;
                 continue;
             }
             if (key === "type") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.publicationType = obj;
                 continue;
             }
             if (key === "url") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.urls.push(obj);
                 }
@@ -726,18 +739,20 @@ export class Publication {
             }
             if (key === "volume") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.volume = obj;
                 continue;
             }
             if (key === "year") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.year = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

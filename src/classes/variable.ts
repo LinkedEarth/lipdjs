@@ -987,26 +987,28 @@ export class Variable {
 
     public static fromJson(data: Record<string, any>): Variable {
         const thisObj = new Variable();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "TSid") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.variableId = obj;
                 continue;
             }
             if (key === "archiveType") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = ArchiveType.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.archiveType = obj;
                 continue;
             }
             if (key === "calibration") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Calibration.fromJson(value)
                     thisObj.calibratedVias.push(obj);
                 }
@@ -1014,67 +1016,77 @@ export class Variable {
             }
             if (key === "description") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.description = obj;
                 continue;
             }
             if (key === "foundInDataset") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.foundInDataset = obj;
                 continue;
             }
             if (key === "foundInTable") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.foundInTable = obj;
                 continue;
             }
             if (key === "hasMaxValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.maxValue = obj;
                 continue;
             }
             if (key === "hasMeanValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.meanValue = obj;
                 continue;
             }
             if (key === "hasMedianValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.medianValue = obj;
                 continue;
             }
             if (key === "hasMinValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.minValue = obj;
                 continue;
             }
             if (key === "hasStandardVariable") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = PaleoVariable.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.standardVariable = obj;
                 continue;
             }
             if (key === "hasValues") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.values = obj;
                 continue;
             }
             if (key === "inCompilationBeta") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = Compilation.fromJson(value)
                 thisObj.partOfCompilation = obj;
                 continue;
             }
             if (key === "interpretation") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Interpretation.fromJson(value)
                     thisObj.interpretations.push(obj);
                 }
@@ -1082,43 +1094,49 @@ export class Variable {
             }
             if (key === "isComposite") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.composite = obj;
                 continue;
             }
             if (key === "isPrimary") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.primary = obj;
                 continue;
             }
             if (key === "measurementInstrument") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.instrument = obj;
                 continue;
             }
             if (key === "missingValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.missingValue = obj;
                 continue;
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             if (key === "number") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.columnNumber = obj;
                 continue;
             }
             if (key === "physicalSample") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = PhysicalSample.fromJson(value)
                     thisObj.physicalSamples.push(obj);
                 }
@@ -1126,60 +1144,69 @@ export class Variable {
             }
             if (key === "proxy") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = PaleoProxy.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.proxy = obj;
                 continue;
             }
             if (key === "proxyGeneral") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = PaleoProxyGeneral.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.proxyGeneral = obj;
                 continue;
             }
             if (key === "resolution") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = Resolution.fromJson(value)
                 thisObj.resolution = obj;
                 continue;
             }
             if (key === "uncertainty") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.uncertainty = obj;
                 continue;
             }
             if (key === "uncertaintyAnalytical") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.uncertaintyAnalytical = obj;
                 continue;
             }
             if (key === "uncertaintyReproducibility") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.uncertaintyReproducibility = obj;
                 continue;
             }
             if (key === "units") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = PaleoUnit.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.units = obj;
                 continue;
             }
             if (key === "variableName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.name = obj;
                 continue;
             }
             if (key === "variableType") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.variableType = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

@@ -140,19 +140,20 @@ export class Person {
 
     public static fromJson(data: Record<string, any>): Person {
         const thisObj = new Person();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "name") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.name = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

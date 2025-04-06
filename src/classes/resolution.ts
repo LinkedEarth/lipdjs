@@ -252,43 +252,48 @@ export class Resolution {
 
     public static fromJson(data: Record<string, any>): Resolution {
         const thisObj = new Resolution();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "hasMaxValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.maxValue = obj;
                 continue;
             }
             if (key === "hasMeanValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.meanValue = obj;
                 continue;
             }
             if (key === "hasMedianValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.medianValue = obj;
                 continue;
             }
             if (key === "hasMinValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.minValue = obj;
                 continue;
             }
             if (key === "units") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = PaleoUnit.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.units = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

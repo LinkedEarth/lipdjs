@@ -264,14 +264,14 @@ export class Model {
 
     public static fromJson(data: Record<string, any>): Model {
         const thisObj = new Model();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "distributionTable") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.distributionTables.push(obj);
                 }
@@ -279,7 +279,7 @@ export class Model {
             }
             if (key === "ensembleTable") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.ensembleTables.push(obj);
                 }
@@ -287,20 +287,21 @@ export class Model {
             }
             if (key === "method") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.code = obj;
                 continue;
             }
             if (key === "summaryTable") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.summaryTables.push(obj);
                 }
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

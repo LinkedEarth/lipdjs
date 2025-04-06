@@ -508,97 +508,111 @@ export class Interpretation {
 
     public static fromJson(data: Record<string, any>): Interpretation {
         const thisObj = new Interpretation();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "basis") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.basis = obj;
                 continue;
             }
             if (key === "direction") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.direction = obj;
                 continue;
             }
             if (key === "isLocal") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.local = obj;
                 continue;
             }
             if (key === "mathematicalRelation") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.mathematicalRelation = obj;
                 continue;
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             if (key === "rank") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.rank = obj;
                 continue;
             }
             if (key === "scope") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.scope = obj;
                 continue;
             }
             if (key === "seasonality") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = InterpretationSeasonality.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.seasonality = obj;
                 continue;
             }
             if (key === "seasonalityGeneral") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = InterpretationSeasonality.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.seasonalityGeneral = obj;
                 continue;
             }
             if (key === "seasonalityOriginal") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = InterpretationSeasonality.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.seasonalityOriginal = obj;
                 continue;
             }
             if (key === "variable") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = InterpretationVariable.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.variable = obj;
                 continue;
             }
             if (key === "variableDetail") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.variableDetail = obj;
                 continue;
             }
             if (key === "variableGeneral") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.variableGeneral = obj;
                 continue;
             }
             if (key === "variableGeneralDirection") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.variableGeneralDirection = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

@@ -772,26 +772,28 @@ export class Dataset {
 
     public static fromJson(data: Record<string, any>): Dataset {
         const thisObj = new Dataset();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "archiveType") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = ArchiveType.fromSynonym(value.replace(/^.*?#/, ""))
                 thisObj.archiveType = obj;
                 continue;
             }
             if (key === "changelog") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = ChangeLog.fromJson(value)
                 thisObj.changeLog = obj;
                 continue;
             }
             if (key === "chronData") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = ChronData.fromJson(value)
                     thisObj.chronData.push(obj);
                 }
@@ -799,25 +801,28 @@ export class Dataset {
             }
             if (key === "collectionName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.collectionName = obj;
                 continue;
             }
             if (key === "collectionYear") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.collectionYear = obj;
                 continue;
             }
             if (key === "compilation_nest") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.compilationNest = obj;
                 continue;
             }
             if (key === "creator") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.creators.push(obj);
                 }
@@ -825,37 +830,42 @@ export class Dataset {
             }
             if (key === "dataContributor") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = Person.fromJson(value)
                 thisObj.contributor = obj;
                 continue;
             }
             if (key === "dataSetName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.name = obj;
                 continue;
             }
             if (key === "dataSetVersion") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.version = obj;
                 continue;
             }
             if (key === "dataSource") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.dataSource = obj;
                 continue;
             }
             if (key === "datasetId") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.datasetId = obj;
                 continue;
             }
             if (key === "funding") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Funding.fromJson(value)
                     thisObj.fundings.push(obj);
                 }
@@ -863,19 +873,21 @@ export class Dataset {
             }
             if (key === "geo") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = Location.fromJson(value)
                 thisObj.location = obj;
                 continue;
             }
             if (key === "googleSpreadSheetKey") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.spreadsheetLink = obj;
                 continue;
             }
             if (key === "investigator") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.investigators.push(obj);
                 }
@@ -883,19 +895,21 @@ export class Dataset {
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             if (key === "originalDataURL") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.originalDataUrl = obj;
                 continue;
             }
             if (key === "paleoData") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = PaleoData.fromJson(value)
                     thisObj.paleoData.push(obj);
                 }
@@ -903,14 +917,14 @@ export class Dataset {
             }
             if (key === "pub") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Publication.fromJson(value)
                     thisObj.publications.push(obj);
                 }
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

@@ -501,103 +501,118 @@ export class Location {
 
     public static fromJson(data: Record<string, any>): Location {
         const thisObj = new Location();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "continent") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.continent = obj;
                 continue;
             }
             if (key === "coordinates") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.coordinates = obj;
                 continue;
             }
             if (key === "coordinatesFor") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.coordinatesFor = obj;
                 continue;
             }
             if (key === "country") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.country = obj;
                 continue;
             }
             if (key === "countryOcean") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.countryOcean = obj;
                 continue;
             }
             if (key === "description") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.description = obj;
                 continue;
             }
             if (key === "elevation") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.elevation = obj;
                 continue;
             }
             if (key === "geometryType") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.geometryType = obj;
                 continue;
             }
             if (key === "latitude") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.latitude = obj;
                 continue;
             }
             if (key === "locationName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.locationName = obj;
                 continue;
             }
             if (key === "longitude") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.longitude = obj;
                 continue;
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             if (key === "ocean") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.ocean = obj;
                 continue;
             }
             if (key === "siteName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.siteName = obj;
                 continue;
             }
             if (key === "type") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.locationType = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

@@ -166,25 +166,27 @@ export class Compilation {
 
     public static fromJson(data: Record<string, any>): Compilation {
         const thisObj = new Compilation();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "compilationName") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.name = obj;
                 continue;
             }
             if (key === "compilationVersion") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.version = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

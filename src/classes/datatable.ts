@@ -222,14 +222,14 @@ export class DataTable {
 
     public static fromJson(data: Record<string, any>): DataTable {
         const thisObj = new DataTable();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "columns") {
                 let obj: any = null;
-                if (Array.isArray(value)) {
+                for (const value of pvalue as any[]) {
                     obj = Variable.fromJson(value)
                     thisObj.variables.push(obj);
                 }
@@ -237,18 +237,20 @@ export class DataTable {
             }
             if (key === "filename") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.fileName = obj;
                 continue;
             }
             if (key === "missingValue") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.missingValue = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

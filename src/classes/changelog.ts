@@ -163,25 +163,27 @@ export class ChangeLog {
 
     public static fromJson(data: Record<string, any>): ChangeLog {
         const thisObj = new ChangeLog();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "changes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.changes = obj;
                 continue;
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }

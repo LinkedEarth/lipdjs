@@ -28,7 +28,7 @@ function getToJsonItem(ptype: string, pname: string, tsType: string | null): str
     return tojsonitem;
 }
 
-function getFromJsonItem(ptype: string, pname: string, tsType: string | null, isEnum: boolean): string {
+function getFromJsonItem(ptype: string, tsType: string | null, isEnum: boolean): string {
     let fromjsonitem = "";
     if (ptype === "object" && tsType !== null) {
         if (isEnum) {
@@ -336,9 +336,9 @@ import { parseVariableValues } from "../utils/utils";
     tsCode += `
     public static fromJson(data: Record<string, any>): ${clsid} {
         const thisObj = new ${clsid}();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }`;
     for (const snippet of fromjsonSnippets) {
@@ -346,7 +346,7 @@ import { parseVariableValues } from "../utils/utils";
     }
     tsCode += `
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }\n`;
@@ -433,15 +433,19 @@ function getMultiValuePropertySnippets(
     }
 
     // Create the TypeScript function snippet for this property to convert from json dictionary to a class (fromjson)
-    const fromjsonitem = getFromJsonItem(ptype, pname, tsType, isEnum);
+    const fromjsonitem = getFromJsonItem(ptype, tsType, isEnum);
     const fromjson = `
             if (key === "${pid}") {
                 let obj: any = null;
-                if (Array.isArray(value)) {${fromjsonitem}
+                for (const value of pvalue as any[]) {${fromjsonitem}
                     thisObj.${pname}.push(obj);
                 }
                 continue;
             }`;
+
+    if (tsType === null) {
+        tsType = "object";
+    }
 
     // Create error message for type checking
     let errorMsg = `Error: '\${${pname}}' is not of type ${tsType}`;
@@ -521,10 +525,11 @@ function getPropertySnippets(
     }
 
     // Create the TypeScript function snippet for this property to convert from json dictionary to a class (fromjson)
-    const fromjsonitem = getFromJsonItem(ptype, pname, tsType, isEnum);
+    const fromjsonitem = getFromJsonItem(ptype, tsType, isEnum);
     const fromjson = `
             if (key === "${pid}") {
-                let obj: any = null;${fromjsonitem}
+                let obj: any = null;
+                let value: any = pvalue;${fromjsonitem}
                 thisObj.${pname} = obj;
                 continue;
             }`;

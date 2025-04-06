@@ -478,97 +478,111 @@ export class Calibration {
 
     public static fromJson(data: Record<string, any>): Calibration {
         const thisObj = new Calibration();
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, pvalue] of Object.entries(data)) {
             if (key === "@id") {
-                thisObj._id = value as string;
+                thisObj._id = pvalue as string;
                 continue;
             }
             if (key === "datasetRange") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.datasetRange = obj;
                 continue;
             }
             if (key === "doi") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.dOI = obj;
                 continue;
             }
             if (key === "equation") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.equation = obj;
                 continue;
             }
             if (key === "equationIntercept") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.equationIntercept = obj;
                 continue;
             }
             if (key === "equationR2") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.equationR2 = obj;
                 continue;
             }
             if (key === "equationSlope") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.equationSlope = obj;
                 continue;
             }
             if (key === "equationSlopeUncertainty") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.equationSlopeUncertainty = obj;
                 continue;
             }
             if (key === "hasSeasonality") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.seasonality = obj;
                 continue;
             }
             if (key === "method") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.method = obj;
                 continue;
             }
             if (key === "methodDetail") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.methodDetail = obj;
                 continue;
             }
             if (key === "notes") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
                 continue;
             }
             if (key === "proxyDataset") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.proxyDataset = obj;
                 continue;
             }
             if (key === "targetDataset") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.targetDataset = obj;
                 continue;
             }
             if (key === "uncertainty") {
                 let obj: any = null;
+                let value: any = pvalue;
                     obj = value
                 thisObj.uncertainty = obj;
                 continue;
             }
             // Store unknown properties in misc
-            thisObj._misc[key] = value;
+            thisObj._misc[key] = pvalue;
         }
         return thisObj;
     }
