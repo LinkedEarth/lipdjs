@@ -308,15 +308,17 @@ export class Dataset {
                     thisObj.version = obj;
                 }
             }
-            // Store unknown properties in misc
-            for (const val of value as any[]) {
-                let obj: any;
-                if ("@id" in val) {
-                    obj = data[val["@id"]];
-                } else if ("@value" in val) {
-                    obj = val["@value"];
+            else {
+                // Store unknown properties in misc
+                for (const val of value as any[]) {
+                    let obj: any;
+                    if ("@id" in val) {
+                        obj = data[val["@id"]];
+                    } else if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj._misc[key] = obj;
                 }
-                thisObj._misc[key] = obj;
             }
         }
         return thisObj;
@@ -333,38 +335,56 @@ export class Dataset {
         ]
         if (this.archiveType !== null) {
             const valueObj = this.archiveType;
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
             data[this._id]["hasArchiveType"] = [obj];
         }
         if (this.changeLog !== null) {
             const valueObj = this.changeLog;
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
             data[this._id]["hasChangeLog"] = [obj];
         }
         if (this.chronData.length > 0) {
             data[this._id]["hasChronData"] = [];
             for (const valueObj of this.chronData) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasChronData"].push(obj);
             }
@@ -398,26 +418,38 @@ export class Dataset {
         }
         if (this.contributor !== null) {
             const valueObj = this.contributor;
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
             data[this._id]["hasContributor"] = [obj];
         }
         if (this.creators.length > 0) {
             data[this._id]["hasCreator"] = [];
             for (const valueObj of this.creators) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasCreator"].push(obj);
             }
@@ -443,13 +475,19 @@ export class Dataset {
         if (this.fundings.length > 0) {
             data[this._id]["hasFunding"] = [];
             for (const valueObj of this.fundings) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasFunding"].push(obj);
             }
@@ -457,26 +495,38 @@ export class Dataset {
         if (this.investigators.length > 0) {
             data[this._id]["hasInvestigator"] = [];
             for (const valueObj of this.investigators) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasInvestigator"].push(obj);
             }
         }
         if (this.location !== null) {
             const valueObj = this.location;
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
             data[this._id]["hasLocation"] = [obj];
         }
@@ -510,13 +560,19 @@ export class Dataset {
         if (this.paleoData.length > 0) {
             data[this._id]["hasPaleoData"] = [];
             for (const valueObj of this.paleoData) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasPaleoData"].push(obj);
             }
@@ -524,13 +580,19 @@ export class Dataset {
         if (this.publications.length > 0) {
             data[this._id]["hasPublication"] = [];
             for (const valueObj of this.publications) {
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
                 data[this._id]["hasPublication"].push(obj);
             }

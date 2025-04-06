@@ -103,15 +103,17 @@ export class Resolution {
                     thisObj.units = obj;
                 }
             }
-            // Store unknown properties in misc
-            for (const val of value as any[]) {
-                let obj: any;
-                if ("@id" in val) {
-                    obj = data[val["@id"]];
-                } else if ("@value" in val) {
-                    obj = val["@value"];
+            else {
+                // Store unknown properties in misc
+                for (const val of value as any[]) {
+                    let obj: any;
+                    if ("@id" in val) {
+                        obj = data[val["@id"]];
+                    } else if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj._misc[key] = obj;
                 }
-                thisObj._misc[key] = obj;
             }
         }
         return thisObj;
@@ -164,13 +166,19 @@ export class Resolution {
         }
         if (this.units !== null) {
             const valueObj = this.units;
-            const obj = typeof valueObj === "string" ? {
-                "@value": valueObj,
-                "@type": "literal",
-                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
-            } : {
-                "@id": valueObj.getId(),
-                "@type": "uri"
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
             data[this._id]["hasUnits"] = [obj];
         }

@@ -80,15 +80,17 @@ export class PhysicalSample {
                     thisObj.name = obj;
                 }
             }
-            // Store unknown properties in misc
-            for (const val of value as any[]) {
-                let obj: any;
-                if ("@id" in val) {
-                    obj = data[val["@id"]];
-                } else if ("@value" in val) {
-                    obj = val["@value"];
+            else {
+                // Store unknown properties in misc
+                for (const val of value as any[]) {
+                    let obj: any;
+                    if ("@id" in val) {
+                        obj = data[val["@id"]];
+                    } else if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj._misc[key] = obj;
                 }
-                thisObj._misc[key] = obj;
             }
         }
         return thisObj;
