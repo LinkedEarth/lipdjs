@@ -8,24 +8,24 @@ import { Person } from "./person";
 
 export class Publication {
 
-    protected abstract: string | null;
-    protected authors: Person[];
-    protected citation: string | null;
-    protected citeKey: string | null;
-    protected dOI: string | null;
-    protected dataUrls: string[];
-    protected firstAuthor: Person | null;
-    protected institution: string | null;
-    protected issue: string | null;
-    protected journal: string | null;
-    protected pages: string | null;
-    protected publicationType: string | null;
-    protected publisher: string | null;
-    protected report: string | null;
-    protected title: string | null;
-    protected urls: string[];
-    protected volume: string | null;
-    protected year: number | null;
+    public abstract: string | null;
+    public authors: Person[];
+    public citation: string | null;
+    public citeKey: string | null;
+    public dOI: string | null;
+    public dataUrls: string[];
+    public firstAuthor: Person | null;
+    public institution: string | null;
+    public issue: string | null;
+    public journal: string | null;
+    public pages: string | null;
+    public publicationType: string | null;
+    public publisher: string | null;
+    public report: string | null;
+    public title: string | null;
+    public urls: string[];
+    public volume: string | null;
+    public year: number | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -70,6 +70,11 @@ export class Publication {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Publication {
+        const thisObj = new Publication();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Publication {
         const thisObj = new Publication();
         thisObj._id = id;

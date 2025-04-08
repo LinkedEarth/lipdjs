@@ -7,8 +7,8 @@ import { parseVariableValues } from "../utils/utils";
 
 export class ChangeLog {
 
-    protected changes: null | null;
-    protected notes: string | null;
+    public changes: null | null;
+    public notes: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -37,6 +37,11 @@ export class ChangeLog {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): ChangeLog {
+        const thisObj = new ChangeLog();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): ChangeLog {
         const thisObj = new ChangeLog();
         thisObj._id = id;

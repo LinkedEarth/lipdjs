@@ -7,7 +7,7 @@ import { parseVariableValues } from "../utils/utils";
 
 export class Person {
 
-    protected name: string | null;
+    public name: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -35,6 +35,11 @@ export class Person {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Person {
+        const thisObj = new Person();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Person {
         const thisObj = new Person();
         thisObj._id = id;

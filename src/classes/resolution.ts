@@ -8,11 +8,11 @@ import { PaleoUnit } from "./paleounit";
 
 export class Resolution {
 
-    protected maxValue: number | null;
-    protected meanValue: number | null;
-    protected medianValue: number | null;
-    protected minValue: number | null;
-    protected units: PaleoUnit | null;
+    public maxValue: number | null;
+    public meanValue: number | null;
+    public medianValue: number | null;
+    public minValue: number | null;
+    public units: PaleoUnit | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -44,6 +44,11 @@ export class Resolution {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Resolution {
+        const thisObj = new Resolution();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Resolution {
         const thisObj = new Resolution();
         thisObj._id = id;

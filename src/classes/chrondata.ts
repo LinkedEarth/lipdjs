@@ -9,8 +9,8 @@ import { Model } from "./model";
 
 export class ChronData {
 
-    protected measurementTables: DataTable[];
-    protected modeledBy: Model[];
+    public measurementTables: DataTable[];
+    public modeledBy: Model[];
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -39,6 +39,11 @@ export class ChronData {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): ChronData {
+        const thisObj = new ChronData();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): ChronData {
         const thisObj = new ChronData();
         thisObj._id = id;

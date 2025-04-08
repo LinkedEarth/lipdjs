@@ -15,26 +15,26 @@ import { Publication } from "./publication";
 
 export class Dataset {
 
-    protected archiveType: ArchiveType | null;
-    protected changeLog: ChangeLog | null;
-    protected chronData: ChronData[];
-    protected collectionName: string | null;
-    protected collectionYear: string | null;
-    protected compilationNest: string | null;
-    protected contributor: Person | null;
-    protected creators: Person[];
-    protected dataSource: string | null;
-    protected datasetId: string | null;
-    protected fundings: Funding[];
-    protected investigators: Person[];
-    protected location: Location | null;
-    protected name: string | null;
-    protected notes: string | null;
-    protected originalDataUrl: string | null;
-    protected paleoData: PaleoData[];
-    protected publications: Publication[];
-    protected spreadsheetLink: string | null;
-    protected version: string | null;
+    public archiveType: ArchiveType | null;
+    public changeLog: ChangeLog | null;
+    public chronData: ChronData[];
+    public collectionName: string | null;
+    public collectionYear: string | null;
+    public compilationNest: string | null;
+    public contributors: Person[];
+    public creators: Person[];
+    public dataSource: string | null;
+    public datasetId: string | null;
+    public fundings: Funding[];
+    public investigators: Person[];
+    public location: Location | null;
+    public name: string | null;
+    public notes: string | null;
+    public originalDataUrl: string | null;
+    public paleoData: PaleoData[];
+    public publications: Publication[];
+    public spreadsheetLink: string | null;
+    public version: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -48,7 +48,7 @@ export class Dataset {
         this.collectionName = null;
         this.collectionYear = null;
         this.compilationNest = null;
-        this.contributor = null;
+        this.contributors = [];
         this.creators = [];
         this.dataSource = null;
         this.datasetId = null;
@@ -81,6 +81,11 @@ export class Dataset {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Dataset {
+        const thisObj = new Dataset();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Dataset {
         const thisObj = new Dataset();
         thisObj._id = id;
@@ -163,7 +168,7 @@ export class Dataset {
                     } else {
                         obj = val["@value"];
                     }
-                    thisObj.contributor = obj;
+                    thisObj.contributors.push(obj);
                 }
             }
             
@@ -416,8 +421,9 @@ export class Dataset {
             }
             data[this._id]["hasCompilationNest"] = [obj];
         }
-        if (this.contributor !== null) {
-            const valueObj = this.contributor;
+        if (this.contributors.length > 0) {
+            data[this._id]["hasContributor"] = [];
+            for (const valueObj of this.contributors) {
             let obj: any = null;
             if (typeof valueObj === "string") {
                 obj = {
@@ -432,7 +438,8 @@ export class Dataset {
                 }
                 data = valueObj.toData(data); 
             }
-            data[this._id]["hasContributor"] = [obj];
+                data[this._id]["hasContributor"].push(obj);
+            }
         }
         if (this.creators.length > 0) {
             data[this._id]["hasCreator"] = [];
@@ -683,10 +690,12 @@ export class Dataset {
                 const obj = valueObj
             data["compilation_nest"] = obj;
         }
-        if (this.contributor !== null) {
-            const valueObj = this.contributor;
+        if (this.contributors.length > 0) {
+            data["dataContributor"] = [];
+            for (const valueObj of this.contributors) {
                 const obj = valueObj.toJson()
-            data["dataContributor"] = obj;
+                data["dataContributor"].push(obj);
+            }
         }
         if (this.creators.length > 0) {
             data["creator"] = [];
@@ -830,9 +839,10 @@ export class Dataset {
             }
             if (key === "dataContributor") {
                 let obj: any = null;
-                let value: any = pvalue;
+                for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
-                thisObj.contributor = obj;
+                    thisObj.contributors.push(obj);
+                }
                 continue;
             }
             if (key === "dataSetName") {
@@ -1018,15 +1028,25 @@ export class Dataset {
         // }
         this.compilationNest = compilationNest;
     }
-    getContributor(): Person | null {
-        return this.contributor;
+    getContributors(): Person[] {
+        return this.contributors;
     }
 
-    setContributor(contributor: Person): void {
-        // if (!(contributor instanceof Person)) {
-        //     throw new Error(`Error: '${contributor}' is not of type Person`);
+    setContributors(contributors: Person[]): void {
+        // if (!Array.isArray(contributors)) {
+        //     throw new Error("Error: contributors is not an array");
         // }
-        this.contributor = contributor;
+        // if (!contributors.every(x => x instanceof Person)) {
+        //     throw new Error(`Error: '${contributors}' is not of type Person`);
+        // }
+        this.contributors = contributors;
+    }
+
+    addContributor(contributors: Person): void {
+        // if (!(contributors instanceof Person)) {
+        //     throw new Error(`Error: '${contributors}' is not of type Person`);
+        // }
+        this.contributors.push(contributors);
     }
     getCreators(): Person[] {
         return this.creators;

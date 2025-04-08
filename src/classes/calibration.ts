@@ -7,20 +7,20 @@ import { parseVariableValues } from "../utils/utils";
 
 export class Calibration {
 
-    protected dOI: string | null;
-    protected datasetRange: string | null;
-    protected equation: string | null;
-    protected equationIntercept: string | null;
-    protected equationR2: string | null;
-    protected equationSlope: string | null;
-    protected equationSlopeUncertainty: string | null;
-    protected method: string | null;
-    protected methodDetail: string | null;
-    protected notes: string | null;
-    protected proxyDataset: string | null;
-    protected seasonality: string | null;
-    protected targetDataset: string | null;
-    protected uncertainty: string | null;
+    public dOI: string | null;
+    public datasetRange: string | null;
+    public equation: string | null;
+    public equationIntercept: string | null;
+    public equationR2: string | null;
+    public equationSlope: string | null;
+    public equationSlopeUncertainty: string | null;
+    public method: string | null;
+    public methodDetail: string | null;
+    public notes: string | null;
+    public proxyDataset: string | null;
+    public seasonality: string | null;
+    public targetDataset: string | null;
+    public uncertainty: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -61,6 +61,11 @@ export class Calibration {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Calibration {
+        const thisObj = new Calibration();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Calibration {
         const thisObj = new Calibration();
         thisObj._id = id;

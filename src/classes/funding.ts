@@ -8,10 +8,10 @@ import { Person } from "./person";
 
 export class Funding {
 
-    protected fundingAgency: string | null;
-    protected fundingCountry: string | null;
-    protected grants: string[];
-    protected investigators: Person[];
+    public fundingAgency: string | null;
+    public fundingCountry: string | null;
+    public grants: string[];
+    public investigators: Person[];
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -42,6 +42,11 @@ export class Funding {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Funding {
+        const thisObj = new Funding();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Funding {
         const thisObj = new Funding();
         thisObj._id = id;

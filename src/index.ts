@@ -25,5 +25,6 @@ export * from './classes/paleodata';
 export * from './classes/physicalsample';
 export * from './classes/funding';
 
-// Export interfaces for consumers
-export type { SynonymEntry, SynonymCollection, InterpretationTypes, ProxyTypes, SynonymsType } from './globals/synonyms-types';
+export * from './globals/schema';
+export * from './globals/synonyms-types';
+export * from './globals/synonyms';

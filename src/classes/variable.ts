@@ -17,36 +17,36 @@ import { Resolution } from "./resolution";
 
 export class Variable {
 
-    protected archiveType: ArchiveType | null;
-    protected calibratedVias: Calibration[];
-    protected columnNumber: number | null;
-    protected composite: boolean | null;
-    protected description: string | null;
-    protected foundInDataset: null | null;
-    protected foundInTable: null | null;
-    protected instrument: null | null;
-    protected interpretations: Interpretation[];
-    protected maxValue: number | null;
-    protected meanValue: number | null;
-    protected medianValue: number | null;
-    protected minValue: number | null;
-    protected missingValue: string | null;
-    protected name: string | null;
-    protected notes: string | null;
-    protected partOfCompilation: Compilation | null;
-    protected physicalSamples: PhysicalSample[];
-    protected primary: boolean | null;
-    protected proxy: PaleoProxy | null;
-    protected proxyGeneral: PaleoProxyGeneral | null;
-    protected resolution: Resolution | null;
-    protected standardVariable: PaleoVariable | null;
-    protected uncertainty: string | null;
-    protected uncertaintyAnalytical: string | null;
-    protected uncertaintyReproducibility: string | null;
-    protected units: PaleoUnit | null;
-    protected values: string | null;
-    protected variableId: string | null;
-    protected variableType: string | null;
+    public archiveType: ArchiveType | null;
+    public calibratedVias: Calibration[];
+    public columnNumber: number | null;
+    public composite: boolean | null;
+    public description: string | null;
+    public foundInDataset: null | null;
+    public foundInTable: null | null;
+    public instrument: null | null;
+    public interpretations: Interpretation[];
+    public maxValue: number | null;
+    public meanValue: number | null;
+    public medianValue: number | null;
+    public minValue: number | null;
+    public missingValue: string | null;
+    public name: string | null;
+    public notes: string | null;
+    public partOfCompilation: Compilation | null;
+    public physicalSamples: PhysicalSample[];
+    public primary: boolean | null;
+    public proxy: PaleoProxy | null;
+    public proxyGeneral: PaleoProxyGeneral | null;
+    public resolution: Resolution | null;
+    public standardVariable: PaleoVariable | null;
+    public uncertainty: string | null;
+    public uncertaintyAnalytical: string | null;
+    public uncertaintyReproducibility: string | null;
+    public units: PaleoUnit | null;
+    public values: string | null;
+    public variableId: string | null;
+    public variableType: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -103,6 +103,11 @@ export class Variable {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Variable {
+        const thisObj = new Variable();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Variable {
         const thisObj = new Variable();
         thisObj._id = id;

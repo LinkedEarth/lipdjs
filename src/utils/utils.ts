@@ -73,6 +73,10 @@ export async function serializeStore(store: Store, type: string = 'turtle', logg
 }
 
 export function parseVariableValues(valuestr: string): any {
+    if (Array.isArray(valuestr)) {
+        return valuestr;
+    }
+    
     let values;
     try {
         // First try direct parsing

@@ -234,6 +234,13 @@ import { parseVariableValues } from "../utils/utils";
     }
     `;
 
+    tsCode += `
+    public static fromDictionary(data: Record<string, any>): ${clsid} {
+        const thisObj = new ${clsid}();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }`
+
     // Write the fromData function
     tsCode += `
     public static fromData(id: string, data: Record<string, any>): ${clsid} {
@@ -398,7 +405,7 @@ function getMultiValuePropertySnippets(
     isEnum: boolean
 ): [string, string, string, string, string, string, string] {
     // Create the TypeScript snippet for initializing property variables
-    const defvar = `protected ${pname}: ${tsType}[];`;
+    const defvar = `public ${pname}: ${tsType}[];`;
     const initvar = `this.${pname} = [];`;
 
     // Create the TypeScript function snippet for this property to convert the class to a dictionary (todata)
@@ -494,7 +501,7 @@ function getPropertySnippets(
     isEnum: boolean
 ): [string, string, string, string, string, string, string] {
     // Create the TypeScript snippet for initializing property variables
-    const defvar = `protected ${pname}: ${tsType} | null;`;
+    const defvar = `public ${pname}: ${tsType} | null;`;
     const initvar = `this.${pname} = null;`;
 
     // Create the TypeScript function snippet for this property to convert the class to a dictionary (todata)

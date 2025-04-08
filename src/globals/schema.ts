@@ -24,7 +24,8 @@ export const SCHEMA = {
             'name': 'hasContributor',
             'schema': 'Person',
             'alternates': ['whoEnteredinDB', 'MetadataEnteredByWhom', 'contributorName'],
-            'fromJson': 'parsePersons'
+            'fromJson': 'parsePersons',
+            'multiple': true,
         },
         'archiveType': {
             'name': 'hasArchiveType', 

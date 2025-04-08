@@ -8,10 +8,10 @@ import { DataTable } from "./datatable";
 
 export class Model {
 
-    protected code: string | null;
-    protected distributionTables: DataTable[];
-    protected ensembleTables: DataTable[];
-    protected summaryTables: DataTable[];
+    public code: string | null;
+    public distributionTables: DataTable[];
+    public ensembleTables: DataTable[];
+    public summaryTables: DataTable[];
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -42,6 +42,11 @@ export class Model {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Model {
+        const thisObj = new Model();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Model {
         const thisObj = new Model();
         thisObj._id = id;

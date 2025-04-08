@@ -9,20 +9,20 @@ import { InterpretationVariable } from "./interpretationvariable";
 
 export class Interpretation {
 
-    protected basis: string | null;
-    protected direction: string | null;
-    protected local: string | null;
-    protected mathematicalRelation: string | null;
-    protected notes: string | null;
-    protected rank: string | null;
-    protected scope: string | null;
-    protected seasonality: InterpretationSeasonality | null;
-    protected seasonalityGeneral: InterpretationSeasonality | null;
-    protected seasonalityOriginal: InterpretationSeasonality | null;
-    protected variable: InterpretationVariable | null;
-    protected variableDetail: string | null;
-    protected variableGeneral: string | null;
-    protected variableGeneralDirection: string | null;
+    public basis: string | null;
+    public direction: string | null;
+    public local: string | null;
+    public mathematicalRelation: string | null;
+    public notes: string | null;
+    public rank: string | null;
+    public scope: string | null;
+    public seasonality: InterpretationSeasonality | null;
+    public seasonalityGeneral: InterpretationSeasonality | null;
+    public seasonalityOriginal: InterpretationSeasonality | null;
+    public variable: InterpretationVariable | null;
+    public variableDetail: string | null;
+    public variableGeneral: string | null;
+    public variableGeneralDirection: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -63,6 +63,11 @@ export class Interpretation {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Interpretation {
+        const thisObj = new Interpretation();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Interpretation {
         const thisObj = new Interpretation();
         thisObj._id = id;

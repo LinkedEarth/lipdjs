@@ -7,21 +7,21 @@ import { parseVariableValues } from "../utils/utils";
 
 export class Location {
 
-    protected continent: string | null;
-    protected coordinates: string | null;
-    protected coordinatesFor: null | null;
-    protected country: string | null;
-    protected countryOcean: string | null;
-    protected description: string | null;
-    protected elevation: string | null;
-    protected geometryType: string | null;
-    protected latitude: string | null;
-    protected locationName: string | null;
-    protected locationType: string | null;
-    protected longitude: string | null;
-    protected notes: string | null;
-    protected ocean: string | null;
-    protected siteName: string | null;
+    public continent: string | null;
+    public coordinates: string | null;
+    public coordinatesFor: null | null;
+    public country: string | null;
+    public countryOcean: string | null;
+    public description: string | null;
+    public elevation: string | null;
+    public geometryType: string | null;
+    public latitude: string | null;
+    public locationName: string | null;
+    public locationType: string | null;
+    public longitude: string | null;
+    public notes: string | null;
+    public ocean: string | null;
+    public siteName: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -63,6 +63,11 @@ export class Location {
         return this._misc;
     }
     
+    public static fromDictionary(data: Record<string, any>): Location {
+        const thisObj = new Location();
+        Object.assign(thisObj, data);
+        return thisObj;
+    }
     public static fromData(id: string, data: Record<string, any>): Location {
         const thisObj = new Location();
         thisObj._id = id;
