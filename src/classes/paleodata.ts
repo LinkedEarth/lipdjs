@@ -59,6 +59,7 @@ export class PaleoData {
             }
             
             else if (key === "hasMeasurementTable") {
+                thisObj.measurementTables = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -81,6 +82,7 @@ export class PaleoData {
             }
             
             else if (key === "modeledBy") {
+                thisObj.modeledBy = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -236,6 +238,7 @@ export class PaleoData {
             }
             if (key === "measurementTable") {
                 let obj: any = null;
+                thisObj.measurementTables = [];
                 for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.measurementTables.push(obj);
@@ -244,6 +247,7 @@ export class PaleoData {
             }
             if (key === "model") {
                 let obj: any = null;
+                thisObj.modeledBy = [];
                 for (const value of pvalue as any[]) {
                     obj = Model.fromJson(value)
                     thisObj.modeledBy.push(obj);

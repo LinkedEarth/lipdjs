@@ -64,6 +64,7 @@ export class ChangeLog {
             }
             
             else if (key === "hasChanges") {
+                thisObj.changes = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -298,6 +299,7 @@ export class ChangeLog {
             }
             if (key === "changes") {
                 let obj: any = null;
+                thisObj.changes = [];
                 for (const value of pvalue as any[]) {
                     obj = Change.fromJson(value)
                     thisObj.changes.push(obj);

@@ -20,6 +20,8 @@ import { multiLoadLipd } from './utils/multiProcessing';
 import { sanitizeId, serializeStore } from './utils/utils';
 import { Dataset } from './classes/dataset';
 import { RDFToJSON } from './utils/rdfToJson';
+import { JSONToRDF } from './utils/jsonToRdf';
+import { v4 as uuidv4 } from 'uuid';
 
 const logger = Logger.getInstance();
 
@@ -202,6 +204,110 @@ export class LiPD extends RDFGraph {
         return datasets;
     }
 
+    /**
+     * Loads instances of Dataset class into the LiPD graph
+     * @param datasets List of Dataset objects
+     * 
+     * @example
+     * ```typescript
+     * // Load datasets from one LiPD object to another
+     * const lipd1 = new LiPD();
+     * lipd1.load('path/to/file.lpd').then(() => {
+     *   lipd1.getDatasets().then(datasets => {
+     *     // Modify datasets if needed
+     *     
+     *     // Create a new LiPD instance and load the datasets
+     *     const lipd2 = new LiPD();
+     *     lipd2.loadDatasets(datasets);
+     *   });
+     * });
+     * ```
+     */
+    public loadDatasets(datasets: Dataset[]): void {
+        for (const ds of datasets) {
+            this._fixMissingIds(ds);
+            const dsuri = ds.getDatasetId() || NSURL + "/" + ds.getName();
+            const j2r = new JSONToRDF(this.store, dsuri);
+            j2r.loadJson(ds.toData());
+        }
+    }
+
+    /**
+     * Generate a unique ID with a given prefix
+     * @param prefix Prefix for the ID (default: 'PYD')
+     * @returns Unique formatted ID
+     * @private
+     */
+    private _generateUniqueId(prefix: string = 'PYD'): string {
+        // Generate a random UUID
+        const randomUuid = uuidv4();
+        
+        // Convert UUID format to the specific format we need
+        const idStr = randomUuid;
+        const formattedId = `${prefix}-${idStr.substring(0, 5)}-${idStr.substring(9, 13)}-${idStr.substring(14, 18)}-${idStr.substring(19, 23)}-${idStr.substring(24, 28)}`;
+        
+        return formattedId;
+    }
+
+    /**
+     * Fix missing IDs in a dataset
+     * @param ds Dataset to fix
+     * @private
+     */
+    private _fixMissingIds(ds: Dataset): void {
+        // Assign variable ids if not present
+        // Assign datatable csv file name if not present
+        let pdCounter = 0;
+        for (const pd of ds.getPaleoData()) {
+            let tableCounter = 0;
+            for (const table of pd.getMeasurementTables()) {
+                if (!table.getFileName()) {
+                    table.setFileName(`paleo${pdCounter}measurement${tableCounter}.csv`);
+                }
+                for (const v of table.getVariables()) {
+                    if (!v.getVariableId()) {
+                        v.setVariableId(this._generateUniqueId('TS'));
+                    }
+                }
+                tableCounter++;
+            }
+            pdCounter++;
+        }
+
+        let chronCounter = 0;
+        for (const chron of ds.getChronData()) {
+            let tableCounter = 0;
+            for (const table of chron.getMeasurementTables()) {
+                if (!table.getFileName()) {
+                    table.setFileName(`chron${chronCounter}measurement${tableCounter}.csv`);
+                }
+                for (const v of table.getVariables()) {
+                    if (!v.getVariableId()) {
+                        v.setVariableId(this._generateUniqueId('TS'));
+                    }
+                }
+                tableCounter++;
+            }
+
+            let modelCounter = 0;
+            for (const model of chron.getModeledBy()) {
+                let tableCounter = 0;
+                for (const table of model.getEnsembleTables()) {
+                    if (!table.getFileName()) {
+                        table.setFileName(`chron${chronCounter}model${modelCounter}ensemble${tableCounter}.csv`);
+                    }
+                    for (const v of table.getVariables()) {
+                        if (!v.getVariableId()) {
+                            v.setVariableId(this._generateUniqueId('TS'));
+                        }
+                    }
+                    tableCounter++;
+                }
+                modelCounter++;
+            }
+            chronCounter++;
+        }
+    }
     /**
      * Convert the LiPD object to a LiPDSeries object
      * @returns LiPDSeries object

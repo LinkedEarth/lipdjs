@@ -80,4 +80,19 @@ describe('LiPD File Loading Tests', () => {
         // Verify the dataset name matches
         expect(dataset.getName()).toContain('Ant-WAIS-Divide');
     });
+
+    test('should load datasets into a new LiPD object', async () => {
+        const lipd = new LiPD();
+        await lipd.loadFromDir(testDataDir);
+        
+        const datasets = await lipd.getDatasets();
+        const lipd2 = new LiPD();
+        lipd2.loadDatasets(datasets);
+
+        const datasetNames = await lipd2.getAllDatasetNames();
+        expect(datasetNames.length).toBe(datasets.length);
+
+        lipd2.createLipd(datasetNames[0], 'test.lpd');
+        
+    });
 }); 

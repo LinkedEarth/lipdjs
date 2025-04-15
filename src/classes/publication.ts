@@ -98,6 +98,7 @@ export class Publication {
             }
             
             else if (key === "hasAuthor") {
+                thisObj.authors = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -140,6 +141,7 @@ export class Publication {
             }
             
             else if (key === "hasDataUrl") {
+                thisObj.dataUrls = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
@@ -242,6 +244,7 @@ export class Publication {
             }
             
             else if (key === "hasUrl") {
+                thisObj.urls = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
@@ -636,6 +639,7 @@ export class Publication {
             }
             if (key === "author") {
                 let obj: any = null;
+                thisObj.authors = [];
                 for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.authors.push(obj);
@@ -658,6 +662,7 @@ export class Publication {
             }
             if (key === "dataUrl") {
                 let obj: any = null;
+                thisObj.dataUrls = [];
                 for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.dataUrls.push(obj);
@@ -736,6 +741,7 @@ export class Publication {
             }
             if (key === "url") {
                 let obj: any = null;
+                thisObj.urls = [];
                 for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.urls.push(obj);

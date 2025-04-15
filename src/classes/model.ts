@@ -70,6 +70,7 @@ export class Model {
             }
             
             else if (key === "hasDistributionTable") {
+                thisObj.distributionTables = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -82,6 +83,7 @@ export class Model {
             }
             
             else if (key === "hasEnsembleTable") {
+                thisObj.ensembleTables = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -94,6 +96,7 @@ export class Model {
             }
             
             else if (key === "hasSummaryTable") {
+                thisObj.summaryTables = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -276,6 +279,7 @@ export class Model {
             }
             if (key === "distributionTable") {
                 let obj: any = null;
+                thisObj.distributionTables = [];
                 for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.distributionTables.push(obj);
@@ -284,6 +288,7 @@ export class Model {
             }
             if (key === "ensembleTable") {
                 let obj: any = null;
+                thisObj.ensembleTables = [];
                 for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.ensembleTables.push(obj);
@@ -299,6 +304,7 @@ export class Model {
             }
             if (key === "summaryTable") {
                 let obj: any = null;
+                thisObj.summaryTables = [];
                 for (const value of pvalue as any[]) {
                     obj = DataTable.fromJson(value)
                     thisObj.summaryTables.push(obj);

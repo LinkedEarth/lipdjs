@@ -65,6 +65,7 @@ export class Change {
             }
             
             else if (key === "hasNotes") {
+                thisObj.notes = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
@@ -189,6 +190,7 @@ export class Change {
             }
             if (key === "notes") {
                 let obj: any = null;
+                thisObj.notes = [];
                 for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.notes.push(obj);

@@ -421,7 +421,8 @@ function getMultiValuePropertySnippets(
     // Create the TypeScript function snippet for this property to convert from data dictionary to a class (fromdata)
     const fromdataitem = getFromDataItem(ptype, tsType, isEnum);
     const fromdata = `
-            else if (key === "${propid}") {${fromdataitem}
+            else if (key === "${propid}") {
+                thisObj.${pname} = [];${fromdataitem}
                     thisObj.${pname}.push(obj);
                 }
             }`;
@@ -444,6 +445,7 @@ function getMultiValuePropertySnippets(
     const fromjson = `
             if (key === "${pid}") {
                 let obj: any = null;
+                thisObj.${pname} = [];
                 for (const value of pvalue as any[]) {${fromjsonitem}
                     thisObj.${pname}.push(obj);
                 }

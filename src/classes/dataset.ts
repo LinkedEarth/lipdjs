@@ -107,6 +107,7 @@ export class Dataset {
             }
             
             else if (key === "hasChangeLog") {
+                thisObj.changeLogs = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -119,6 +120,7 @@ export class Dataset {
             }
             
             else if (key === "hasChronData") {
+                thisObj.chronData = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -161,6 +163,7 @@ export class Dataset {
             }
             
             else if (key === "hasContributor") {
+                thisObj.contributors = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -173,6 +176,7 @@ export class Dataset {
             }
             
             else if (key === "hasCreator") {
+                thisObj.creators = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -205,6 +209,7 @@ export class Dataset {
             }
             
             else if (key === "hasFunding") {
+                thisObj.fundings = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -217,6 +222,7 @@ export class Dataset {
             }
             
             else if (key === "hasInvestigator") {
+                thisObj.investigators = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -271,6 +277,7 @@ export class Dataset {
             }
             
             else if (key === "hasPaleoData") {
+                thisObj.paleoData = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -283,6 +290,7 @@ export class Dataset {
             }
             
             else if (key === "hasPublication") {
+                thisObj.publications = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -799,6 +807,7 @@ export class Dataset {
             }
             if (key === "changelog") {
                 let obj: any = null;
+                thisObj.changeLogs = [];
                 for (const value of pvalue as any[]) {
                     obj = ChangeLog.fromJson(value)
                     thisObj.changeLogs.push(obj);
@@ -807,6 +816,7 @@ export class Dataset {
             }
             if (key === "chronData") {
                 let obj: any = null;
+                thisObj.chronData = [];
                 for (const value of pvalue as any[]) {
                     obj = ChronData.fromJson(value)
                     thisObj.chronData.push(obj);
@@ -836,6 +846,7 @@ export class Dataset {
             }
             if (key === "creator") {
                 let obj: any = null;
+                thisObj.creators = [];
                 for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.creators.push(obj);
@@ -844,6 +855,7 @@ export class Dataset {
             }
             if (key === "dataContributor") {
                 let obj: any = null;
+                thisObj.contributors = [];
                 for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.contributors.push(obj);
@@ -880,6 +892,7 @@ export class Dataset {
             }
             if (key === "funding") {
                 let obj: any = null;
+                thisObj.fundings = [];
                 for (const value of pvalue as any[]) {
                     obj = Funding.fromJson(value)
                     thisObj.fundings.push(obj);
@@ -902,6 +915,7 @@ export class Dataset {
             }
             if (key === "investigator") {
                 let obj: any = null;
+                thisObj.investigators = [];
                 for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.investigators.push(obj);
@@ -924,6 +938,7 @@ export class Dataset {
             }
             if (key === "paleoData") {
                 let obj: any = null;
+                thisObj.paleoData = [];
                 for (const value of pvalue as any[]) {
                     obj = PaleoData.fromJson(value)
                     thisObj.paleoData.push(obj);
@@ -932,6 +947,7 @@ export class Dataset {
             }
             if (key === "pub") {
                 let obj: any = null;
+                thisObj.publications = [];
                 for (const value of pvalue as any[]) {
                     obj = Publication.fromJson(value)
                     thisObj.publications.push(obj);

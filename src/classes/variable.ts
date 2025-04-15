@@ -121,6 +121,7 @@ export class Variable {
             }
             
             else if (key === "calibratedVia") {
+                thisObj.calibratedVias = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -191,6 +192,7 @@ export class Variable {
             }
             
             else if (key === "hasInterpretation") {
+                thisObj.interpretations = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -273,6 +275,7 @@ export class Variable {
             }
             
             else if (key === "hasPhysicalSample") {
+                thisObj.physicalSamples = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -1019,6 +1022,7 @@ export class Variable {
             }
             if (key === "calibration") {
                 let obj: any = null;
+                thisObj.calibratedVias = [];
                 for (const value of pvalue as any[]) {
                     obj = Calibration.fromJson(value)
                     thisObj.calibratedVias.push(obj);
@@ -1097,6 +1101,7 @@ export class Variable {
             }
             if (key === "interpretation") {
                 let obj: any = null;
+                thisObj.interpretations = [];
                 for (const value of pvalue as any[]) {
                     obj = Interpretation.fromJson(value)
                     thisObj.interpretations.push(obj);
@@ -1147,6 +1152,7 @@ export class Variable {
             }
             if (key === "physicalSample") {
                 let obj: any = null;
+                thisObj.physicalSamples = [];
                 for (const value of pvalue as any[]) {
                     obj = PhysicalSample.fromJson(value)
                     thisObj.physicalSamples.push(obj);

@@ -97,6 +97,7 @@ export class DataTable {
             }
             
             else if (key === "hasVariable") {
+                thisObj.variables = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -239,6 +240,7 @@ export class DataTable {
             }
             if (key === "columns") {
                 let obj: any = null;
+                thisObj.variables = [];
                 for (const value of pvalue as any[]) {
                     obj = Variable.fromJson(value)
                     thisObj.variables.push(obj);

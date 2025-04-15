@@ -80,6 +80,7 @@ export class Funding {
             }
             
             else if (key === "hasGrant") {
+                thisObj.grants = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
@@ -90,6 +91,7 @@ export class Funding {
             }
             
             else if (key === "hasInvestigator") {
+                thisObj.investigators = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -264,6 +266,7 @@ export class Funding {
             }
             if (key === "grant") {
                 let obj: any = null;
+                thisObj.grants = [];
                 for (const value of pvalue as any[]) {
                     obj = value
                     thisObj.grants.push(obj);
@@ -272,6 +275,7 @@ export class Funding {
             }
             if (key === "investigator") {
                 let obj: any = null;
+                thisObj.investigators = [];
                 for (const value of pvalue as any[]) {
                     obj = Person.fromJson(value)
                     thisObj.investigators.push(obj);

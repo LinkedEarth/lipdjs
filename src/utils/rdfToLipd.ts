@@ -14,6 +14,7 @@ import { SCHEMA } from '../globals/schema';
 import { REVERSE_BLACKLIST } from '../globals/blacklist';
 import { lcfirst, parseVariableValues, ucfirst } from './utils';
 import { RSYNONYMS } from '../globals/synonyms';
+import { ChangeLog } from '../classes/changelog';
 
 const logger = Logger.getInstance();
 const DF = DataFactory;
@@ -365,14 +366,17 @@ export class RDFToLiPD {
         return obj;
     }
 
-    private changesToJson(changes: any, parent: any = null): any {
+    private changeLogToJson(changeLog: ChangeLog, parent: any = null): any {
         const newChanges: any = [];
-        for (const change of changes) {
+        for (const change of changeLog.changes) {
             let newChange: any = {}
-            newChange[change.name] = change.descriptions
-            newChanges.push(newChange);
+            if (change.name) {
+                newChange[change.name] = change.notes
+                newChanges.push(newChange);
+            }
         }
-        return newChanges;
+        changeLog.changes = newChanges;
+        return changeLog;
     }
 
     /**
