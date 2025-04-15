@@ -365,6 +365,16 @@ export class RDFToLiPD {
         return obj;
     }
 
+    private changesToJson(changes: any, parent: any = null): any {
+        const newChanges: any = [];
+        for (const change of changes) {
+            let newChange: any = {}
+            newChange[change.name] = change.descriptions
+            newChanges.push(newChange);
+        }
+        return newChanges;
+    }
+
     /**
      * Convert location to GeoJSON format
      * @param geo Location object

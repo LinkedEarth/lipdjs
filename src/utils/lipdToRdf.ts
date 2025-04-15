@@ -17,6 +17,7 @@ import { SYNONYMS } from '../globals/synonyms';
 
 import { uniqid, sanitizeId, ucfirst, lcfirst, camelCase, escape, serializeStore } from './utils';
 import { BLACKLIST } from '../globals/blacklist';
+import { ChangeLog } from '../classes/changelog';
 
 // Get the logger instance
 const logger = Logger.getInstance();
@@ -1121,7 +1122,28 @@ export class LipdToRDF {
         
         return authors.map(auth => ({ name: auth }));
     }
-    
+
+    /**
+     * Parse changeLog object into standardized format
+     * @param changes Change object
+     * @param parent Optional parent object
+     * @returns Array of parsed person objects
+     */
+    private parseChanges(changes: any, parent?: any): any {
+        console.log(changes);
+        const newChanges: any = []
+        for (const name of Object.keys(changes)) {
+            const notes = changes[name]
+            const newChange = {
+                name: name,
+                notes: notes.map((list: any) => list[0])
+            }
+            newChanges.push(newChange);
+        }
+        console.log(JSON.stringify(newChanges, null, 2));
+        return newChanges;
+    }
+
     /**
      * Parse location object
      * @param geo Location object

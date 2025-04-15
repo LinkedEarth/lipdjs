@@ -697,7 +697,7 @@ function generateLipdClasses(): void {
             // Check if the property is supposed to have multiple values. Rename accordingly
             const multiple = (prop as any).multiple || false;
             let mpname = pname;
-            if (multiple && !pname.match(/.*(data|by)$/i)) {
+            if (multiple && !pname.match(/.*(data|by|s)$/i)) {
                 mpname += "s";
             }
 
@@ -715,7 +715,7 @@ function generateLipdClasses(): void {
             }
             if (multiple) {
                 adder = "add" + suffix;
-                if (!pname.match(/.*(data|by)$/i)) {
+                if (!pname.match(/.*(data|by|s)$/i)) {
                     setter += "s";
                     getter += "s";
                 }
@@ -740,7 +740,7 @@ function generateLipdClasses(): void {
                 ontRange = prop["schema"];
             }
 
-            let tsType = ontRange;
+            let tsType = ontRange || "object";
             // Rewrite the property range to TypeScript types
             if (ontRange === "integer") {
                 tsType = "number";

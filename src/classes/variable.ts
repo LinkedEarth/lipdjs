@@ -22,9 +22,9 @@ export class Variable {
     public columnNumber: number | null;
     public composite: boolean | null;
     public description: string | null;
-    public foundInDataset: null | null;
-    public foundInTable: null | null;
-    public instrument: null | null;
+    public foundInDataset: object | null;
+    public foundInTable: object | null;
+    public instrument: object | null;
     public interpretations: Interpretation[];
     public maxValue: number | null;
     public meanValue: number | null;
@@ -135,7 +135,9 @@ export class Variable {
             else if (key === "foundInDataset") {
                 for (const val of value as any[]) {
                     let obj: any = null;
-                    obj = val["@id"];
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
                     thisObj.foundInDataset = obj;
                 }
             }
@@ -143,7 +145,9 @@ export class Variable {
             else if (key === "foundInTable") {
                 for (const val of value as any[]) {
                     let obj: any = null;
-                    obj = val["@id"];
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
                     thisObj.foundInTable = obj;
                 }
             }
@@ -179,7 +183,9 @@ export class Variable {
             else if (key === "hasInstrument") {
                 for (const val of value as any[]) {
                     let obj: any = null;
-                    obj = val["@id"];
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
                     thisObj.instrument = obj;
                 }
             }
@@ -1285,33 +1291,33 @@ export class Variable {
         // }
         this.description = description;
     }
-    getFoundInDataset(): null | null {
+    getFoundInDataset(): object | null {
         return this.foundInDataset;
     }
 
-    setFoundInDataset(foundInDataset: null): void {
-        // if (!(foundInDataset instanceof null)) {
-        //     throw new Error(`Error: '${foundInDataset}' is not of type null`);
+    setFoundInDataset(foundInDataset: object): void {
+        // if (!(foundInDataset instanceof object)) {
+        //     throw new Error(`Error: '${foundInDataset}' is not of type object`);
         // }
         this.foundInDataset = foundInDataset;
     }
-    getFoundInTable(): null | null {
+    getFoundInTable(): object | null {
         return this.foundInTable;
     }
 
-    setFoundInTable(foundInTable: null): void {
-        // if (!(foundInTable instanceof null)) {
-        //     throw new Error(`Error: '${foundInTable}' is not of type null`);
+    setFoundInTable(foundInTable: object): void {
+        // if (!(foundInTable instanceof object)) {
+        //     throw new Error(`Error: '${foundInTable}' is not of type object`);
         // }
         this.foundInTable = foundInTable;
     }
-    getInstrument(): null | null {
+    getInstrument(): object | null {
         return this.instrument;
     }
 
-    setInstrument(instrument: null): void {
-        // if (!(instrument instanceof null)) {
-        //     throw new Error(`Error: '${instrument}' is not of type null`);
+    setInstrument(instrument: object): void {
+        // if (!(instrument instanceof object)) {
+        //     throw new Error(`Error: '${instrument}' is not of type object`);
         // }
         this.instrument = instrument;
     }

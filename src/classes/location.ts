@@ -9,7 +9,7 @@ export class Location {
 
     public continent: string | null;
     public coordinates: string | null;
-    public coordinatesFor: null | null;
+    public coordinatesFor: object | null;
     public country: string | null;
     public countryOcean: string | null;
     public description: string | null;
@@ -93,7 +93,9 @@ export class Location {
             else if (key === "coordinatesFor") {
                 for (const val of value as any[]) {
                     let obj: any = null;
-                    obj = val["@id"];
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
                     thisObj.coordinatesFor = obj;
                 }
             }
@@ -661,13 +663,13 @@ export class Location {
         // }
         this.coordinates = coordinates;
     }
-    getCoordinatesFor(): null | null {
+    getCoordinatesFor(): object | null {
         return this.coordinatesFor;
     }
 
-    setCoordinatesFor(coordinatesFor: null): void {
-        // if (!(coordinatesFor instanceof null)) {
-        //     throw new Error(`Error: '${coordinatesFor}' is not of type null`);
+    setCoordinatesFor(coordinatesFor: object): void {
+        // if (!(coordinatesFor instanceof object)) {
+        //     throw new Error(`Error: '${coordinatesFor}' is not of type object`);
         // }
         this.coordinatesFor = coordinatesFor;
     }

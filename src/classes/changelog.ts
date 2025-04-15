@@ -2,13 +2,18 @@
 // Auto-generated. Do not edit.
 import { uniqid } from "../utils/utils";
 import { parseVariableValues } from "../utils/utils";
+import { Change } from "./change";
 
 
 
 export class ChangeLog {
 
-    public changes: null | null;
+    public changes: Change[];
+    public contributor: string | null;
+    public lastVersion: string | null;
     public notes: string | null;
+    public timestamp: string | null;
+    public version: string | null;
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -16,8 +21,12 @@ export class ChangeLog {
     protected _ns: string;
 
     constructor() {
-        this.changes = null;
+        this.changes = [];
+        this.contributor = null;
+        this.lastVersion = null;
         this.notes = null;
+        this.timestamp = null;
+        this.version = null;
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
         this._ns = "https://linked.earth/lipd";
@@ -57,8 +66,32 @@ export class ChangeLog {
             else if (key === "hasChanges") {
                 for (const val of value as any[]) {
                     let obj: any = null;
-                    obj = val["@id"];
-                    thisObj.changes = obj;
+                    if ("@id" in val) {
+                        obj = Change.fromData(val["@id"], data);
+                    } else {
+                        obj = val["@value"];
+                    }
+                    thisObj.changes.push(obj);
+                }
+            }
+            
+            else if (key === "hasContributor") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.contributor = obj;
+                }
+            }
+            
+            else if (key === "hasLastVersion") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.lastVersion = obj;
                 }
             }
             
@@ -69,6 +102,26 @@ export class ChangeLog {
                         obj = val["@value"];
                     }
                     thisObj.notes = obj;
+                }
+            }
+            
+            else if (key === "hasTimestamp") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.timestamp = obj;
+                }
+            }
+            
+            else if (key === "hasVersion") {
+                for (const val of value as any[]) {
+                    let obj: any = null;
+                    if ("@value" in val) {
+                        obj = val["@value"];
+                    }
+                    thisObj.version = obj;
                 }
             }
             else {
@@ -96,13 +149,43 @@ export class ChangeLog {
                 "@type": "uri"
             }
         ]
-        if (this.changes !== null) {
-            const valueObj = this.changes;
-            const obj = {
-                "@id": valueObj,
-                "@type": "uri"
+        if (this.changes.length > 0) {
+            data[this._id]["hasChanges"] = [];
+            for (const valueObj of this.changes) {
+            let obj: any = null;
+            if (typeof valueObj === "string") {
+                obj = {
+                    "@value": valueObj,
+                    "@type": "literal",
+                    "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+                }
+            } else {
+                obj = {
+                    "@id": valueObj.getId(),
+                    "@type": "uri"
+                }
+                data = valueObj.toData(data); 
             }
-            data[this._id]["hasChanges"] = [obj];
+                data[this._id]["hasChanges"].push(obj);
+            }
+        }
+        if (this.contributor !== null) {
+            const valueObj = this.contributor;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasContributor"] = [obj];
+        }
+        if (this.lastVersion !== null) {
+            const valueObj = this.lastVersion;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasLastVersion"] = [obj];
         }
         if (this.notes !== null) {
             const valueObj = this.notes;
@@ -112,6 +195,24 @@ export class ChangeLog {
                 "@datatype": "http://www.w3.org/2001/XMLSchema#string"
             }
             data[this._id]["hasNotes"] = [obj];
+        }
+        if (this.timestamp !== null) {
+            const valueObj = this.timestamp;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasTimestamp"] = [obj];
+        }
+        if (this.version !== null) {
+            const valueObj = this.version;
+            const obj = {
+                "@value": valueObj,
+                "@type": "literal",
+                "@datatype": "http://www.w3.org/2001/XMLSchema#string"
+            }
+            data[this._id]["hasVersion"] = [obj];
         }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
@@ -149,15 +250,37 @@ export class ChangeLog {
         const data: Record<string, any> = {
             "@id": this._id
         }
-        if (this.changes !== null) {
-            const valueObj = this.changes;
+        if (this.changes.length > 0) {
+            data["changes"] = [];
+            for (const valueObj of this.changes) {
+                const obj = valueObj.toJson()
+                data["changes"].push(obj);
+            }
+        }
+        if (this.contributor !== null) {
+            const valueObj = this.contributor;
                 const obj = valueObj
-            data["changes"] = obj;
+            data["curator"] = obj;
+        }
+        if (this.lastVersion !== null) {
+            const valueObj = this.lastVersion;
+                const obj = valueObj
+            data["lastVersion"] = obj;
         }
         if (this.notes !== null) {
             const valueObj = this.notes;
                 const obj = valueObj
             data["notes"] = obj;
+        }
+        if (this.timestamp !== null) {
+            const valueObj = this.timestamp;
+                const obj = valueObj
+            data["timestamp"] = obj;
+        }
+        if (this.version !== null) {
+            const valueObj = this.version;
+                const obj = valueObj
+            data["version"] = obj;
         }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
@@ -175,9 +298,24 @@ export class ChangeLog {
             }
             if (key === "changes") {
                 let obj: any = null;
+                for (const value of pvalue as any[]) {
+                    obj = Change.fromJson(value)
+                    thisObj.changes.push(obj);
+                }
+                continue;
+            }
+            if (key === "curator") {
+                let obj: any = null;
                 let value: any = pvalue;
                     obj = value
-                thisObj.changes = obj;
+                thisObj.contributor = obj;
+                continue;
+            }
+            if (key === "lastVersion") {
+                let obj: any = null;
+                let value: any = pvalue;
+                    obj = value
+                thisObj.lastVersion = obj;
                 continue;
             }
             if (key === "notes") {
@@ -185,6 +323,20 @@ export class ChangeLog {
                 let value: any = pvalue;
                     obj = value
                 thisObj.notes = obj;
+                continue;
+            }
+            if (key === "timestamp") {
+                let obj: any = null;
+                let value: any = pvalue;
+                    obj = value
+                thisObj.timestamp = obj;
+                continue;
+            }
+            if (key === "version") {
+                let obj: any = null;
+                let value: any = pvalue;
+                    obj = value
+                thisObj.version = obj;
                 continue;
             }
             // Store unknown properties in misc
@@ -212,15 +364,45 @@ export class ChangeLog {
         (this._misc[key] as unknown[]).push(value);
     }
     
-    getChanges(): null | null {
+    getChanges(): Change[] {
         return this.changes;
     }
 
-    setChanges(changes: null): void {
-        // if (!(changes instanceof null)) {
-        //     throw new Error(`Error: '${changes}' is not of type null`);
+    setChanges(changes: Change[]): void {
+        // if (!Array.isArray(changes)) {
+        //     throw new Error("Error: changes is not an array");
+        // }
+        // if (!changes.every(x => x instanceof Change)) {
+        //     throw new Error(`Error: '${changes}' is not of type Change`);
         // }
         this.changes = changes;
+    }
+
+    addChanges(changes: Change): void {
+        // if (!(changes instanceof Change)) {
+        //     throw new Error(`Error: '${changes}' is not of type Change`);
+        // }
+        this.changes.push(changes);
+    }
+    getContributor(): string | null {
+        return this.contributor;
+    }
+
+    setContributor(contributor: string): void {
+        // if (!(contributor instanceof string)) {
+        //     throw new Error(`Error: '${contributor}' is not of type string`);
+        // }
+        this.contributor = contributor;
+    }
+    getLastVersion(): string | null {
+        return this.lastVersion;
+    }
+
+    setLastVersion(lastVersion: string): void {
+        // if (!(lastVersion instanceof string)) {
+        //     throw new Error(`Error: '${lastVersion}' is not of type string`);
+        // }
+        this.lastVersion = lastVersion;
     }
     getNotes(): string | null {
         return this.notes;
@@ -231,5 +413,25 @@ export class ChangeLog {
         //     throw new Error(`Error: '${notes}' is not of type string`);
         // }
         this.notes = notes;
+    }
+    getTimestamp(): string | null {
+        return this.timestamp;
+    }
+
+    setTimestamp(timestamp: string): void {
+        // if (!(timestamp instanceof string)) {
+        //     throw new Error(`Error: '${timestamp}' is not of type string`);
+        // }
+        this.timestamp = timestamp;
+    }
+    getVersion(): string | null {
+        return this.version;
+    }
+
+    setVersion(version: string): void {
+        // if (!(version instanceof string)) {
+        //     throw new Error(`Error: '${version}' is not of type string`);
+        // }
+        this.version = version;
     }
 }

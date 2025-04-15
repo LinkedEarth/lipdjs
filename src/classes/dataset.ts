@@ -16,7 +16,7 @@ import { Publication } from "./publication";
 export class Dataset {
 
     public archiveType: ArchiveType | null;
-    public changeLog: ChangeLog | null;
+    public changeLogs: ChangeLog[];
     public chronData: ChronData[];
     public collectionName: string | null;
     public collectionYear: string | null;
@@ -43,7 +43,7 @@ export class Dataset {
 
     constructor() {
         this.archiveType = null;
-        this.changeLog = null;
+        this.changeLogs = [];
         this.chronData = [];
         this.collectionName = null;
         this.collectionYear = null;
@@ -114,7 +114,7 @@ export class Dataset {
                     } else {
                         obj = val["@value"];
                     }
-                    thisObj.changeLog = obj;
+                    thisObj.changeLogs.push(obj);
                 }
             }
             
@@ -356,8 +356,9 @@ export class Dataset {
             }
             data[this._id]["hasArchiveType"] = [obj];
         }
-        if (this.changeLog !== null) {
-            const valueObj = this.changeLog;
+        if (this.changeLogs.length > 0) {
+            data[this._id]["hasChangeLog"] = [];
+            for (const valueObj of this.changeLogs) {
             let obj: any = null;
             if (typeof valueObj === "string") {
                 obj = {
@@ -372,7 +373,8 @@ export class Dataset {
                 }
                 data = valueObj.toData(data); 
             }
-            data[this._id]["hasChangeLog"] = [obj];
+                data[this._id]["hasChangeLog"].push(obj);
+            }
         }
         if (this.chronData.length > 0) {
             data[this._id]["hasChronData"] = [];
@@ -663,10 +665,12 @@ export class Dataset {
                 const obj = valueObj.toJson()
             data["archiveType"] = obj;
         }
-        if (this.changeLog !== null) {
-            const valueObj = this.changeLog;
+        if (this.changeLogs.length > 0) {
+            data["changelog"] = [];
+            for (const valueObj of this.changeLogs) {
                 const obj = valueObj.toJson()
-            data["changelog"] = obj;
+                data["changelog"].push(obj);
+            }
         }
         if (this.chronData.length > 0) {
             data["chronData"] = [];
@@ -795,9 +799,10 @@ export class Dataset {
             }
             if (key === "changelog") {
                 let obj: any = null;
-                let value: any = pvalue;
+                for (const value of pvalue as any[]) {
                     obj = ChangeLog.fromJson(value)
-                thisObj.changeLog = obj;
+                    thisObj.changeLogs.push(obj);
+                }
                 continue;
             }
             if (key === "chronData") {
@@ -968,15 +973,25 @@ export class Dataset {
         // }
         this.archiveType = archiveType;
     }
-    getChangeLog(): ChangeLog | null {
-        return this.changeLog;
+    getChangeLogs(): ChangeLog[] {
+        return this.changeLogs;
     }
 
-    setChangeLog(changeLog: ChangeLog): void {
-        // if (!(changeLog instanceof ChangeLog)) {
-        //     throw new Error(`Error: '${changeLog}' is not of type ChangeLog`);
+    setChangeLogs(changeLogs: ChangeLog[]): void {
+        // if (!Array.isArray(changeLogs)) {
+        //     throw new Error("Error: changeLogs is not an array");
         // }
-        this.changeLog = changeLog;
+        // if (!changeLogs.every(x => x instanceof ChangeLog)) {
+        //     throw new Error(`Error: '${changeLogs}' is not of type ChangeLog`);
+        // }
+        this.changeLogs = changeLogs;
+    }
+
+    addChangeLog(changeLogs: ChangeLog): void {
+        // if (!(changeLogs instanceof ChangeLog)) {
+        //     throw new Error(`Error: '${changeLogs}' is not of type ChangeLog`);
+        // }
+        this.changeLogs.push(changeLogs);
     }
     getChronData(): ChronData[] {
         return this.chronData;

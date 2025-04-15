@@ -7,6 +7,7 @@ export * from './classes/paleovariable';
 export * from './classes/publication';
 export * from './classes/interpretationseasonality';
 export * from './classes/changelog';
+export * from './classes/change';
 export * from './classes/compilation';
 export * from './classes/interpretation';
 export * from './classes/location';

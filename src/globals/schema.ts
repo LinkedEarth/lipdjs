@@ -42,7 +42,8 @@ export const SCHEMA = {
         },
         'changelog': {
             'name': 'hasChangeLog',
-            'schema': 'ChangeLog'
+            'schema': 'ChangeLog',
+            'multiple': true
         },
         'notes': {
             'name': 'hasNotes'
@@ -120,12 +121,38 @@ export const SCHEMA = {
     'ChangeLog': {
         '@id': ['{@parent.@id}', '.ChangeLog.', '{@index}'],
         '@category': 'ChangeLog',
+        '@toJson': ['changesToJson'],
+        'curator': {
+            'name': 'hasContributor',
+        },
+        'version': {
+            'name': 'hasVersion'
+        },
+        'lastVersion': {
+            'name': 'hasLastVersion'
+        },
+        'timestamp': {
+            'name': 'hasTimestamp'
+        },
         'changes': {
             'name': 'hasChanges',
-            'type': 'Individual'
+            'multiple': true,
+            'type': 'Individual',
+            'schema': 'Change',
+            'fromJson': 'parseChanges'
         },
         'notes': {
             'name': 'hasNotes'
+        }
+    },
+    'Change': {
+        '@id': ['{@parent.@id}', '.Change.', '{@index}'],
+        'name': {
+            'name': 'hasName'
+        },
+        'notes': {
+            'name': 'hasNotes',
+            'multiple': true
         }
     },
     'Funding': {
