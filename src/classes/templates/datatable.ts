@@ -153,7 +153,6 @@ export class DataTable {
             
             const v = Variable.fromJson(metadata);
             if (v) {
-                console.log(values);
                 v.setValues(JSON.stringify(values));
                 this.addVariable(v);
             }
