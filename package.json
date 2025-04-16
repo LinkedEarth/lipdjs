@@ -1,6 +1,6 @@
 {
   "name": "lipdjs",
-  "version": "0.0.5.1",
+  "version": "0.0.6",
   "description": "A JavaScript library for reading and writing LiPD (Linked Paleo Data) files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
