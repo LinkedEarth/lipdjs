@@ -10,7 +10,7 @@ const testFile = path.join(testDataDir, 'MD98_2181.Stott.2007.lpd');
   const lipd = new LiPD();
   lipd.load(testFile).then(() => {
     lipd.serialize("n3").then(n3 => {
-        console.log('N3:', n3);
+        // console.log('N3:', n3);
         lipd.getDatasets().then(datasets => {
             for (const ds of datasets) {
                 // console.log('Dataset:', ds.getName());

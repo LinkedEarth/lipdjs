@@ -65,9 +65,56 @@ export class Interpretation {
     
     public static fromDictionary(data: Record<string, any>): Interpretation {
         const thisObj = new Interpretation();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.basis !== null) {
+            thisObj.basis = data.basis;
+        }
+        if (data.direction !== null) {
+            thisObj.direction = data.direction;
+        }
+        if (data.local !== null) {
+            thisObj.local = data.local;
+        }
+        if (data.mathematicalRelation !== null) {
+            thisObj.mathematicalRelation = data.mathematicalRelation;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.rank !== null) {
+            thisObj.rank = data.rank;
+        }
+        if (data.scope !== null) {
+            thisObj.scope = data.scope;
+        }
+        if (data.seasonality !== null) {
+            thisObj.seasonality = new InterpretationSeasonality(data.seasonality.id, data.seasonality.label);
+        }
+        if (data.seasonalityGeneral !== null) {
+            thisObj.seasonalityGeneral = new InterpretationSeasonality(data.seasonalityGeneral.id, data.seasonalityGeneral.label);
+        }
+        if (data.seasonalityOriginal !== null) {
+            thisObj.seasonalityOriginal = new InterpretationSeasonality(data.seasonalityOriginal.id, data.seasonalityOriginal.label);
+        }
+        if (data.variable !== null) {
+            thisObj.variable = new InterpretationVariable(data.variable.id, data.variable.label);
+        }
+        if (data.variableDetail !== null) {
+            thisObj.variableDetail = data.variableDetail;
+        }
+        if (data.variableGeneral !== null) {
+            thisObj.variableGeneral = data.variableGeneral;
+        }
+        if (data.variableGeneralDirection !== null) {
+            thisObj.variableGeneralDirection = data.variableGeneralDirection;
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Interpretation {
         const thisObj = new Interpretation();
         thisObj._id = id;

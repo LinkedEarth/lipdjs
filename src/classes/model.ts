@@ -44,9 +44,29 @@ export class Model {
     
     public static fromDictionary(data: Record<string, any>): Model {
         const thisObj = new Model();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.code !== null) {
+            thisObj.code = data.code;
+        }
+        thisObj.distributionTables = [];
+        for (const value of (data.distributionTables || []) as any[]) {
+            thisObj.distributionTables.push(DataTable.fromDictionary(value));
+        }
+        thisObj.ensembleTables = [];
+        for (const value of (data.ensembleTables || []) as any[]) {
+            thisObj.ensembleTables.push(DataTable.fromDictionary(value));
+        }
+        thisObj.summaryTables = [];
+        for (const value of (data.summaryTables || []) as any[]) {
+            thisObj.summaryTables.push(DataTable.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Model {
         const thisObj = new Model();
         thisObj._id = id;

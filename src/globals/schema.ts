@@ -121,7 +121,6 @@ export const SCHEMA = {
     'ChangeLog': {
         '@id': ['{@parent.@id}', '.ChangeLog.', '{@index}'],
         '@category': 'ChangeLog',
-        '@toJson': ['changesToJson'],
         'curator': {
             'name': 'hasContributor',
         },
@@ -139,7 +138,8 @@ export const SCHEMA = {
             'multiple': true,
             'type': 'Individual',
             'schema': 'Change',
-            'fromJson': 'parseChanges'
+            'fromJson': 'parseChanges',
+            'toJson': 'changesToJson'
         },
         'notes': {
             'name': 'hasNotes'

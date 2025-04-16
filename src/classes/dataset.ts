@@ -83,9 +83,82 @@ export class Dataset {
     
     public static fromDictionary(data: Record<string, any>): Dataset {
         const thisObj = new Dataset();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.archiveType !== null) {
+            thisObj.archiveType = new ArchiveType(data.archiveType.id, data.archiveType.label);
+        }
+        if (data.collectionName !== null) {
+            thisObj.collectionName = data.collectionName;
+        }
+        if (data.collectionYear !== null) {
+            thisObj.collectionYear = data.collectionYear;
+        }
+        if (data.compilationNest !== null) {
+            thisObj.compilationNest = data.compilationNest;
+        }
+        if (data.dataSource !== null) {
+            thisObj.dataSource = data.dataSource;
+        }
+        if (data.datasetId !== null) {
+            thisObj.datasetId = data.datasetId;
+        }
+        if (data.location !== null) {
+            thisObj.location = Location.fromDictionary(data.location);
+        }
+        if (data.name !== null) {
+            thisObj.name = data.name;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.originalDataUrl !== null) {
+            thisObj.originalDataUrl = data.originalDataUrl;
+        }
+        if (data.spreadsheetLink !== null) {
+            thisObj.spreadsheetLink = data.spreadsheetLink;
+        }
+        if (data.version !== null) {
+            thisObj.version = data.version;
+        }
+        thisObj.changeLogs = [];
+        for (const value of (data.changeLogs || []) as any[]) {
+            thisObj.changeLogs.push(ChangeLog.fromDictionary(value));
+        }
+        thisObj.chronData = [];
+        for (const value of (data.chronData || []) as any[]) {
+            thisObj.chronData.push(ChronData.fromDictionary(value));
+        }
+        thisObj.contributors = [];
+        for (const value of (data.contributors || []) as any[]) {
+            thisObj.contributors.push(Person.fromDictionary(value));
+        }
+        thisObj.creators = [];
+        for (const value of (data.creators || []) as any[]) {
+            thisObj.creators.push(Person.fromDictionary(value));
+        }
+        thisObj.fundings = [];
+        for (const value of (data.fundings || []) as any[]) {
+            thisObj.fundings.push(Funding.fromDictionary(value));
+        }
+        thisObj.investigators = [];
+        for (const value of (data.investigators || []) as any[]) {
+            thisObj.investigators.push(Person.fromDictionary(value));
+        }
+        thisObj.paleoData = [];
+        for (const value of (data.paleoData || []) as any[]) {
+            thisObj.paleoData.push(PaleoData.fromDictionary(value));
+        }
+        thisObj.publications = [];
+        for (const value of (data.publications || []) as any[]) {
+            thisObj.publications.push(Publication.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Dataset {
         const thisObj = new Dataset();
         thisObj._id = id;

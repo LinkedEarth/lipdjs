@@ -39,9 +39,21 @@ export class Change {
     
     public static fromDictionary(data: Record<string, any>): Change {
         const thisObj = new Change();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.name !== null) {
+            thisObj.name = data.name;
+        }
+        thisObj.notes = [];
+        for (const value of (data.notes || []) as any[]) {
+            thisObj.notes.push(value);
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Change {
         const thisObj = new Change();
         thisObj._id = id;

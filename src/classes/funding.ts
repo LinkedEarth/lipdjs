@@ -44,9 +44,28 @@ export class Funding {
     
     public static fromDictionary(data: Record<string, any>): Funding {
         const thisObj = new Funding();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.fundingAgency !== null) {
+            thisObj.fundingAgency = data.fundingAgency;
+        }
+        if (data.fundingCountry !== null) {
+            thisObj.fundingCountry = data.fundingCountry;
+        }
+        thisObj.grants = [];
+        for (const value of (data.grants || []) as any[]) {
+            thisObj.grants.push(value);
+        }
+        thisObj.investigators = [];
+        for (const value of (data.investigators || []) as any[]) {
+            thisObj.investigators.push(Person.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Funding {
         const thisObj = new Funding();
         thisObj._id = id;

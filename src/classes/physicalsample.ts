@@ -41,9 +41,23 @@ export class PhysicalSample {
     
     public static fromDictionary(data: Record<string, any>): PhysicalSample {
         const thisObj = new PhysicalSample();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.housedAt !== null) {
+            thisObj.housedAt = data.housedAt;
+        }
+        if (data.iGSN !== null) {
+            thisObj.iGSN = data.iGSN;
+        }
+        if (data.name !== null) {
+            thisObj.name = data.name;
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): PhysicalSample {
         const thisObj = new PhysicalSample();
         thisObj._id = id;

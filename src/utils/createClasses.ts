@@ -48,6 +48,18 @@ function getFromJsonItem(ptype: string, tsType: string | null, isEnum: boolean):
     return fromjsonitem;
 }
 
+function getFromDictionaryItem(varid: string, ptype: string, tsType: string | null, isEnum: boolean): string {
+    if (ptype === "object" && tsType !== null) {
+        if (isEnum) {
+            return `new ${tsType}(${varid}.id, ${varid}.label)`;
+        } else {
+            return `${tsType}.fromDictionary(${varid})`;
+        }
+    } else {
+        return `${varid}`;
+    }
+}
+
 
 function getToDataItem(ptype: string, range: string | null): string {
     if (ptype === "literal" && range) {
@@ -164,6 +176,7 @@ function generateClassFile(
     fromdataSnippets: string[], 
     tojsonSnippets: string[], 
     fromjsonSnippets: string[], 
+    fromdictionarySnippets: string[],
     fnSnippets: string[]
 ): void {
     const [ximports, xstructures, xfnSnippets] = fetchExtraTemplateFunctions(clsid);
@@ -234,12 +247,21 @@ import { parseVariableValues } from "../utils/utils";
     }
     `;
 
+    // Write the fromDictionary function
     tsCode += `
     public static fromDictionary(data: Record<string, any>): ${clsid} {
         const thisObj = new ${clsid}();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;`;
+    for (const snippet of fromdictionarySnippets) {
+        tsCode += `${snippet}`;
+    }
+    tsCode += `
         return thisObj;
-    }`
+    }\n`;
 
     // Write the fromData function
     tsCode += `
@@ -403,7 +425,7 @@ function getMultiValuePropertySnippets(
     setter: string,
     adder: string | null,
     isEnum: boolean
-): [string, string, string, string, string, string, string] {
+): [string, string, string, string, string, string, string, string] {
     // Create the TypeScript snippet for initializing property variables
     const defvar = `public ${pname}: ${tsType}[];`;
     const initvar = `this.${pname} = [];`;
@@ -452,9 +474,13 @@ function getMultiValuePropertySnippets(
                 continue;
             }`;
 
-    if (tsType === null) {
-        tsType = "object";
-    }
+    // Create the TypeScript function snippet for this property to convert from dictionary to a class (fromdictionary)
+    const fromdictionaryitem = getFromDictionaryItem(`value`, ptype, tsType, isEnum);
+    const fromdictionary = `
+        thisObj.${pname} = [];
+        for (const value of (data.${pname} || []) as any[]) {
+            thisObj.${pname}.push(${fromdictionaryitem});
+        }`;
 
     // Create error message for type checking
     let errorMsg = `Error: '\${${pname}}' is not of type ${tsType}`;
@@ -487,7 +513,7 @@ function getMultiValuePropertySnippets(
         this.${pname}.push(${pname});
     }`;
 
-    return [defvar, initvar, todata, fromdata, tojson, fromjson, fns];
+    return [defvar, initvar, todata, fromdata, tojson, fromjson, fromdictionary, fns];
 }
 
 function getPropertySnippets(
@@ -501,7 +527,7 @@ function getPropertySnippets(
     getter: string,
     setter: string,
     isEnum: boolean
-): [string, string, string, string, string, string, string] {
+): [string, string, string, string, string, string, string, string] {
     // Create the TypeScript snippet for initializing property variables
     const defvar = `public ${pname}: ${tsType} | null;`;
     const initvar = `this.${pname} = null;`;
@@ -543,6 +569,13 @@ function getPropertySnippets(
                 continue;
             }`;
 
+    // Create the TypeScript function snippet for this property to convert from json dictionary to a class (fromjson)
+    const fromdictionaryitem = getFromDictionaryItem(`data.${pname}`, ptype, tsType, isEnum);
+    const fromdictionary = `
+        if (data.${pname} !== null) {
+            thisObj.${pname} = ${fromdictionaryitem};
+        }`;
+
     // Create error message for type checking
     let errorMsg = `Error: '\${${pname}}' is not of type ${tsType}`;
     if (isEnum) {
@@ -571,7 +604,7 @@ function getPropertySnippets(
     fns += `
     }`;
 
-    return [defvar, initvar, todata, fromdata, tojson, fromjson, fns];
+    return [defvar, initvar, todata, fromdata, tojson, fromjson, fromdictionary,fns];
 }
 
 function generateEnumClasses(): void {
@@ -669,6 +702,7 @@ function generateLipdClasses(): void {
         const todataSnippets = new Set<string>();
         const tojsonSnippets = new Set<string>();
         const fromjsonSnippets = new Set<string>();
+        const fromdictionarySnippets = new Set<string>();
         const fnSnippets = new Set<string>();
 
         // Check all properties
@@ -765,16 +799,17 @@ function generateLipdClasses(): void {
             let fromdata: string;
             let tojson: string;
             let fromjson: string;
+            let fromdictionary: string;
             let fns: string;
             
             if (multiple) {
-                [defvar, initvar, todata, fromdata, tojson, fromjson, fns] = getMultiValuePropertySnippets(
+                [defvar, initvar, todata, fromdata, tojson, fromjson, fromdictionary, fns] = getMultiValuePropertySnippets(
                     clsid, pid, propid, mpname, ptype, 
                     ontRange, tsType, 
                     getter, setter, adder, isEnum
                 );
             } else {
-                [defvar, initvar, todata, fromdata, tojson, fromjson, fns] = getPropertySnippets(
+                [defvar, initvar, todata, fromdata, tojson, fromjson, fromdictionary, fns] = getPropertySnippets(
                     clsid, pid, propid, mpname, ptype, 
                     ontRange, tsType, 
                     getter, setter, isEnum
@@ -792,6 +827,7 @@ function generateLipdClasses(): void {
             fromdataSnippets.add(fromdata);
             tojsonSnippets.add(tojson);
             fromjsonSnippets.add(fromjson);
+            fromdictionarySnippets.add(fromdictionary);
             fnSnippets.add(fns);
         }
         
@@ -805,6 +841,7 @@ function generateLipdClasses(): void {
             Array.from(fromdataSnippets).sort(), 
             Array.from(tojsonSnippets).sort(), 
             Array.from(fromjsonSnippets).sort(), 
+            Array.from(fromdictionarySnippets).sort(),
             Array.from(fnSnippets).sort()
         );
     }

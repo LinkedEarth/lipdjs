@@ -41,9 +41,22 @@ export class ChronData {
     
     public static fromDictionary(data: Record<string, any>): ChronData {
         const thisObj = new ChronData();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        thisObj.measurementTables = [];
+        for (const value of (data.measurementTables || []) as any[]) {
+            thisObj.measurementTables.push(DataTable.fromDictionary(value));
+        }
+        thisObj.modeledBy = [];
+        for (const value of (data.modeledBy || []) as any[]) {
+            thisObj.modeledBy.push(Model.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): ChronData {
         const thisObj = new ChronData();
         thisObj._id = id;

@@ -65,9 +65,59 @@ export class Location {
     
     public static fromDictionary(data: Record<string, any>): Location {
         const thisObj = new Location();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.continent !== null) {
+            thisObj.continent = data.continent;
+        }
+        if (data.coordinates !== null) {
+            thisObj.coordinates = data.coordinates;
+        }
+        if (data.coordinatesFor !== null) {
+            thisObj.coordinatesFor = data.coordinatesFor;
+        }
+        if (data.country !== null) {
+            thisObj.country = data.country;
+        }
+        if (data.countryOcean !== null) {
+            thisObj.countryOcean = data.countryOcean;
+        }
+        if (data.description !== null) {
+            thisObj.description = data.description;
+        }
+        if (data.elevation !== null) {
+            thisObj.elevation = data.elevation;
+        }
+        if (data.geometryType !== null) {
+            thisObj.geometryType = data.geometryType;
+        }
+        if (data.latitude !== null) {
+            thisObj.latitude = data.latitude;
+        }
+        if (data.locationName !== null) {
+            thisObj.locationName = data.locationName;
+        }
+        if (data.locationType !== null) {
+            thisObj.locationType = data.locationType;
+        }
+        if (data.longitude !== null) {
+            thisObj.longitude = data.longitude;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.ocean !== null) {
+            thisObj.ocean = data.ocean;
+        }
+        if (data.siteName !== null) {
+            thisObj.siteName = data.siteName;
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Location {
         const thisObj = new Location();
         thisObj._id = id;

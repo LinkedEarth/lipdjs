@@ -105,9 +105,107 @@ export class Variable {
     
     public static fromDictionary(data: Record<string, any>): Variable {
         const thisObj = new Variable();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.archiveType !== null) {
+            thisObj.archiveType = new ArchiveType(data.archiveType.id, data.archiveType.label);
+        }
+        if (data.columnNumber !== null) {
+            thisObj.columnNumber = data.columnNumber;
+        }
+        if (data.composite !== null) {
+            thisObj.composite = data.composite;
+        }
+        if (data.description !== null) {
+            thisObj.description = data.description;
+        }
+        if (data.foundInDataset !== null) {
+            thisObj.foundInDataset = data.foundInDataset;
+        }
+        if (data.foundInTable !== null) {
+            thisObj.foundInTable = data.foundInTable;
+        }
+        if (data.instrument !== null) {
+            thisObj.instrument = data.instrument;
+        }
+        if (data.maxValue !== null) {
+            thisObj.maxValue = data.maxValue;
+        }
+        if (data.meanValue !== null) {
+            thisObj.meanValue = data.meanValue;
+        }
+        if (data.medianValue !== null) {
+            thisObj.medianValue = data.medianValue;
+        }
+        if (data.minValue !== null) {
+            thisObj.minValue = data.minValue;
+        }
+        if (data.missingValue !== null) {
+            thisObj.missingValue = data.missingValue;
+        }
+        if (data.name !== null) {
+            thisObj.name = data.name;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.partOfCompilation !== null) {
+            thisObj.partOfCompilation = Compilation.fromDictionary(data.partOfCompilation);
+        }
+        if (data.primary !== null) {
+            thisObj.primary = data.primary;
+        }
+        if (data.proxy !== null) {
+            thisObj.proxy = new PaleoProxy(data.proxy.id, data.proxy.label);
+        }
+        if (data.proxyGeneral !== null) {
+            thisObj.proxyGeneral = new PaleoProxyGeneral(data.proxyGeneral.id, data.proxyGeneral.label);
+        }
+        if (data.resolution !== null) {
+            thisObj.resolution = Resolution.fromDictionary(data.resolution);
+        }
+        if (data.standardVariable !== null) {
+            thisObj.standardVariable = new PaleoVariable(data.standardVariable.id, data.standardVariable.label);
+        }
+        if (data.uncertainty !== null) {
+            thisObj.uncertainty = data.uncertainty;
+        }
+        if (data.uncertaintyAnalytical !== null) {
+            thisObj.uncertaintyAnalytical = data.uncertaintyAnalytical;
+        }
+        if (data.uncertaintyReproducibility !== null) {
+            thisObj.uncertaintyReproducibility = data.uncertaintyReproducibility;
+        }
+        if (data.units !== null) {
+            thisObj.units = new PaleoUnit(data.units.id, data.units.label);
+        }
+        if (data.values !== null) {
+            thisObj.values = data.values;
+        }
+        if (data.variableId !== null) {
+            thisObj.variableId = data.variableId;
+        }
+        if (data.variableType !== null) {
+            thisObj.variableType = data.variableType;
+        }
+        thisObj.calibratedVias = [];
+        for (const value of (data.calibratedVias || []) as any[]) {
+            thisObj.calibratedVias.push(Calibration.fromDictionary(value));
+        }
+        thisObj.interpretations = [];
+        for (const value of (data.interpretations || []) as any[]) {
+            thisObj.interpretations.push(Interpretation.fromDictionary(value));
+        }
+        thisObj.physicalSamples = [];
+        for (const value of (data.physicalSamples || []) as any[]) {
+            thisObj.physicalSamples.push(PhysicalSample.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Variable {
         const thisObj = new Variable();
         thisObj._id = id;

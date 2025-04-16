@@ -14,7 +14,8 @@ import { SCHEMA } from '../globals/schema';
 import { REVERSE_BLACKLIST } from '../globals/blacklist';
 import { lcfirst, parseVariableValues, ucfirst } from './utils';
 import { RSYNONYMS } from '../globals/synonyms';
-import { ChangeLog } from '../classes/changelog';
+import { Change } from '../classes/change';
+import { createBagitFiles } from './bagit';
 
 const logger = Logger.getInstance();
 const DF = DataFactory;
@@ -110,7 +111,8 @@ export class RDFToLiPD {
     public async convert(dsname: string, lipdfile: string): Promise<any> {
         const lipd = this.convertToJson(dsname);
         const tempDir = fs.mkdtempSync('rdf_to_lipd_');
-        const dataDir = path.join(tempDir, dsname);
+        const dsDir = path.join(tempDir, dsname);
+        const dataDir = path.join(dsDir, 'data');
         
         try {
             // Create data directory
@@ -123,11 +125,11 @@ export class RDFToLiPD {
                 JSON.stringify(lipd, null, 4)
             );
 
-            // Create bag-it files
-            this.createBagitFiles(dataDir);
+            // Create bagit files
+            await this.createBagitFiles(dsDir);
 
             // Zip the directory
-            this.zipDirectory(dataDir, lipdfile);
+            await this.zipDirectory(dsDir, lipdfile);
 
             logger.debug('Successfully converted RDF to LiPD file: %s', lipdfile);
             return lipd;
@@ -210,8 +212,7 @@ export class RDFToLiPD {
         if ('hasValues' in obj) {
             const valuestr = obj['hasValues'];
             obj['values'] = parseVariableValues(valuestr);
-            // obj['hasValues'] = obj['values'];
-            // delete obj['hasValues'];
+            delete obj['hasValues'];
         }
         
         // Clean up metadata fields
@@ -366,17 +367,13 @@ export class RDFToLiPD {
         return obj;
     }
 
-    private changeLogToJson(changeLog: ChangeLog, parent: any = null): any {
-        const newChanges: any = [];
-        for (const change of changeLog.changes) {
-            let newChange: any = {}
-            if (change.name) {
-                newChange[change.name] = change.notes
-                newChanges.push(newChange);
-            }
+    private changesToJson(change: Change, parent: any = null): any {
+        let newChange: any = {}
+        if (change.name) {
+            newChange[change.name] = change.notes || []
+            return newChange;
         }
-        changeLog.changes = newChanges;
-        return changeLog;
+        return null;
     }
 
     /**
@@ -472,9 +469,9 @@ export class RDFToLiPD {
         const data: any[][] = [];
         if (!table.columns) return data;
 
-        // First row is column names
-        const headerRow = table.columns.map(col => col.name);
-        data.push(headerRow);
+        // Not including header row in csv
+        // const headerRow = table.columns.map(col => col.variableName);
+        // data.push(headerRow);
 
         // Get the maximum length of values
         const maxLength = Math.max(...table.columns.map(col => col.values?.length || 0));
@@ -505,7 +502,7 @@ export class RDFToLiPD {
                 // Handle measurement tables
                 if (item.measurementTable) {
                     for (const table of item.measurementTable) {
-                        csvs[table.name] = this.getTableData(table);
+                        csvs[table.filename] = this.getTableData(table);
                     }
                 }
 
@@ -515,15 +512,22 @@ export class RDFToLiPD {
                         // Handle ensemble tables
                         if (model.ensembleTable) {
                             for (const table of model.ensembleTable) {
-                                csvs[table.name] = this.getTableData(table);
+                                csvs[table.filename] = this.getTableData(table);
                             }
                         }
                         // Handle summary tables
                         if (model.summaryTable) {
                             for (const table of model.summaryTable) {
-                                csvs[table.name] = this.getTableData(table);
+                                csvs[table.filename] = this.getTableData(table);
                             }
                         }
+
+                        // Handle distribution tables
+                        if (model.distributionTable) {
+                            for (const table of model.distributionTable) {
+                                csvs[table.filename] = this.getTableData(table);
+                            }
+                        }                        
                     }
                 }
             }
@@ -539,40 +543,52 @@ export class RDFToLiPD {
     /**
      * Create bagit files in the data directory
      * @param dataDir Directory to create bagit files in
+     * @returns Promise that resolves when bagit files are created
      */
-    private createBagitFiles(dataDir: string): void {
-        const bagInfoContent = 'Bag-Software-Agent: pylipd\nBagging-Date: ' + new Date().toISOString();
-        const manifestContent = '';  // We'll skip md5 checksums for now
+    private createBagitFiles(dataDir: string): Promise<void> {
+        const bagInfo = {
+            'Bag-Software-Agent': 'lipdjs',
+            'Bagging-Date': new Date().toISOString()
+        };
         
-        fs.writeFileSync(path.join(dataDir, 'bagit.txt'), 'BagIt-Version: 0.97\nTag-File-Character-Encoding: UTF-8');
-        fs.writeFileSync(path.join(dataDir, 'bag-info.txt'), bagInfoContent);
-        fs.writeFileSync(path.join(dataDir, 'manifest-md5.txt'), manifestContent);
+        return createBagitFiles(dataDir, bagInfo);
     }
 
     /**
      * Zip a directory into a LiPD file
      * @param dataDir Directory to zip
      * @param lipdfile Output LiPD file path
+     * @returns Promise that resolves when the zip file is created
      */
-    private zipDirectory(dataDir: string, lipdfile: string): void {
-        const zip = new AdmZip();
-        
-        const addFilesToZip = (currentPath: string, relativePath: string = '') => {
-            const files = fs.readdirSync(currentPath);
-            for (const file of files) {
-                const filePath = path.join(currentPath, file);
-                const zipPath = path.join(relativePath, file);
-                
-                if (fs.statSync(filePath).isDirectory()) {
-                    addFilesToZip(filePath, zipPath);
-                } else {
-                    zip.addLocalFile(filePath, path.dirname(zipPath));
+    private zipDirectory(dataDir: string, lipdfile: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const zip = new AdmZip();
+            
+            const addFilesToZip = (currentPath: string, relativePath: string = '') => {
+                const files = fs.readdirSync(currentPath);
+                for (const file of files) {
+                    const filePath = path.join(currentPath, file);
+                    const zipPath = path.join(relativePath, file);
+                    
+                    if (fs.statSync(filePath).isDirectory()) {
+                        addFilesToZip(filePath, zipPath);
+                    } else {
+                        zip.addLocalFile(filePath, path.dirname(zipPath));
+                    }
                 }
-            }
-        };
+            };
 
-        addFilesToZip(dataDir);
-        zip.writeZip(lipdfile);
+            addFilesToZip(dataDir);
+            
+            // Use the callback version of writeZip
+            zip.writeZip(lipdfile, (error) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
+            });
+        });
     }
 
     /**
@@ -1156,6 +1172,9 @@ export class RDFToLiPD {
             const values = parseVariableValues(valuestr);
             if (typeof values === 'object' && values !== null && "base64_zlib" in values) {
                 variable["hasValues"] = this.unzipString(values["base64_zlib"]);
+            }
+            else {
+                variable["hasValues"] = values;
             }
         }
         return variable;

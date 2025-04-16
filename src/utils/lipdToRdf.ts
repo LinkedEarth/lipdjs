@@ -1125,22 +1125,25 @@ export class LipdToRDF {
 
     /**
      * Parse changeLog object into standardized format
-     * @param changes Change object
+     * @param changes Change list
      * @param parent Optional parent object
      * @returns Array of parsed person objects
      */
     private parseChanges(changes: any, parent?: any): any {
-        console.log(changes);
         const newChanges: any = []
-        for (const name of Object.keys(changes)) {
-            const notes = changes[name]
-            const newChange = {
-                name: name,
-                notes: notes.map((list: any) => list[0])
-            }
-            newChanges.push(newChange);
+        if (!Array.isArray(changes)) {
+            changes = [changes]
         }
-        console.log(JSON.stringify(newChanges, null, 2));
+        for (const change of changes) {
+            for (const name of Object.keys(change)) {
+                const notes = change[name] || []
+                const newChange = {
+                    name: name,
+                    notes: notes.map((list: any) => list[0])
+                }
+                newChanges.push(newChange);
+            }
+        }
         return newChanges;
     }
 

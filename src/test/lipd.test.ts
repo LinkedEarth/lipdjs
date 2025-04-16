@@ -92,7 +92,12 @@ describe('LiPD File Loading Tests', () => {
         const datasetNames = await lipd2.getAllDatasetNames();
         expect(datasetNames.length).toBe(datasets.length);
 
-        lipd2.createLipd(datasetNames[0], 'test.lpd');
+        lipd2.createLipd(datasetNames[0], '/tmp/test.lpd');
         
+        const lipd3 = new LiPD();
+        await lipd3.load('/tmp/test.lpd');
+        const datasetNames2 = await lipd3.getAllDatasetNames();
+        expect(datasetNames2.length).toBe(1);
+        expect(datasetNames2[0]).toBe(datasetNames[0]);
     });
 }); 

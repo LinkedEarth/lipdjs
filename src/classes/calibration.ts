@@ -63,9 +63,56 @@ export class Calibration {
     
     public static fromDictionary(data: Record<string, any>): Calibration {
         const thisObj = new Calibration();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.dOI !== null) {
+            thisObj.dOI = data.dOI;
+        }
+        if (data.datasetRange !== null) {
+            thisObj.datasetRange = data.datasetRange;
+        }
+        if (data.equation !== null) {
+            thisObj.equation = data.equation;
+        }
+        if (data.equationIntercept !== null) {
+            thisObj.equationIntercept = data.equationIntercept;
+        }
+        if (data.equationR2 !== null) {
+            thisObj.equationR2 = data.equationR2;
+        }
+        if (data.equationSlope !== null) {
+            thisObj.equationSlope = data.equationSlope;
+        }
+        if (data.equationSlopeUncertainty !== null) {
+            thisObj.equationSlopeUncertainty = data.equationSlopeUncertainty;
+        }
+        if (data.method !== null) {
+            thisObj.method = data.method;
+        }
+        if (data.methodDetail !== null) {
+            thisObj.methodDetail = data.methodDetail;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.proxyDataset !== null) {
+            thisObj.proxyDataset = data.proxyDataset;
+        }
+        if (data.seasonality !== null) {
+            thisObj.seasonality = data.seasonality;
+        }
+        if (data.targetDataset !== null) {
+            thisObj.targetDataset = data.targetDataset;
+        }
+        if (data.uncertainty !== null) {
+            thisObj.uncertainty = data.uncertainty;
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Calibration {
         const thisObj = new Calibration();
         thisObj._id = id;

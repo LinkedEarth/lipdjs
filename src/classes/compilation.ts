@@ -39,9 +39,20 @@ export class Compilation {
     
     public static fromDictionary(data: Record<string, any>): Compilation {
         const thisObj = new Compilation();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.name !== null) {
+            thisObj.name = data.name;
+        }
+        if (data.version !== null) {
+            thisObj.version = data.version;
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Compilation {
         const thisObj = new Compilation();
         thisObj._id = id;

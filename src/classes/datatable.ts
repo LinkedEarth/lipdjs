@@ -61,9 +61,24 @@ export class DataTable {
     
     public static fromDictionary(data: Record<string, any>): DataTable {
         const thisObj = new DataTable();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.fileName !== null) {
+            thisObj.fileName = data.fileName;
+        }
+        if (data.missingValue !== null) {
+            thisObj.missingValue = data.missingValue;
+        }
+        thisObj.variables = [];
+        for (const value of (data.variables || []) as any[]) {
+            thisObj.variables.push(Variable.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): DataTable {
         const thisObj = new DataTable();
         thisObj._id = id;

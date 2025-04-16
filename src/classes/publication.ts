@@ -72,9 +72,71 @@ export class Publication {
     
     public static fromDictionary(data: Record<string, any>): Publication {
         const thisObj = new Publication();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.abstract !== null) {
+            thisObj.abstract = data.abstract;
+        }
+        if (data.citation !== null) {
+            thisObj.citation = data.citation;
+        }
+        if (data.citeKey !== null) {
+            thisObj.citeKey = data.citeKey;
+        }
+        if (data.dOI !== null) {
+            thisObj.dOI = data.dOI;
+        }
+        if (data.firstAuthor !== null) {
+            thisObj.firstAuthor = Person.fromDictionary(data.firstAuthor);
+        }
+        if (data.institution !== null) {
+            thisObj.institution = data.institution;
+        }
+        if (data.issue !== null) {
+            thisObj.issue = data.issue;
+        }
+        if (data.journal !== null) {
+            thisObj.journal = data.journal;
+        }
+        if (data.pages !== null) {
+            thisObj.pages = data.pages;
+        }
+        if (data.publicationType !== null) {
+            thisObj.publicationType = data.publicationType;
+        }
+        if (data.publisher !== null) {
+            thisObj.publisher = data.publisher;
+        }
+        if (data.report !== null) {
+            thisObj.report = data.report;
+        }
+        if (data.title !== null) {
+            thisObj.title = data.title;
+        }
+        if (data.volume !== null) {
+            thisObj.volume = data.volume;
+        }
+        if (data.year !== null) {
+            thisObj.year = data.year;
+        }
+        thisObj.authors = [];
+        for (const value of (data.authors || []) as any[]) {
+            thisObj.authors.push(Person.fromDictionary(value));
+        }
+        thisObj.dataUrls = [];
+        for (const value of (data.dataUrls || []) as any[]) {
+            thisObj.dataUrls.push(value);
+        }
+        thisObj.urls = [];
+        for (const value of (data.urls || []) as any[]) {
+            thisObj.urls.push(value);
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Publication {
         const thisObj = new Publication();
         thisObj._id = id;

@@ -46,9 +46,29 @@ export class Resolution {
     
     public static fromDictionary(data: Record<string, any>): Resolution {
         const thisObj = new Resolution();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.maxValue !== null) {
+            thisObj.maxValue = data.maxValue;
+        }
+        if (data.meanValue !== null) {
+            thisObj.meanValue = data.meanValue;
+        }
+        if (data.medianValue !== null) {
+            thisObj.medianValue = data.medianValue;
+        }
+        if (data.minValue !== null) {
+            thisObj.minValue = data.minValue;
+        }
+        if (data.units !== null) {
+            thisObj.units = new PaleoUnit(data.units.id, data.units.label);
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): Resolution {
         const thisObj = new Resolution();
         thisObj._id = id;

@@ -48,9 +48,33 @@ export class ChangeLog {
     
     public static fromDictionary(data: Record<string, any>): ChangeLog {
         const thisObj = new ChangeLog();
-        Object.assign(thisObj, data);
+        thisObj._id = data._id;
+        thisObj._type = data._type;
+        thisObj._misc = data._misc;
+        thisObj._ontns = data._ontns;
+        thisObj._ns = data._ns;
+        if (data.contributor !== null) {
+            thisObj.contributor = data.contributor;
+        }
+        if (data.lastVersion !== null) {
+            thisObj.lastVersion = data.lastVersion;
+        }
+        if (data.notes !== null) {
+            thisObj.notes = data.notes;
+        }
+        if (data.timestamp !== null) {
+            thisObj.timestamp = data.timestamp;
+        }
+        if (data.version !== null) {
+            thisObj.version = data.version;
+        }
+        thisObj.changes = [];
+        for (const value of (data.changes || []) as any[]) {
+            thisObj.changes.push(Change.fromDictionary(value));
+        }
         return thisObj;
     }
+
     public static fromData(id: string, data: Record<string, any>): ChangeLog {
         const thisObj = new ChangeLog();
         thisObj._id = id;
