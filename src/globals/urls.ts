@@ -1,5 +1,5 @@
 // Constants for URLs - these would be imported from globals/urls.ts in a full implementation
-export const NSURL = 'https://linked.earth/lipd';
+export const NSURL = 'http://linked.earth/lipd';
 export const ONTONS = 'http://linked.earth/ontology#';
 export const DATAURL = "https://data.mint.isi.edu/files/lipd"
 

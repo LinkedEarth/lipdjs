@@ -1,5 +1,5 @@
 import { Store } from 'n3';
-import { QueryEngine } from '@comunica/query-sparql-rdfjs';
+import { QueryEngine } from '@comunica/query-sparql';
 import { Logger } from './utils/logger';
 
 const logger = Logger.getInstance();
@@ -9,11 +9,13 @@ export class RDFGraph {
     protected quiet: boolean;
     protected endpoint?: string;
     protected engine: QueryEngine;
+    protected remote: boolean;
 
     constructor(store?: Store, quiet: boolean = false, endpoint?: string) {
         this.store = store || new Store();
         this.quiet = quiet;
         this.endpoint = endpoint;
+        this.remote = false;
         this.engine = new QueryEngine();
     }
 
@@ -23,23 +25,17 @@ export class RDFGraph {
      * @param remote Whether to make a remote query
      * @returns Query results as [raw results, dataframe]
      */
-    protected async query(queryStr: string, remote: boolean = false): Promise<[any[], any]> {
+    protected async query(queryStr: string): Promise<[any[], any]> {
         try {
-            // Handle remote query if needed
-            if (remote && this.endpoint) {
-                // FIXME: For the remote query, connect the store to the endpoint ?
-                logger.debug("Making remote query to endpoint: " + this.endpoint);
-                const matches = queryStr.match(/(.*)\s*SELECT\s+(.+)\s+WHERE\s+{(.+)}\s*(.*)/i);
-                if (matches) {
-                    const [_, prefix, vars, where, suffix] = matches;
-                    queryStr = `${prefix} SELECT ${vars} WHERE { SERVICE <${this.endpoint}> { ${where} } } ${suffix}`;
-                }
-            }
             logger.debug('Query: ' + queryStr);
 
             // Execute the query using Comunica
             const bindingsStream = await this.engine.queryBindings(queryStr, {
-                sources: [this.store]
+                // If remote is true and an endpoint is set, use the endpoint
+                sources: [(this.remote && this.endpoint) ? {
+                    type: 'sparql',
+                    value: this.endpoint
+                } : this.store]
             });
             const bindings = await bindingsStream.toArray();
             logger.debug("Bindings: " + JSON.stringify(bindings));
@@ -51,7 +47,7 @@ export class RDFGraph {
                 const result: any = {};
                 for (const key of binding.keys()) {
                     const value = binding.get(key);
-                    result[key.value] = value ? value.value : null;
+                    result[key.value] = value;
                 }
                 rawResults.push(result);
             }
@@ -80,6 +76,7 @@ export class RDFGraph {
             throw error;
         }
     }
+
 
     public getStore(): Store {
         return this.store;
@@ -134,5 +131,34 @@ export class RDFGraph {
         const popped = this.get(ids);
         this.remove(ids);
         return popped;
+    }
+
+    /**
+     * Sets a SPARQL endpoint for a remote Knowledge Base (example: GraphDB)
+     * @param endpoint URL for the SPARQL endpoint
+     * 
+     * @example
+     * ```typescript
+     * // Fetch LiPD data from remote RDF Graph
+     * const rdf = new RDFGraph();
+     * rdf.setEndpoint("https://linkedearth.graphdb.mint.isi.edu/repositories/LiPDVerse-dynamic");
+     * rdf.setRemote(true);
+     * const [result, resultDf] = await rdf.query("SELECT ?s ?p ?o WHERE {?s ?p ?o} LIMIT 10");
+     * ```
+     */
+    public setEndpoint(endpoint: string): void {
+        this.endpoint = endpoint;
+    }
+
+    public getEndpoint(): string | undefined {
+        return this.endpoint;
+    }
+
+    public setRemote(remote: boolean): void {
+        this.remote = remote;
+    }
+
+    public getRemote(): boolean {
+        return this.remote;
     }
 } 

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { Logger } from './utils/logger';
-import { NSURL } from './globals/urls';
+import { DEFAULT_GRAPH_URI, NSURL } from './globals/urls';
 import { RDFGraph } from './rdfGraph';
 import { RDFToLiPD } from './utils/rdfToLipd';
 import { LiPDSeries } from './lipdSeries';
@@ -153,7 +153,7 @@ export class LiPD extends RDFGraph {
      */
     public async getAllDatasetNames(): Promise<string[]> {
         const [qres] = await this.query(QUERY_DSNAME);
-        return qres.map((row: { dsname: string }) => sanitizeId(row.dsname));
+        return qres.map((row: { dsname: any }) => sanitizeId(row.dsname.value));
     }
 
     /**
@@ -413,5 +413,61 @@ export class LiPD extends RDFGraph {
 
         const dsnames = filterDf.map((row: { dsname: string }) => row.dsname);
         return this.get(dsnames);
+    }
+
+    /**
+     * Loads remote datasets into cache if a remote endpoint is set
+     * @param dsnames Array of dataset names
+     * @param loadDefaultGraph Whether to load the default graph (default: true)
+     * 
+     * @example
+     * ```typescript
+     * // Fetch LiPD data from remote RDF Graph
+     * const lipd = new LiPD();
+     * lipd.setEndpoint("https://linkedearth.graphdb.mint.isi.edu/repositories/LiPDVerse-dynamic");
+     * lipd.loadRemoteDatasets(["Ocn-MadangLagoonPapuaNewGuinea.Kuhnert.2001", "MD98_2181.Stott.2007", "Ant-WAIS-Divide.Severinghaus.2012"]);
+     * lipd.getAllDatasetNames().then(names => console.log(names));
+     * ```
+     */
+    public async loadRemoteDatasets(dsnames: string | string[], loadDefaultGraph: boolean = true): Promise<void> {
+        if (!this.endpoint) {
+            throw new Error("No remote endpoint");
+        }
+        
+        const namesList = Array.isArray(dsnames) ? dsnames : [dsnames];
+        
+        if (namesList.length === 0) {
+            throw new Error("No dataset names to cache");
+        }
+        
+        let dsnamestr = namesList.map(dsname => `<${NSURL}/${dsname}>`).join(' ');
+        
+        if (loadDefaultGraph) {
+            dsnamestr += ` <${DEFAULT_GRAPH_URI}>`;
+        }
+        
+        console.log("Caching datasets from remote endpoint..");
+        
+        this.setRemote(true);
+        const [qres] = await this.query(`SELECT ?s ?p ?o ?g WHERE { GRAPH ?g { ?s ?p ?o } VALUES ?g { ${dsnamestr} } }`);
+        this.setRemote(false);
+        
+        // Add quads to the store
+        for (const row of qres) {
+            this.store.addQuad(row.s, row.p, row.o, row.g);
+        }
+        
+        console.log("Done..");
+    }
+
+    /**
+     * Updates local LiPD Graph for datasets to remote endpoint
+     * @param dsnames Array of dataset names
+     */
+    public updateRemoteDatasets(dsnames: string | string[]): void {
+        if (!this.endpoint) {
+            throw new Error("No remote endpoint");
+        }
+        // TODO: Implement this
     }
 } 
