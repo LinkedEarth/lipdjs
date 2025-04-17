@@ -145,4 +145,4 @@ This library is licensed under the MIT License.
 
 ## Acknowledgments
 
-LiPDJS is developed by the LinkedEarth team. It is a JavaScript/TypeScript port of the Python [PyLiPD](https://github.com/nickmckay/LiPD-utilities) library. 
+LiPDJS is developed by the LinkedEarth team. It is a JavaScript/TypeScript port of the Python [PyLiPD](https://github.com/LinkedEarth/pylipd) library. 
