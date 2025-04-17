@@ -46,29 +46,28 @@ console.log(datasets[0].getName());
 ### Creating and Modifying Datasets
 
 ```typescript
-import { LiPD, Dataset, PaleoData, DataTable, Variable } from 'lipdjs';
+import { LiPD, Dataset, PaleoData, DataTable, Variable, ArchiveTypeConstants, PaleoUnitConstants } from 'lipdjs';
 
 // Create a new dataset
 const dataset = new Dataset();
 dataset.setName('MyDataset');
-dataset.setArchiveType('LakeSediment');
+dataset.setArchiveType(ArchiveTypeConstants.LakeSediment);
 
 // Add paleo data
 const paleoData = new PaleoData();
 const table = new DataTable();
-table.setName('MyTable');
 table.setFileName('mydata.csv');
 
 // Add variables
 const timeVar = new Variable();
-timeVar.setVariableName('Year');
-timeVar.setUnits('yr BP');
-timeVar.setValues([1000, 2000, 3000, 4000, 5000]);
+timeVar.setName('Year');
+timeVar.setUnits(PaleoUnitConstants.yr_BP);
+timeVar.setValues("[1000, 2000, 3000, 4000, 5000]");
 
 const tempVar = new Variable();
-tempVar.setVariableName('Temperature');
-tempVar.setUnits('degC');
-tempVar.setValues([12.5, 13.2, 11.8, 10.5, 9.2]);
+tempVar.setName('Temperature');
+tempVar.setUnits(PaleoUnitConstants.degC);
+tempVar.setValues("[12.5, 13.2, 11.8, 10.5, 9.2]");
 
 // Add variables to table
 table.addVariable(timeVar);
