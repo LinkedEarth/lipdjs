@@ -122,7 +122,7 @@ export const SCHEMA = {
         '@id': ['{@parent.@id}', '.ChangeLog.', '{@index}'],
         '@category': 'ChangeLog',
         'curator': {
-            'name': 'hasContributor',
+            'name': 'hasCurator',
         },
         'version': {
             'name': 'hasVersion'
@@ -324,6 +324,8 @@ export const SCHEMA = {
     },    
     'DataTable': {
         '@id': ['{filename}', '_trunc(4)'],
+        'toJson': ['orderVariables'],
+        'fromJson': ['setColumnNumbers'],
         'filename': { 
             'name': 'hasFileName'
         },

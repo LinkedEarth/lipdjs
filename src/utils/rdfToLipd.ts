@@ -16,7 +16,8 @@ import { lcfirst, parseVariableValues, ucfirst } from './utils';
 import { RSYNONYMS } from '../globals/synonyms';
 import { Change } from '../classes/change';
 import { createBagitFiles } from './bagit';
-
+import { DataTable } from '../classes/datatable';
+import { Variable } from '../classes/variable';
 const logger = Logger.getInstance();
 const DF = DataFactory;
 
@@ -365,6 +366,18 @@ export class RDFToLiPD {
         }
 
         return obj;
+    }
+
+    /**
+     * Order variables in a datatable
+     * @param datatable Datatable object
+     * @param parent Parent object
+     * @returns Datatable object with ordered variables
+     */
+    private orderVariables(datatable: DataTable, parent: any = null): any {
+        datatable.variables = datatable.variables.sort((a: Variable, b: Variable) => (a.columnNumber ?? 0) - (b.columnNumber ?? 0));
+        console.log("orderVariables",datatable.variables);
+        return datatable;
     }
 
     private changesToJson(change: Change, parent: any = null): any {

@@ -9,7 +9,7 @@ import { Change } from "./change";
 export class ChangeLog {
 
     public changes: Change[];
-    public contributor: string | null;
+    public curator: string | null;
     public lastVersion: string | null;
     public notes: string | null;
     public timestamp: string | null;
@@ -22,14 +22,14 @@ export class ChangeLog {
 
     constructor() {
         this.changes = [];
-        this.contributor = null;
+        this.curator = null;
         this.lastVersion = null;
         this.notes = null;
         this.timestamp = null;
         this.version = null;
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
-        this._ns = "https://linked.earth/lipd";
+        this._ns = "http://linked.earth/lipd";
         this._type = "http://linked.earth/ontology#ChangeLog";
         this._id = this._ns + "/" + uniqid("ChangeLog");
     }
@@ -53,8 +53,8 @@ export class ChangeLog {
         thisObj._misc = data._misc;
         thisObj._ontns = data._ontns;
         thisObj._ns = data._ns;
-        if (data.contributor !== null) {
-            thisObj.contributor = data.contributor;
+        if (data.curator !== null) {
+            thisObj.curator = data.curator;
         }
         if (data.lastVersion !== null) {
             thisObj.lastVersion = data.lastVersion;
@@ -100,13 +100,13 @@ export class ChangeLog {
                 }
             }
             
-            else if (key === "hasContributor") {
+            else if (key === "hasCurator") {
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
                         obj = val["@value"];
                     }
-                    thisObj.contributor = obj;
+                    thisObj.curator = obj;
                 }
             }
             
@@ -194,14 +194,14 @@ export class ChangeLog {
                 data[this._id]["hasChanges"].push(obj);
             }
         }
-        if (this.contributor !== null) {
-            const valueObj = this.contributor;
+        if (this.curator !== null) {
+            const valueObj = this.curator;
             const obj = {
                 "@value": valueObj,
                 "@type": "literal",
                 "@datatype": "http://www.w3.org/2001/XMLSchema#string"
             }
-            data[this._id]["hasContributor"] = [obj];
+            data[this._id]["hasCurator"] = [obj];
         }
         if (this.lastVersion !== null) {
             const valueObj = this.lastVersion;
@@ -282,8 +282,8 @@ export class ChangeLog {
                 data["changes"].push(obj);
             }
         }
-        if (this.contributor !== null) {
-            const valueObj = this.contributor;
+        if (this.curator !== null) {
+            const valueObj = this.curator;
                 const obj = valueObj
             data["curator"] = obj;
         }
@@ -334,7 +334,7 @@ export class ChangeLog {
                 let obj: any = null;
                 let value: any = pvalue;
                     obj = value
-                thisObj.contributor = obj;
+                thisObj.curator = obj;
                 continue;
             }
             if (key === "lastVersion") {
@@ -410,15 +410,15 @@ export class ChangeLog {
         // }
         this.changes.push(changes);
     }
-    getContributor(): string | null {
-        return this.contributor;
+    getCurator(): string | null {
+        return this.curator;
     }
 
-    setContributor(contributor: string): void {
-        // if (!(contributor instanceof string)) {
-        //     throw new Error(`Error: '${contributor}' is not of type string`);
+    setCurator(curator: string): void {
+        // if (!(curator instanceof string)) {
+        //     throw new Error(`Error: '${curator}' is not of type string`);
         // }
-        this.contributor = contributor;
+        this.curator = curator;
     }
     getLastVersion(): string | null {
         return this.lastVersion;

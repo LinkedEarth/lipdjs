@@ -1124,6 +1124,20 @@ export class LipdToRDF {
     }
 
     /**
+     * Set column numbers for variables
+     * @param datatable Datatable object
+     * @param parent Parent object
+     * @returns Datatable object with ordered variables
+     */
+    private setColumnNumbers(datatable: any, parent: any = null): any {
+        for (const [index, variable] of datatable.variables.entries()) {
+            variable.columnNumber = index + 1;
+            console.log("setColumnNumbers", variable);
+        }
+        return datatable;
+    }
+
+    /**
      * Parse changeLog object into standardized format
      * @param changes Change list
      * @param parent Optional parent object

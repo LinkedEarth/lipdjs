@@ -25,7 +25,7 @@ export class Model {
         this.summaryTables = [];
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
-        this._ns = "https://linked.earth/lipd";
+        this._ns = "http://linked.earth/lipd";
         this._type = "http://linked.earth/ontology#Model";
         this._id = this._ns + "/" + uniqid("Model");
     }

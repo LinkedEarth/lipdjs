@@ -86,7 +86,7 @@ export class Variable {
         this.variableType = null;
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
-        this._ns = "https://linked.earth/lipd";
+        this._ns = "http://linked.earth/lipd";
         this._type = "http://linked.earth/ontology#Variable";
         this._id = this._ns + "/" + uniqid("Variable");
     }

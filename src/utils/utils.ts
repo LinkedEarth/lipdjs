@@ -87,7 +87,17 @@ export function parseVariableValues(valuestr: string): any {
         try {
             // Remove any extra escaping if present
             const cleanedStr = valuestr.replace(/\\"/g, '"');
-            values = JSON.parse(cleanedStr);
+            // Replace any NaN values with null
+            // more ways to handle NaN values but not if it appears in a string
+            
+            const parsedStr = cleanedStr.replace(/NaN/g, 'null')
+                .replace(/\bNaN\b/g, 'null')
+                .replace(/\bnan\b/g, 'null')
+                .replace(/\bNAN\b/g, 'null')
+                .replace(/"NaN"/g, 'null')
+                .replace(/"nan"/g, 'null')
+                .replace(/"NAN"/g, 'null');
+            values = JSON.parse(parsedStr);
         } catch (innerError) {
             // If all parsing attempts fail, log the error and use the original string
             console.error('Failed to parse variable values:', innerError);
