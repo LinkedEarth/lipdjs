@@ -1150,10 +1150,12 @@ export class LipdToRDF {
         }
         for (const change of changes) {
             for (const name of Object.keys(change)) {
-                const notes = change[name] || []
+                let notes = change[name] || []
+                // Convert notes to 1-dimensional array
+                notes = notes.flat();
                 const newChange = {
                     name: name,
-                    notes: notes.map((list: any) => list[0])
+                    notes: notes
                 }
                 newChanges.push(newChange);
             }

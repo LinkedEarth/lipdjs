@@ -198,7 +198,8 @@ export class LiPD extends RDFGraph {
             let r2j = new RDFToJSON(dsuri, this.store)
             let data = JSON.parse(r2j.toJson())
             let ds = Dataset.fromData(dsuri, data)
-            // Order variables 
+            
+            // Order variables according to column number
             for (const pd of ds.getPaleoData()) {
                 for (const table of pd.getMeasurementTables()) {
                     table.variables = table.variables.sort((a: any, b: any) => (a.columnNumber ?? 0) - (b.columnNumber ?? 0));
