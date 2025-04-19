@@ -4,6 +4,9 @@ import { Logger } from './utils/logger';
 
 const logger = Logger.getInstance();
 
+// Type definition to represent the source parameter required by Comunica's QueryEngine
+type QuerySourceUnidentified = any;
+
 export class RDFGraph {
     protected store: Store;
     protected quiet: boolean;
@@ -22,7 +25,6 @@ export class RDFGraph {
     /**
      * Query the RDF graph
      * @param queryStr SPARQL query string
-     * @param remote Whether to make a remote query
      * @returns Query results as [raw results, dataframe]
      */
     protected async query(queryStr: string): Promise<[any[], any]> {
@@ -31,11 +33,7 @@ export class RDFGraph {
 
             // Execute the query using Comunica
             const bindingsStream = await this.engine.queryBindings(queryStr, {
-                // If remote is true and an endpoint is set, use the endpoint
-                sources: [(this.remote && this.endpoint) ? {
-                    type: 'sparql',
-                    value: this.endpoint
-                } : this.store]
+                sources: this.getSources()
             });
             const bindings = await bindingsStream.toArray();
             logger.debug("Bindings: " + JSON.stringify(bindings));
@@ -77,6 +75,78 @@ export class RDFGraph {
         }
     }
 
+    /**
+     * Execute a SPARQL ASK query
+     * @param queryStr SPARQL ASK query string
+     * @returns Boolean result of the ASK query
+     */
+    public async askQuery(queryStr: string): Promise<boolean> {
+        try {
+            logger.debug('ASK Query: ' + queryStr);
+
+            // Execute the query using Comunica
+            return await this.engine.queryBoolean(queryStr, {
+                sources: this.getSources()
+            });
+        } catch (error) {
+            logger.error('Error executing ASK query: ' + error);
+            throw error;
+        }
+    }
+
+    /**
+     * Execute a SPARQL Update query
+     * @param queryStr SPARQL Update query string
+     * @returns Boolean result of the Update query
+     */
+    public async updateQuery(queryStr: string): Promise<void> {
+        try {
+            logger.debug('Update Query: ' + queryStr);
+            
+            if (!this.remote || !this.endpoint) {
+                throw new Error("Remote endpoint must be set for update operations");
+            }
+            
+            // For GraphDB, update operations need to go to the /statements endpoint
+            // instead of the standard /repositories/{repo} endpoint
+            const updateEndpoint = this.endpoint.replace(/\/repositories\/([^/]+)$/, '/repositories/$1/statements');
+            console.log(`Using update endpoint: ${updateEndpoint}`);
+            
+            // Make a direct HTTP fetch request to the statements endpoint
+            const response = await fetch(updateEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/sparql-update',
+                    'Accept': 'application/json'
+                },
+                body: queryStr
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error from update endpoint (${response.status}): ${errorText}`);
+            }
+            
+            logger.debug('Update successful');
+        } catch (error) {
+            logger.error('Error executing Update query: ' + error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get the source configuration for queries
+     * @returns Array containing either the store or a remote endpoint configuration
+     * @private
+     */
+    private getSources(): [QuerySourceUnidentified, ...QuerySourceUnidentified[]] {
+        const source = (this.remote && this.endpoint) ? {
+            type: 'sparql',
+            value: this.endpoint
+        } : this.store;
+        // Type assertion to satisfy TypeScript compiler
+        return [source] as [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
+    }
 
     public getStore(): Store {
         return this.store;

@@ -233,7 +233,7 @@ export class LiPD extends RDFGraph {
     public loadDatasets(datasets: Dataset[]): void {
         for (const ds of datasets) {
             this._fixMissingIds(ds);
-            const dsuri = ds.getDatasetId() || NSURL + "/" + ds.getName();
+            const dsuri = ds.getId() || NSURL + "/" + ds.getName();
             const j2r = new JSONToRDF(this.store, dsuri);
             j2r.loadJson(ds.toData());
         }
@@ -471,10 +471,199 @@ export class LiPD extends RDFGraph {
      * Updates local LiPD Graph for datasets to remote endpoint
      * @param dsnames Array of dataset names
      */
-    public updateRemoteDatasets(dsnames: string | string[]): void {
+    public async updateRemoteDatasets(dsnames: string | string[]): Promise<void> {
         if (!this.endpoint) {
             throw new Error("No remote endpoint");
         }
-        // TODO: Implement this
+
+        const namesList = Array.isArray(dsnames) ? dsnames : [dsnames];
+        
+        if (namesList.length === 0) {
+            throw new Error("No dataset names to update");
+        }
+
+        for (const dsname of namesList) {
+            const graphUri = `${NSURL}/${dsname}`;
+            const backupGraphUri = `${graphUri}_backup_${Date.now()}`;
+            
+            try {
+                // Check if remote graph exists
+                this.setRemote(true);
+                console.log("Checking if remote graph exists: " + graphUri);
+                const graphExists = await this.askQuery(`ASK WHERE { GRAPH <${graphUri}> { ?s ?p ?o } }`);
+                console.log("Graph exists: " + graphExists);
+                
+                // If graph exists, create backup
+                if (graphExists) {
+                    logger.debug(`Creating backup of remote graph: ${graphUri}`);
+                    await this.updateQuery(`COPY GRAPH <${graphUri}> TO GRAPH <${backupGraphUri}>`);
+                }
+                
+                // Extract quads for this dataset from local store
+                this.setRemote(false);
+                const quads = this.store.getQuads(null, null, null, graphUri);
+                console.log(`Found ${quads.length} quads for dataset: ${dsname}`);
+                
+                // Validate quads before proceeding
+                const invalidQuads = quads.filter(quad => {
+                    // Check for missing or malformed values
+                    if (!quad.subject || !quad.predicate || !quad.object) {
+                        return true;
+                    }
+                    
+                    // Check for malformed literals
+                    if (quad.object.termType === 'Literal') {
+                        if (quad.object.value === null || quad.object.value === undefined) {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                });
+                
+                if (invalidQuads.length > 0) {
+                    console.warn(`Found ${invalidQuads.length} invalid quads that might cause problems`);
+                    console.warn(`Example invalid quad:`, invalidQuads[0]);
+                }
+                
+                if (quads.length === 0) {
+                    logger.debug(`No quads found for dataset: ${dsname}`);
+                    console.log("No quads found for dataset: " + dsname);
+                    continue;
+                }
+                
+                // Clear the existing remote graph
+                this.setRemote(true);
+                if (graphExists) {
+                    await this.updateQuery(`CLEAR GRAPH <${graphUri}>`);
+                }
+                
+                // Insert quads into remote graph in batches
+                const batchSize = 10;
+                const totalBatches = Math.ceil(quads.length / batchSize);
+                console.log(`Processing ${quads.length} quads in ${totalBatches} batches (size ${batchSize})`);
+                
+                for (let i = 0; i < quads.length; i += batchSize) {
+                    const batch = quads.slice(i, i + batchSize);
+                    const batchNum = Math.floor(i / batchSize) + 1;
+                    console.log(`Processing batch ${batchNum}/${totalBatches} with ${batch.length} quads`);
+                    
+                    try {
+                        const insertQuery = this._buildInsertQuery(batch, graphUri);
+                        console.log(`Batch ${batchNum}: Sending query (${insertQuery.length} chars)`);
+                        await this.updateQuery(insertQuery);
+                        console.log(`Batch ${batchNum}: Insertion successful`);
+                    } catch (batchError) {
+                        console.error(`Error in batch ${batchNum}:`, batchError);
+                        // Continue with other batches even if one fails
+                    }
+                }
+                
+                logger.debug(`Successfully updated remote graph: ${graphUri}`);
+                console.log("Successfully updated remote graph: " + graphUri);
+                
+                // If everything succeeded, remove backup
+                if (graphExists) {
+                    await this.updateQuery(`DROP GRAPH <${backupGraphUri}>`);
+                }
+            } catch (error) {
+                logger.error(`Error updating remote graph for ${dsname}: ${error}`);
+                
+                // Error recovery: try to restore from backup if it exists
+                try {
+                    this.setRemote(true);
+                    // Check if new graph was created and remove it
+                    const newGraphExists = await this.askQuery(`ASK WHERE { GRAPH <${graphUri}> { ?s ?p ?o } }`);
+                    if (newGraphExists) {
+                        await this.updateQuery(`DROP GRAPH <${graphUri}>`);
+                    }
+                    
+                    // Check if backup exists and restore from it
+                    const backupExists = await this.askQuery(`ASK WHERE { GRAPH <${backupGraphUri}> { ?s ?p ?o } }`);
+                    if (backupExists) {
+                        await this.updateQuery(`COPY GRAPH <${backupGraphUri}> TO GRAPH <${graphUri}>`);
+                        await this.updateQuery(`DROP GRAPH <${backupGraphUri}>`);
+                        logger.debug(`Restored from backup for ${dsname}`);
+                    }
+                } catch (restoreError) {
+                    logger.error(`Failed to restore backup for ${dsname}: ${restoreError}`);
+                    throw new Error(`Failed to update remote dataset ${dsname} and failed to restore backup: ${restoreError}`);
+                }
+                
+                throw error;
+            } finally {
+                this.setRemote(false);
+            }
+        }
+        
+        logger.debug("Remote datasets updated successfully");
+    }
+    
+    /**
+     * Builds an INSERT DATA query for a batch of quads
+     * @param quads Array of quads to insert
+     * @param graphUri URI of the graph to insert into
+     * @returns SPARQL INSERT query
+     * @private
+     */
+    private _buildInsertQuery(quads: any[], graphUri: string): string {
+        // For debugging, log one of the quads to examine its structure
+        if (quads.length > 0) {
+            console.log("Sample quad structure:", JSON.stringify(quads[0], null, 2));
+        }
+        
+        // Simpler, more robust approach to building the query
+        let insertQuery = `INSERT DATA { GRAPH <${graphUri}> {\n`;
+        
+        for (const quad of quads) {
+            let subject, predicate, object;
+            
+            // Handle subject based on term type
+            if (quad.subject.termType === 'NamedNode') {
+                subject = `<${quad.subject.value}>`;
+            } else {
+                subject = `_:${quad.subject.value}`;
+            }
+            
+            // Handle predicate (always a named node)
+            predicate = `<${quad.predicate.value}>`;
+            
+            // Handle object based on term type
+            if (quad.object.termType === 'NamedNode') {
+                object = `<${quad.object.value}>`;
+            } else if (quad.object.termType === 'BlankNode') {
+                object = `_:${quad.object.value}`;
+            } else {
+                // For literals, handle special characters and add language/datatype
+                let literalValue = quad.object.value.toString()
+                    .replace(/\\/g, '\\\\') // escape backslashes first
+                    .replace(/"/g, '\\"')    // escape quotes
+                    .replace(/\n/g, '\\n')   // escape newlines
+                    .replace(/\r/g, '\\r')   // escape carriage returns
+                    .replace(/\t/g, '\\t');  // escape tabs
+                
+                object = `"${literalValue}"`;
+                
+                // Add language tag if present
+                if (quad.object.language) {
+                    object += `@${quad.object.language}`;
+                } 
+                // Add datatype if present and not plain literal
+                else if (quad.object.datatype && quad.object.datatype.value !== 'http://www.w3.org/2001/XMLSchema#string') {
+                    object += `^^<${quad.object.datatype.value}>`;
+                }
+            }
+            
+            // Add the triple to the query with proper spacing
+            insertQuery += `  ${subject} ${predicate} ${object} .\n`;
+        }
+        
+        insertQuery += '}}';
+        
+        // Log a short preview of the query
+        const previewLength = Math.min(insertQuery.length, 200);
+        console.log(`Generated query preview (${insertQuery.length} chars): ${insertQuery.substring(0, previewLength)}${insertQuery.length > previewLength ? '...' : ''}`);
+        
+        return insertQuery;
     }
 } 
