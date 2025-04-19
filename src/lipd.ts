@@ -471,7 +471,7 @@ export class LiPD extends RDFGraph {
      * Updates local LiPD Graph for datasets to remote endpoint
      * @param dsnames Array of dataset names
      */
-    public async updateRemoteDatasets(dsnames: string | string[]): Promise<void> {
+    public async updateRemoteDatasets(dsnames: string | string[], batchSize: number = 100): Promise<void> {
         if (!this.endpoint) {
             throw new Error("No remote endpoint");
         }
@@ -539,7 +539,6 @@ export class LiPD extends RDFGraph {
                 }
                 
                 // Insert quads into remote graph in batches
-                const batchSize = 10;
                 const totalBatches = Math.ceil(quads.length / batchSize);
                 console.log(`Processing ${quads.length} quads in ${totalBatches} batches (size ${batchSize})`);
                 
