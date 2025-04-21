@@ -7,68 +7,71 @@ const logger = Logger.getInstance();
 // Type definition to represent the source parameter required by Comunica's QueryEngine
 type QuerySourceUnidentified = any;
 
+export interface AuthCredentials {
+    username: string;
+    password: string;
+}
+
 export class RDFGraph {
     protected store: Store;
     protected quiet: boolean;
     protected endpoint?: string;
     protected engine: QueryEngine;
     protected remote: boolean;
+    protected auth?: AuthCredentials;
 
-    constructor(store?: Store, quiet: boolean = false, endpoint?: string) {
+    constructor(store?: Store, quiet: boolean = false, endpoint?: string, auth?: AuthCredentials) {
         this.store = store || new Store();
         this.quiet = quiet;
         this.endpoint = endpoint;
         this.remote = false;
         this.engine = new QueryEngine();
+        this.auth = auth;
     }
 
     /**
-     * Query the RDF graph
+     * Set authentication credentials for SPARQL endpoint
+     * @param auth Authentication credentials containing username and password
+     */
+    public setAuth(auth: AuthCredentials): void {
+        this.auth = auth;
+    }
+
+    /**
+     * Clear authentication credentials
+     */
+    public clearAuth(): void {
+        this.auth = undefined;
+    }
+
+    /**
+     * Execute a SPARQL query
      * @param queryStr SPARQL query string
-     * @returns Query results as [raw results, dataframe]
+     * @returns Array containing results and raw dataframe
      */
     protected async query(queryStr: string): Promise<[any[], any]> {
         try {
             logger.debug('Query: ' + queryStr);
 
             // Execute the query using Comunica
-            const bindingsStream = await this.engine.queryBindings(queryStr, {
-                sources: this.getSources()
-            });
+            const bindingsStream = await this.engine.queryBindings(queryStr, this.getConfiguration());
+
+            // Convert the stream to an array of bindings
             const bindings = await bindingsStream.toArray();
-            logger.debug("Bindings: " + JSON.stringify(bindings));
-            
-            const rawResults: any[] = [];
-            for (const binding of bindings) {
-                logger.debug('Binding: ' + JSON.stringify(binding));
-                
+
+            // Convert the bindings to a more usable format
+            const results = bindings.map(binding => {
                 const result: any = {};
-                for (const key of binding.keys()) {
-                    const value = binding.get(key);
-                    result[key.value] = value;
+                for (const variable of binding.keys()) {
+                    const term = binding.get(variable);
+                    if (term) {
+                        result[variable.value] = term;
+                    }
                 }
-                rawResults.push(result);
-            }
+                return result;
+            });
 
-            // Convert to DataFrame if needed
-            // Convert raw results to a simple DataFrame-like structure
-            const df = {
-                columns: rawResults.length > 0 ? Object.keys(rawResults[0]) : [],
-                data: rawResults.map(row => Object.values(row)),
-                get: function(column: string) {
-                    const colIndex = this.columns.indexOf(column);
-                    if (colIndex === -1) return [];
-                    return this.data.map(row => row[colIndex]);
-                },
-                toArray: function() {
-                    return this.data;
-                },
-                toJSON: function() {
-                    return rawResults;
-                }
-            };
-
-            return [rawResults, df];
+            return [results, bindings];
         } catch (error) {
             logger.error('Error executing query: ' + error);
             throw error;
@@ -85,9 +88,7 @@ export class RDFGraph {
             logger.debug('ASK Query: ' + queryStr);
 
             // Execute the query using Comunica
-            return await this.engine.queryBoolean(queryStr, {
-                sources: this.getSources()
-            });
+            return await this.engine.queryBoolean(queryStr, this.getConfiguration());
         } catch (error) {
             logger.error('Error executing ASK query: ' + error);
             throw error;
@@ -112,13 +113,22 @@ export class RDFGraph {
             const updateEndpoint = this.endpoint.replace(/\/repositories\/([^/]+)$/, '/repositories/$1/statements');
             console.log(`Using update endpoint: ${updateEndpoint}`);
             
+            // Prepare request headers
+            const headers: Record<string, string> = {
+                'Content-Type': 'application/sparql-update',
+                'Accept': 'application/json'
+            };
+            
+            // Add authentication if provided
+            if (this.auth) {
+                const authString = Buffer.from(`${this.auth.username}:${this.auth.password}`).toString('base64');
+                headers['Authorization'] = `Basic ${authString}`;
+            }
+            
             // Make a direct HTTP fetch request to the statements endpoint
             const response = await fetch(updateEndpoint, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/sparql-update',
-                    'Accept': 'application/json'
-                },
+                headers: headers,
                 body: queryStr
             });
             
@@ -136,16 +146,32 @@ export class RDFGraph {
 
     /**
      * Get the source configuration for queries
-     * @returns Array containing either the store or a remote endpoint configuration
+     * @returns Array containing the store configuration
      * @private
      */
-    private getSources(): [QuerySourceUnidentified, ...QuerySourceUnidentified[]] {
-        const source = (this.remote && this.endpoint) ? {
-            type: 'sparql',
-            value: this.endpoint
-        } : this.store;
+    private getConfiguration(endpoint?: string):any {
+        let source;
+        if (!endpoint) {
+            endpoint = this.endpoint;
+        }
+        
+        if (this.remote && endpoint) {
+            source = {
+                type: 'sparql',
+                value: endpoint
+            };
+        } else {
+            source = this.store;
+        }
+        
         // Type assertion to satisfy TypeScript compiler
-        return [source] as [QuerySourceUnidentified, ...QuerySourceUnidentified[]];
+        let configuration :any = {
+            sources: [source]
+        };
+        if (this.remote && endpoint &&this.auth && this.auth.username) {
+            configuration.httpAuth = `${this.auth.username}:${this.auth.password}`;
+        }
+        return configuration;
     }
 
     public getStore(): Store {
@@ -171,7 +197,7 @@ export class RDFGraph {
             }
         }
         
-        return new RDFGraph(newStore, this.quiet, this.endpoint);
+        return new RDFGraph(newStore, this.quiet, this.endpoint, this.auth);
     }
 
     /**

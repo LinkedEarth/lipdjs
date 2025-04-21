@@ -4,7 +4,7 @@ import * as path from 'path';
 
 import { Logger } from './utils/logger';
 import { DEFAULT_GRAPH_URI, NSURL } from './globals/urls';
-import { RDFGraph } from './rdfGraph';
+import { RDFGraph, AuthCredentials } from './rdfGraph';
 import { RDFToLiPD } from './utils/rdfToLipd';
 import { LiPDSeries } from './lipdSeries';
 import {
@@ -29,9 +29,13 @@ export class LiPD extends RDFGraph {
     /**
      * The LiPD class describes a LiPD (Linked Paleo Data) object. It contains an RDF Graph which is serialization 
      * of the LiPD data into an RDF graph containing terms from the LiPD Ontology.
+     * @param store Optional N3 store to initialize with
+     * @param quiet Whether to suppress log messages
+     * @param endpoint Optional SPARQL endpoint URL
+     * @param auth Optional authentication credentials for the SPARQL endpoint
      */
-    constructor(store?: Store, quiet: boolean = false) {
-        super(store, quiet);
+    constructor(store?: Store, quiet: boolean = false, endpoint?: string, auth?: AuthCredentials) {
+        super(store, quiet, endpoint, auth);
     }
 
     /**
@@ -116,7 +120,7 @@ export class LiPD extends RDFGraph {
         );
 
         const ds = super.get(dsids);
-        return new LiPD(ds.getStore());
+        return new LiPD(ds.getStore(), this.quiet, this.getEndpoint(), this.auth);
     }
 
     /**
@@ -131,7 +135,7 @@ export class LiPD extends RDFGraph {
         );
 
         const popped = super.pop(dsids);
-        return new LiPD(popped.getStore());
+        return new LiPD(popped.getStore(), this.quiet, this.getEndpoint(), this.auth);
     }
 
     /**
@@ -423,53 +427,19 @@ export class LiPD extends RDFGraph {
     }
 
     /**
-     * Loads remote datasets into cache if a remote endpoint is set
+     * Updates local LiPD Graph for datasets to remote endpoint
      * @param dsnames Array of dataset names
-     * @param loadDefaultGraph Whether to load the default graph (default: true)
+     * @param batchSize Number of quads to include in each update batch (default: 100)
      * 
      * @example
      * ```typescript
-     * // Fetch LiPD data from remote RDF Graph
+     * // Update datasets to remote endpoint
      * const lipd = new LiPD();
      * lipd.setEndpoint("https://linkedearth.graphdb.mint.isi.edu/repositories/LiPDVerse-dynamic");
-     * lipd.loadRemoteDatasets(["Ocn-MadangLagoonPapuaNewGuinea.Kuhnert.2001", "MD98_2181.Stott.2007", "Ant-WAIS-Divide.Severinghaus.2012"]);
-     * lipd.getAllDatasetNames().then(names => console.log(names));
+     * // Set authentication if needed
+     * lipd.setAuth({ username: "user", password: "pass" });
+     * lipd.updateRemoteDatasets(["MyDataset1", "MyDataset2"], 100);
      * ```
-     */
-    public async loadRemoteDatasets(dsnames: string | string[], loadDefaultGraph: boolean = true): Promise<void> {
-        if (!this.endpoint) {
-            throw new Error("No remote endpoint");
-        }
-        
-        const namesList = Array.isArray(dsnames) ? dsnames : [dsnames];
-        
-        if (namesList.length === 0) {
-            throw new Error("No dataset names to cache");
-        }
-        
-        let dsnamestr = namesList.map(dsname => `<${NSURL}/${dsname}>`).join(' ');
-        
-        if (loadDefaultGraph) {
-            dsnamestr += ` <${DEFAULT_GRAPH_URI}>`;
-        }
-        
-        console.log("Caching datasets from remote endpoint..");
-        
-        this.setRemote(true);
-        const [qres] = await this.query(`SELECT ?s ?p ?o ?g WHERE { GRAPH ?g { ?s ?p ?o } VALUES ?g { ${dsnamestr} } }`);
-        this.setRemote(false);
-        
-        // Add quads to the store
-        for (const row of qres) {
-            this.store.addQuad(row.s, row.p, row.o, row.g);
-        }
-        
-        console.log("Done..");
-    }
-
-    /**
-     * Updates local LiPD Graph for datasets to remote endpoint
-     * @param dsnames Array of dataset names
      */
     public async updateRemoteDatasets(dsnames: string | string[], batchSize: number = 100): Promise<void> {
         if (!this.endpoint) {
@@ -664,5 +634,52 @@ export class LiPD extends RDFGraph {
         console.log(`Generated query preview (${insertQuery.length} chars): ${insertQuery.substring(0, previewLength)}${insertQuery.length > previewLength ? '...' : ''}`);
         
         return insertQuery;
+    }
+
+    /**
+     * Loads remote datasets into cache if a remote endpoint is set
+     * @param dsnames Array of dataset names
+     * @param loadDefaultGraph Whether to load the default graph (default: true)
+     * 
+     * @example
+     * ```typescript
+     * // Fetch LiPD data from remote RDF Graph
+     * const lipd = new LiPD();
+     * lipd.setEndpoint("https://linkedearth.graphdb.mint.isi.edu/repositories/LiPDVerse-dynamic");
+     * // Set authentication if needed
+     * lipd.setAuth({ username: "user", password: "pass" });
+     * lipd.loadRemoteDatasets(["Ocn-MadangLagoonPapuaNewGuinea.Kuhnert.2001", "MD98_2181.Stott.2007"]);
+     * lipd.getAllDatasetNames().then(names => console.log(names));
+     * ```
+     */
+    public async loadRemoteDatasets(dsnames: string | string[], loadDefaultGraph: boolean = true): Promise<void> {
+        if (!this.endpoint) {
+            throw new Error("No remote endpoint");
+        }
+        
+        const namesList = Array.isArray(dsnames) ? dsnames : [dsnames];
+        
+        if (namesList.length === 0) {
+            throw new Error("No dataset names to cache");
+        }
+        
+        let dsnamestr = namesList.map(dsname => `<${NSURL}/${dsname}>`).join(' ');
+        
+        if (loadDefaultGraph) {
+            dsnamestr += ` <${DEFAULT_GRAPH_URI}>`;
+        }
+        
+        console.log("Caching datasets from remote endpoint..");
+        
+        this.setRemote(true);
+        const [qres] = await this.query(`SELECT ?s ?p ?o ?g WHERE { GRAPH ?g { ?s ?p ?o } VALUES ?g { ${dsnamestr} } }`);
+        this.setRemote(false);
+        
+        // Add quads to the store
+        for (const row of qres) {
+            this.store.addQuad(row.s, row.p, row.o, row.g);
+        }
+        
+        console.log("Done..");
     }
 } 
