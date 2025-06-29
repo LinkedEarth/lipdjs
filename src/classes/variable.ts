@@ -33,7 +33,7 @@ export class Variable {
     public missingValue: string | null;
     public name: string | null;
     public notes: string | null;
-    public partOfCompilation: Compilation | null;
+    public partOfCompilations: Compilation[];
     public physicalSamples: PhysicalSample[];
     public primary: boolean | null;
     public proxy: PaleoProxy | null;
@@ -70,7 +70,7 @@ export class Variable {
         this.missingValue = null;
         this.name = null;
         this.notes = null;
-        this.partOfCompilation = null;
+        this.partOfCompilations = [];
         this.physicalSamples = [];
         this.primary = null;
         this.proxy = null;
@@ -152,9 +152,6 @@ export class Variable {
         if (data.notes !== null) {
             thisObj.notes = data.notes;
         }
-        if (data.partOfCompilation !== null) {
-            thisObj.partOfCompilation = Compilation.fromDictionary(data.partOfCompilation);
-        }
         if (data.primary !== null) {
             thisObj.primary = data.primary;
         }
@@ -198,6 +195,10 @@ export class Variable {
         thisObj.interpretations = [];
         for (const value of (data.interpretations || []) as any[]) {
             thisObj.interpretations.push(Interpretation.fromDictionary(value));
+        }
+        thisObj.partOfCompilations = [];
+        for (const value of (data.partOfCompilations || []) as any[]) {
+            thisObj.partOfCompilations.push(Compilation.fromDictionary(value));
         }
         thisObj.physicalSamples = [];
         for (const value of (data.physicalSamples || []) as any[]) {
@@ -510,6 +511,7 @@ export class Variable {
             }
             
             else if (key === "partOfCompilation") {
+                thisObj.partOfCompilations = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@id" in val) {
@@ -517,7 +519,7 @@ export class Variable {
                     } else {
                         obj = val["@value"];
                     }
-                    thisObj.partOfCompilation = obj;
+                    thisObj.partOfCompilations.push(obj);
                 }
             }
             else {
@@ -717,8 +719,9 @@ export class Variable {
             }
             data[this._id]["hasNotes"] = [obj];
         }
-        if (this.partOfCompilation !== null) {
-            const valueObj = this.partOfCompilation;
+        if (this.partOfCompilations.length > 0) {
+            data[this._id]["partOfCompilation"] = [];
+            for (const valueObj of this.partOfCompilations) {
             let obj: any = null;
             if (typeof valueObj === "string") {
                 obj = {
@@ -733,7 +736,8 @@ export class Variable {
                 }
                 data = valueObj.toData(data); 
             }
-            data[this._id]["partOfCompilation"] = [obj];
+                data[this._id]["partOfCompilation"].push(obj);
+            }
         }
         if (this.physicalSamples.length > 0) {
             data[this._id]["hasPhysicalSample"] = [];
@@ -1018,10 +1022,12 @@ export class Variable {
                 const obj = valueObj
             data["notes"] = obj;
         }
-        if (this.partOfCompilation !== null) {
-            const valueObj = this.partOfCompilation;
+        if (this.partOfCompilations.length > 0) {
+            data["inCompilationBeta"] = [];
+            for (const valueObj of this.partOfCompilations) {
                 const obj = valueObj.toJson()
-            data["inCompilationBeta"] = obj;
+                data["inCompilationBeta"].push(obj);
+            }
         }
         if (this.physicalSamples.length > 0) {
             data["physicalSample"] = [];
@@ -1192,9 +1198,11 @@ export class Variable {
             }
             if (key === "inCompilationBeta") {
                 let obj: any = null;
-                let value: any = pvalue;
+                thisObj.partOfCompilations = [];
+                for (const value of pvalue as any[]) {
                     obj = Compilation.fromJson(value)
-                thisObj.partOfCompilation = obj;
+                    thisObj.partOfCompilations.push(obj);
+                }
                 continue;
             }
             if (key === "interpretation") {
@@ -1515,15 +1523,25 @@ export class Variable {
         // }
         this.notes = notes;
     }
-    getPartOfCompilation(): Compilation | null {
-        return this.partOfCompilation;
+    getPartOfCompilations(): Compilation[] {
+        return this.partOfCompilations;
     }
 
-    setPartOfCompilation(partOfCompilation: Compilation): void {
-        // if (!(partOfCompilation instanceof Compilation)) {
-        //     throw new Error(`Error: '${partOfCompilation}' is not of type Compilation`);
+    setPartOfCompilations(partOfCompilations: Compilation[]): void {
+        // if (!Array.isArray(partOfCompilations)) {
+        //     throw new Error("Error: partOfCompilations is not an array");
         // }
-        this.partOfCompilation = partOfCompilation;
+        // if (!partOfCompilations.every(x => x instanceof Compilation)) {
+        //     throw new Error(`Error: '${partOfCompilations}' is not of type Compilation`);
+        // }
+        this.partOfCompilations = partOfCompilations;
+    }
+
+    addPartOfCompilation(partOfCompilations: Compilation): void {
+        // if (!(partOfCompilations instanceof Compilation)) {
+        //     throw new Error(`Error: '${partOfCompilations}' is not of type Compilation`);
+        // }
+        this.partOfCompilations.push(partOfCompilations);
     }
     getPhysicalSamples(): PhysicalSample[] {
         return this.physicalSamples;
