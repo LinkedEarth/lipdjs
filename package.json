@@ -1,6 +1,6 @@
 {
   "name": "lipdjs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A JavaScript library for reading and writing LiPD (Linked Paleo Data) files",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,7 +34,8 @@
     "n3": "^1.17.0",
     "papaparse": "^5.5.2",
     "rdf-stores": "^2.1.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "path-browserify": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
@@ -45,5 +46,14 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.3.1",
     "typescript": "^5.3.3"
+  },
+  "browser": {
+    "adm-zip": false,
+    "fs": false,
+    "path": "path-browserify",
+    "zlib": false,
+    "crypto": false,
+    "os": false,
+    "stream": false
   }
 }
