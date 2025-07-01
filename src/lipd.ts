@@ -1,6 +1,8 @@
 import { Store } from 'n3';
 import * as fs from 'fs';
 import * as path from 'path';
+import JSZip from 'jszip';
+import { isBrowser } from './utils/env';
 
 import { Logger } from './utils/logger';
 import { DEFAULT_GRAPH_URI, NSURL } from './globals/urls';
@@ -713,5 +715,119 @@ export class LiPD extends RDFGraph {
         }
         
         console.log("Done..");
+    }
+
+    /**
+     * Build a full LiPD (BagIt) archive entirely in-memory – browser-safe
+     * @param dsname Dataset name to export
+     * @param opts Options { includeCsv?: boolean }
+     * @returns Blob in browsers, Buffer in Node
+     */
+    public async createLipdBrowser(dsname: string, opts: { includeCsv?: boolean } = {}): Promise<Blob | Uint8Array> {
+        const includeCsv = opts.includeCsv !== false;
+        // 1. Get LiPD JSON for the dataset
+        const lipdJson = this.getLipd(dsname);
+        if (!lipdJson) {
+            throw new Error(`Dataset ${dsname} not found in LiPD graph`);
+        }
+
+        // 2. Build CSV files in-memory if requested
+        const csvMap: Record<string, string> = includeCsv ? this._generateCsvData(lipdJson) : {};
+
+        // 3. Assemble BagIt archive with JSZip
+        const zip = new JSZip();
+        const dataFolder = zip.folder('data')!;
+        dataFolder.file('metadata.jsonld', JSON.stringify(lipdJson, null, 2));
+        for (const [name, csv] of Object.entries(csvMap)) {
+            dataFolder.file(name, csv);
+        }
+
+        // 4. bagit.txt & bag-info.txt
+        const bagitTxt = 'BagIt-Version: 1.0\nTag-File-Character-Encoding: UTF-8';
+        zip.file('bagit.txt', bagitTxt);
+        const bagInfoTxt = `Bagging-Date: ${new Date().toISOString()}\nBag-Software-Agent: lipdjs`;
+        zip.file('bag-info.txt', bagInfoTxt);
+
+        // 5. manifest-sha256.txt – compute hashes for files in data/
+        const manifestLines: string[] = [];
+        const encoder = new TextEncoder();
+        const computeHash = async (content: string): Promise<string> => {
+            if (isBrowser() && typeof crypto !== 'undefined' && (crypto as any).subtle) {
+                const buffer = encoder.encode(content);
+                const digest = await (crypto as any).subtle.digest('SHA-256', buffer);
+                return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+            } else {
+                // Node fallback (dynamic import to avoid bundling crypto for browser)
+                const { createHash } = await import('crypto');
+                return createHash('sha256').update(content).digest('hex');
+            }
+        };
+
+        // metadata.jsonld first
+        manifestLines.push(`${await computeHash(JSON.stringify(lipdJson, null, 2))} data/metadata.jsonld`);
+        // CSVs
+        for (const [name, csv] of Object.entries(csvMap)) {
+            manifestLines.push(`${await computeHash(csv)} data/${name}`);
+        }
+        zip.file('manifest-sha256.txt', manifestLines.join('\n'));
+
+        // 6. Generate zip
+        if (isBrowser()) {
+            return await zip.generateAsync({ type: 'blob' });
+        }
+        // Node – return Buffer/Uint8Array
+        return await zip.generateAsync({ type: 'uint8array' });
+    }
+
+    // ---------------------------------------------------------------------
+    // Helper: generate CSV text for all tables in a LiPD JSON object
+    // ---------------------------------------------------------------------
+    private _generateCsvData(lipd: any): Record<string, string> {
+        const csvs: Record<string, string> = {};
+        const tableKeys: Array<[string, string]> = [
+            ['paleoData', 'measurementTable'],
+            ['chronData', 'measurementTable']
+        ];
+        for (const [sectionKey, tableKey] of tableKeys) {
+            const section = lipd[sectionKey];
+            if (!Array.isArray(section)) continue;
+            for (const secItem of section) {
+                if (Array.isArray(secItem[tableKey])) {
+                    for (const table of secItem[tableKey]) {
+                        const { filename, columns } = table;
+                        if (!filename || !columns) continue;
+                        const csvContent = this._tableToCsv(columns);
+                        csvs[filename] = csvContent;
+                    }
+                }
+                // Also handle model tables if present (ensembleTable, summaryTable, distributionTable)
+                if (Array.isArray(secItem.model)) {
+                    for (const model of secItem.model) {
+                        const subTables = ['ensembleTable', 'summaryTable', 'distributionTable'];
+                        for (const key of subTables) {
+                            if (Array.isArray(model[key])) {
+                                for (const table of model[key]) {
+                                    const { filename, columns } = table;
+                                    if (!filename || !columns) continue;
+                                    csvs[filename] = this._tableToCsv(columns);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return csvs;
+    }
+
+    private _tableToCsv(columns: any[]): string {
+        if (!Array.isArray(columns) || columns.length === 0) return '';
+        const maxLen = Math.max(...columns.map(c => (c.values?.length ?? 0)));
+        const rows: string[] = [];
+        for (let i = 0; i < maxLen; i++) {
+            const row = columns.map(col => (col.values?.[i] ?? ''));
+            rows.push(row.join(','));
+        }
+        return rows.join('\n');
     }
 } 
