@@ -1703,29 +1703,56 @@ export class LipdToRDF {
         }
         
         const indices = obj.number.map((col: any) => parseInt(col, 10) - 1);
-        if (csvName in this.lipdCsvs) {
-            const df = this.lipdCsvs[csvName];
+        
+        // Enhanced CSV lookup - try multiple variants
+        let csvData: any[][] | null = null;
+        const lookupKeys = [
+            csvName,                    // e.g., "tableId.csv"
+            csvName.split('/').pop(),   // basename only
+        ];
+        
+        // Also try all CSV filenames that end with the expected name
+        const availableCsvs = Object.keys(this.lipdCsvs);
+        for (const availableCsv of availableCsvs) {
+            if (availableCsv.endsWith(csvName)) {
+                lookupKeys.push(availableCsv);
+            }
+        }
+        
+        logger.debug(`Looking for CSV with keys: ${lookupKeys.join(', ')}`);
+        logger.debug(`Available CSVs: ${availableCsvs.join(', ')}`);
+        
+        for (const key of lookupKeys) {
+            if (key && key in this.lipdCsvs) {
+                csvData = this.lipdCsvs[key];
+                logger.debug(`Found CSV data with key: ${key}`);
+                break;
+            }
+        }
+        
+        if (csvData) {
             let values: any[] = [];
             
             if (indices.length === 1) {
-                if (indices[0] < df[0].length) {
+                if (indices[0] >= 0 && csvData.length > 0 && indices[0] < csvData[0].length) {
                     // Extract column from all rows
-                    values = df.map(row => row[indices[0]]);
+                    values = csvData.map(row => row[indices[0]]);
                 }
             } else {
                 // Handle multiple columns
                 values = indices.map((index: number) => {
-                    return df.map((row: any[]) => row[index]);
+                    return csvData!.map((row: any[]) => row[index]);
                 });
             }
             
             // Convert to JSON string
             const valString = JSON.stringify(values);
             obj.hasValues = valString;
+            logger.debug(`Added ${values.length} values for variable`);
             
             return [obj, objHash, []];
         } else {
-            logger.debug(`CSV '${csvName}' not found in zip — cannot fill hasValues`);
+            logger.debug(`CSV '${csvName}' not found in zip — cannot fill hasValues. Available: ${availableCsvs.join(', ')}`);
         }
         
         return [obj, objHash, []];
