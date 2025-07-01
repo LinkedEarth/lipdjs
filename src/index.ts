@@ -1,5 +1,6 @@
 export * from './lipd';
 export * from './lipdSeries';
+export { Logger, LogLevel } from './utils/logger';
 
 export * from './classes/calibration';
 export * from './classes/resolution';
