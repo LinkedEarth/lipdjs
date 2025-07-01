@@ -1191,6 +1191,23 @@ export class LipdToRDF {
     }
 
     /**
+     * Flatten array recursively (browser-compatible alternative to Array.flat())
+     * @param arr Array to flatten
+     * @returns Flattened array
+     */
+    private _flattenArray(arr: any[]): any[] {
+        const result: any[] = [];
+        for (const item of arr) {
+            if (Array.isArray(item)) {
+                result.push(...this._flattenArray(item));
+            } else {
+                result.push(item);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Set column numbers for variables
      * @param datatable Datatable object
      * @param parent Parent object
@@ -1218,8 +1235,8 @@ export class LipdToRDF {
         for (const change of changes) {
             for (const name of Object.keys(change)) {
                 let notes = change[name] || []
-                // Convert notes to 1-dimensional array
-                notes = notes.flat();
+                // Convert notes to 1-dimensional array (browser-compatible alternative to flat())
+                notes = Array.isArray(notes) ? this._flattenArray(notes) : [notes];
                 const newChange = {
                     name: name,
                     notes: notes
