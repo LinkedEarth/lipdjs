@@ -210,25 +210,37 @@ export class LipdToRDF {
             // Reset CSV cache
             this.lipdCsvs = {};
 
-            // Iterate through files in the ZIP
+            // Separate CSV and JSON entries for two-pass processing
+            const csvEntries: Array<[string, JSZip.JSZipObject]> = [];
+            const jsonEntries: JSZip.JSZipObject[] = [];
+
             for (const fileName of Object.keys(zip.files)) {
                 const zipFile = zip.files[fileName];
-                if (zipFile.dir) continue; // skip directories
+                if (zipFile.dir) continue;
 
-                if (fileName.endsWith('.jsonld')) {
-                    const jsonContent = await zipFile.async('string');
-                    this._loadLipdJsonString(jsonContent);
-                } else if (fileName.endsWith('.csv')) {
-                    const csvContent = await zipFile.async('string');
-                    const parsedCsv = Papa.parse(csvContent, { header: false });
-                    this.lipdCsvs[fileName] = parsedCsv.data as any[][];
-                    // Also store by basename (strip folder path) so lookups that expect just the filename work
-                    const baseName = fileName.split('/').pop();
-                    if (baseName) {
-                        this.lipdCsvs[baseName] = parsedCsv.data as any[][];
-                    }
-                    logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+                if (fileName.endsWith('.csv')) {
+                    csvEntries.push([fileName, zipFile]);
+                } else if (fileName.endsWith('.jsonld')) {
+                    jsonEntries.push(zipFile);
                 }
+            }
+
+            // Pass 1: cache CSVs
+            for (const [fileName, zipFile] of csvEntries) {
+                const csvContent = await zipFile.async('string');
+                const parsedCsv = Papa.parse(csvContent, { header: false });
+                this.lipdCsvs[fileName] = parsedCsv.data as any[][];
+                const baseName = fileName.split('/').pop();
+                if (baseName) {
+                    this.lipdCsvs[baseName] = parsedCsv.data as any[][];
+                }
+                logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+            }
+
+            // Pass 2: process JSON after CSVs are ready
+            for (const zipFile of jsonEntries) {
+                const jsonContent = await zipFile.async('string');
+                this._loadLipdJsonString(jsonContent);
             }
 
             logger.debug('File loading completed successfully');
@@ -1810,25 +1822,37 @@ export class LipdToRDF {
             // Load with JSZip
             const zip = await JSZip.loadAsync(arrayBuffer);
 
-            // Iterate through files in the ZIP
+            // Separate CSV and JSON entries so we can ensure CSVs are cached first
+            const csvEntries: Array<[string, JSZip.JSZipObject]> = [];
+            const jsonEntries: JSZip.JSZipObject[] = [];
+
             for (const fileName of Object.keys(zip.files)) {
                 const file = zip.files[fileName];
-                if (file.dir) continue; // skip directories
+                if (file.dir) continue;
 
-                if (fileName.endsWith('.jsonld')) {
-                    const jsonContent = await file.async('string');
-                    this._loadLipdJsonString(jsonContent);
-                } else if (fileName.endsWith('.csv')) {
-                    const csvContent = await file.async('string');
-                    const parsedCsv = Papa.parse(csvContent, { header: false });
-                    this.lipdCsvs[fileName] = parsedCsv.data as any[][];
-                    // Also store by basename (strip folder path) so lookups that expect just the filename work
-                    const baseName = fileName.split('/').pop();
-                    if (baseName) {
-                        this.lipdCsvs[baseName] = parsedCsv.data as any[][];
-                    }
-                    logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+                if (fileName.endsWith('.csv')) {
+                    csvEntries.push([fileName, file]);
+                } else if (fileName.endsWith('.jsonld')) {
+                    jsonEntries.push(file);
                 }
+            }
+
+            // Pass 1: load all CSVs
+            for (const [fileName, file] of csvEntries) {
+                const csvContent = await file.async('string');
+                const parsedCsv = Papa.parse(csvContent, { header: false });
+                this.lipdCsvs[fileName] = parsedCsv.data as any[][];
+                const baseName = fileName.split('/').pop();
+                if (baseName) {
+                    this.lipdCsvs[baseName] = parsedCsv.data as any[][];
+                }
+                logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+            }
+
+            // Pass 2: process JSON after CSVs are ready
+            for (const file of jsonEntries) {
+                const jsonContent = await file.async('string');
+                this._loadLipdJsonString(jsonContent);
             }
         } catch (error) {
             logger.error('Error converting LiPD in browser: %s', error instanceof Error ? error.message : String(error));
