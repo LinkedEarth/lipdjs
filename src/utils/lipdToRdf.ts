@@ -180,6 +180,65 @@ export class LipdToRDF {
     }
 
     /**
+     * Load LiPD file from a File object (for browser file input)
+     * @param file File object from HTML5 file input
+     */
+    public async loadFromFile(file: File): Promise<void> {
+        if (!isBrowser()) {
+            throw new Error('loadFromFile() is only available in browser environments');
+        }
+
+        logger.debug('Loading LiPD file from File object: %s', file.name);
+        
+        try {
+            // Reset graph
+            for (const quad of this.store.getQuads(null, null, null, null)) {
+                this.store.removeQuad(quad);
+            }
+
+            // Read file as ArrayBuffer
+            const arrayBuffer = await file.arrayBuffer();
+
+            // Load with JSZip
+            const zip = await JSZip.loadAsync(arrayBuffer);
+
+            // Set graph URL based on filename
+            const lpdName = file.name.replace('.lpd', '').replace(/\?.+$/, '');
+            this.graphUrl = NSURL + "/" + sanitizeId(lpdName);
+            logger.debug('Set graph URL to: %s', this.graphUrl);
+
+            // Reset CSV cache
+            this.lipdCsvs = {};
+
+            // Iterate through files in the ZIP
+            for (const fileName of Object.keys(zip.files)) {
+                const zipFile = zip.files[fileName];
+                if (zipFile.dir) continue; // skip directories
+
+                if (fileName.endsWith('.jsonld')) {
+                    const jsonContent = await zipFile.async('string');
+                    this._loadLipdJsonString(jsonContent);
+                } else if (fileName.endsWith('.csv')) {
+                    const csvContent = await zipFile.async('string');
+                    const parsedCsv = Papa.parse(csvContent, { header: false });
+                    this.lipdCsvs[fileName] = parsedCsv.data as any[][];
+                    // Also store by basename (strip folder path) so lookups that expect just the filename work
+                    const baseName = fileName.split('/').pop();
+                    if (baseName) {
+                        this.lipdCsvs[baseName] = parsedCsv.data as any[][];
+                    }
+                    logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+                }
+            }
+
+            logger.debug('File loading completed successfully');
+        } catch (error) {
+            logger.error('Error loading LiPD file from File object: %s', error instanceof Error ? error.message : String(error));
+            throw error;
+        }
+    }
+
+    /**
      * Detect the number of columns in a CSV and load it
      * @param filePath Path to the CSV file
      * @returns Parsed CSV data as array of arrays

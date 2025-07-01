@@ -6,6 +6,7 @@ import { Logger } from './utils/logger';
 import { DEFAULT_GRAPH_URI, NSURL } from './globals/urls';
 import { RDFGraph, AuthCredentials } from './rdfGraph';
 import { RDFToLiPD } from './utils/rdfToLipd';
+import { LipdToRDF } from './utils/lipdToRdf';
 import { LiPDSeries } from './lipdSeries';
 import {
     QUERY_DSNAME,
@@ -84,6 +85,37 @@ export class LiPD extends RDFGraph {
 
         if (!this.quiet) {
             logger.debug('Loaded..');
+        }
+    }
+
+    /**
+     * Load LiPD file from a File object (for browser file input)
+     * @param file File object from HTML5 file input
+     * @param standardize Whether to standardize the data
+     * @param addLabels Whether to add labels
+     */
+    public async loadFromFile(file: File, standardize: boolean = true, addLabels: boolean = true): Promise<void> {
+        logger.debug('Loading LiPD file from File object: %s', file.name);
+        
+        if (!this.quiet) {
+            logger.debug(`Loading LiPD file: ${file.name}`);
+        }
+
+        const converter = new LipdToRDF(standardize, addLabels);
+        await converter.loadFromFile(file);
+        
+        // Merge the converted data into our store
+        const quads = converter.store.getQuads(null, null, null, null);
+        for (const quad of quads) {
+            if (this.store.getQuads(quad.subject, quad.predicate, quad.object, quad.graph).length === 0) {
+                this.store.addQuad(quad);
+            }
+        }
+
+        logger.debug(`Number of quads in LiPD: ${this.store.size}`);
+
+        if (!this.quiet) {
+            logger.debug('File loaded successfully');
         }
     }
 

@@ -122,6 +122,139 @@ const timeFiltered = await lipd.filterByTime([1000, 2000], 'any');
 const series = lipd.toLipdSeries();
 ```
 
+## Browser Support
+
+lipdjs works seamlessly in both Node.js and browser environments. The library automatically detects the environment and uses appropriate APIs.
+
+### Loading Files in Browser
+
+#### From URLs (Server-hosted files)
+```typescript
+import { LiPD } from 'lipdjs';
+
+const lipd = new LiPD();
+await lipd.load('https://example.com/data/myfile.lpd');
+// or from relative path if served
+await lipd.load('/static/data/myfile.lpd');
+
+const datasets = await lipd.getDatasets();
+```
+
+#### From Local File System (User File Input)
+For loading files directly from the user's local file system, use the `loadFromFile()` method with HTML5 File API:
+
+```html
+<!-- HTML file input -->
+<input type="file" id="lipdFileInput" accept=".lpd" />
+```
+
+```typescript
+import { LiPD } from 'lipdjs';
+
+// Handle file selection
+document.getElementById('lipdFileInput').addEventListener('change', async (event) => {
+  const files = event.target.files;
+  if (files && files.length > 0) {
+    const file = files[0];
+    
+    const lipd = new LiPD();
+    try {
+      await lipd.loadFromFile(file);
+      
+      // Process the loaded data
+      const datasets = await lipd.getDatasets();
+      console.log(`Loaded ${datasets.length} datasets`);
+      
+      // Access dataset information
+      for (const dataset of datasets) {
+        console.log('Dataset:', dataset.getName());
+        const paleoData = dataset.getPaleoData();
+        // ... work with the data
+      }
+    } catch (error) {
+      console.error('Error loading LiPD file:', error);
+    }
+  }
+});
+```
+
+#### Multiple File Loading
+```typescript
+// Load multiple files sequentially
+const fileInput = document.getElementById('multipleFiles') as HTMLInputElement;
+fileInput.addEventListener('change', async (event) => {
+  const files = event.target.files;
+  if (files) {
+    const lipd = new LiPD();
+    
+    for (const file of Array.from(files)) {
+      if (file.name.endsWith('.lpd')) {
+        await lipd.loadFromFile(file);
+      }
+    }
+    
+    const datasets = await lipd.getDatasets();
+    console.log(`Total datasets loaded: ${datasets.length}`);
+  }
+});
+```
+
+#### React Example
+```typescript
+import React, { useState } from 'react';
+import { LiPD } from 'lipdjs';
+
+function LiPDLoader() {
+  const [datasets, setDatasets] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleFileLoad = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setLoading(true);
+    try {
+      const lipd = new LiPD();
+      await lipd.loadFromFile(files[0]);
+      const loadedDatasets = await lipd.getDatasets();
+      setDatasets(loadedDatasets);
+    } catch (error) {
+      console.error('Error loading file:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <input 
+        type="file" 
+        accept=".lpd" 
+        onChange={handleFileLoad}
+        disabled={loading}
+      />
+      {loading && <p>Loading...</p>}
+      {datasets.length > 0 && (
+        <div>
+          <h3>Loaded Datasets:</h3>
+          {datasets.map((dataset, index) => (
+            <div key={index}>{dataset.getName()}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### Browser Compatibility Features
+- **Automatic environment detection**: No configuration needed
+- **ZIP processing**: Uses JSZip for browser-compatible archive extraction
+- **CSV parsing**: Processes data tables in memory
+- **File API support**: Direct loading from user-selected files
+- **Memory efficient**: Streams large files without temporary storage
+- **Error handling**: Graceful fallbacks and informative error messages
+
 ## API Documentation
 
 The library exports multiple classes that can be used to work with LiPD data:
