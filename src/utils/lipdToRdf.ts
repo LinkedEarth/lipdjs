@@ -18,6 +18,8 @@ import { SYNONYMS } from '../globals/synonyms';
 import { uniqid, sanitizeId, ucfirst, lcfirst, camelCase, escape, serializeStore } from './utils';
 import { BLACKLIST } from '../globals/blacklist';
 import { ChangeLog } from '../classes/changelog';
+import JSZip from 'jszip';
+import { isBrowser } from './env';
 
 // Get the logger instance
 const logger = Logger.getInstance();
@@ -91,8 +93,14 @@ export class LipdToRDF {
      * Convert LiPD file to RDF Graph
      * @param lipdPath Path to LiPD file (can be a local file or URL)
      */
-    public convert(lipdPath: string): void {
+    public async convert(lipdPath: string): Promise<void> {
         logger.debug('Starting conversion of LiPD file: %s', lipdPath);
+        
+        if (isBrowser()) {
+            await this._convertBrowser(lipdPath);
+            logger.debug('Browser conversion completed');
+            return;
+        }
         
         // Reset graph
         for (const quad of this.store.getQuads(null, null, null, null)) {
@@ -1640,6 +1648,8 @@ export class LipdToRDF {
             obj.hasValues = valString;
             
             return [obj, objHash, []];
+        } else {
+            logger.debug(`CSV '${csvName}' not found in zip — cannot fill hasValues`);
         }
         
         return [obj, objHash, []];
@@ -1683,5 +1693,75 @@ export class LipdToRDF {
         }
         
         return [obj, objHash, []];
+    }
+
+    private async _convertBrowser(lipdPath: string): Promise<void> {
+        try {
+            // Fetch the LiPD file as ArrayBuffer
+            const response = await fetch(lipdPath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch LiPD file: ${response.statusText}`);
+            }
+            const arrayBuffer = await response.arrayBuffer();
+
+            // Load with JSZip
+            const zip = await JSZip.loadAsync(arrayBuffer);
+
+            // Iterate through files in the ZIP
+            for (const fileName of Object.keys(zip.files)) {
+                const file = zip.files[fileName];
+                if (file.dir) continue; // skip directories
+
+                if (fileName.endsWith('.jsonld')) {
+                    const jsonContent = await file.async('string');
+                    this._loadLipdJsonString(jsonContent);
+                } else if (fileName.endsWith('.csv')) {
+                    const csvContent = await file.async('string');
+                    const parsedCsv = Papa.parse(csvContent, { header: false });
+                    this.lipdCsvs[fileName] = parsedCsv.data as any[][];
+                    // Also store by basename (strip folder path) so lookups that expect just the filename work
+                    const baseName = fileName.split('/').pop();
+                    if (baseName) {
+                        this.lipdCsvs[baseName] = parsedCsv.data as any[][];
+                    }
+                    logger.debug(`Loaded CSV '${fileName}' (${parsedCsv.data.length}×${((parsedCsv.data as any[])[0] as any[]).length || 0})`);
+                }
+            }
+        } catch (error) {
+            logger.error('Error converting LiPD in browser: %s', error instanceof Error ? error.message : String(error));
+            throw error;
+        }
+    }
+
+    /**
+     * Load LiPD JSON content that is already available as a string (used in browser flow)
+     * @param jsonContent Raw JSON-LD content
+     */
+    private _loadLipdJsonString(jsonContent: string): void {
+        try {
+            const obj = JSON.parse(jsonContent);
+
+            // Set graph URL based on dataset name if available
+            if (obj.dataSetName) {
+                this.graphUrl = NSURL + "/" + sanitizeId(obj.dataSetName);
+            }
+
+            // Map LiPD data to RDF
+            const objHash: Record<string, any> = {};
+            this._mapLipdToJson(obj, null, null, 'Dataset', 'Dataset', objHash);
+
+            // Set hasUrl to the source if possible (not available from buffer)
+            if (obj['@id']) {
+                objHash[obj['@id']].hasUrl = DATAURL + "/" + obj['@id'] + '.lpd';
+            }
+
+            // Create individuals for all objects in the hash
+            for (const item of Object.values(objHash)) {
+                this._createIndividualFull(item);
+            }
+        } catch (error) {
+            logger.error('Error loading JSON content in browser: %s', error instanceof Error ? error.message : String(error));
+            throw error;
+        }
     }
 } 

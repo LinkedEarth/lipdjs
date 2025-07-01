@@ -13,7 +13,7 @@ async function convertLipdToGraph(args: [string, boolean, boolean]): Promise<Sto
     const [lipdfile, standardize, addLabels] = args;
     try {
         const converter = new LipdToRDF(standardize, addLabels);
-        converter.convert(lipdfile);
+        await converter.convert(lipdfile);
         return converter.store;
     } catch (error) {
         logger.error('Error converting LiPD file %s to RDF: %s', lipdfile, error instanceof Error ? error.message : String(error));

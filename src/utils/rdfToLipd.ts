@@ -18,6 +18,7 @@ import { Change } from '../classes/change';
 import { createBagitFiles } from './bagit';
 import { DataTable } from '../classes/datatable';
 import { Variable } from '../classes/variable';
+import pako from 'pako';
 const logger = Logger.getInstance();
 const DF = DataFactory;
 
@@ -1195,22 +1196,25 @@ export class RDFToLiPD {
     
     /**
      * Unzip a base64 encoded and zlib compressed string
-     * @param string The base64 encoded and zlib compressed string
+     * @param str The base64 encoded and zlib compressed string
      * @returns The uncompressed string
      */
-    private unzipString(string: string): string {
+    private unzipString(str: string): string {
         try {
-            // Convert base64 to binary
-            const binaryString = Buffer.from(string, 'base64');
-            
-            // Decompress using zlib
-            const decompressed = require('zlib').inflateSync(binaryString);
-            
-            // Convert buffer to string
-            return decompressed.toString('utf-8');
-        } catch (error) {
-            logger.error('Could not decode/unzip the contents');
-            throw new Error('Could not decode/unzip the contents');
+            let binary: Uint8Array;
+            // Prefer Buffer in Node, fall back to atob in browsers
+            if (typeof Buffer !== 'undefined' && Buffer.from) {
+                binary = Uint8Array.from(Buffer.from(str, 'base64'));
+            } else {
+                // @ts-ignore atob may be available only in browser
+                const decoded = atob(str);
+                binary = Uint8Array.from(decoded, c => c.charCodeAt(0));
+            }
+            const text = new TextDecoder().decode(pako.inflate(binary));
+            return text;
+        } catch (e) {
+            logger.error('Could not decode/unzip the contents', e);
+            throw e;
         }
     }
 } 
