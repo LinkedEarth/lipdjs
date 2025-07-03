@@ -710,6 +710,9 @@ function generateLipdClasses(): void {
             if (pid[0] === "@") {
                 continue;
             }
+            if (pid == "fromJson" || pid == "toJson") {
+                continue;
+            }
             const prop = props[pid as keyof typeof props];
             
             let propid = pid;

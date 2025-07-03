@@ -8,7 +8,7 @@ import { parseVariableValues } from "../utils/utils";
 export class Compilation {
 
     public name: string | null;
-    public version: string | null;
+    public versions: string[];
     protected _id: string;
     protected _type: string;
     protected _misc: Record<string, any>;
@@ -17,7 +17,7 @@ export class Compilation {
 
     constructor() {
         this.name = null;
-        this.version = null;
+        this.versions = [];
         this._misc = {};
         this._ontns = "http://linked.earth/ontology#";
         this._ns = "http://linked.earth/lipd";
@@ -47,8 +47,9 @@ export class Compilation {
         if (data.name !== null) {
             thisObj.name = data.name;
         }
-        if (data.version !== null) {
-            thisObj.version = data.version;
+        thisObj.versions = [];
+        for (const value of (data.versions || []) as any[]) {
+            thisObj.versions.push(value);
         }
         return thisObj;
     }
@@ -76,12 +77,13 @@ export class Compilation {
             }
             
             else if (key === "hasVersion") {
+                thisObj.versions = [];
                 for (const val of value as any[]) {
                     let obj: any = null;
                     if ("@value" in val) {
                         obj = val["@value"];
                     }
-                    thisObj.version = obj;
+                    thisObj.versions.push(obj);
                 }
             }
             else {
@@ -118,14 +120,16 @@ export class Compilation {
             }
             data[this._id]["hasName"] = [obj];
         }
-        if (this.version !== null) {
-            const valueObj = this.version;
+        if (this.versions.length > 0) {
+            data[this._id]["hasVersion"] = [];
+            for (const valueObj of this.versions) {
             const obj = {
                 "@value": valueObj,
                 "@type": "literal",
                 "@datatype": "http://www.w3.org/2001/XMLSchema#string"
             }
-            data[this._id]["hasVersion"] = [obj];
+                data[this._id]["hasVersion"].push(obj);
+            }
         }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
@@ -168,10 +172,12 @@ export class Compilation {
                 const obj = valueObj
             data["compilationName"] = obj;
         }
-        if (this.version !== null) {
-            const valueObj = this.version;
+        if (this.versions.length > 0) {
+            data["compilationVersion"] = [];
+            for (const valueObj of this.versions) {
                 const obj = valueObj
-            data["compilationVersion"] = obj;
+                data["compilationVersion"].push(obj);
+            }
         }
         // Add misc properties
         for (const [key, value] of Object.entries(this._misc)) {
@@ -196,9 +202,11 @@ export class Compilation {
             }
             if (key === "compilationVersion") {
                 let obj: any = null;
-                let value: any = pvalue;
+                thisObj.versions = [];
+                for (const value of pvalue as any[]) {
                     obj = value
-                thisObj.version = obj;
+                    thisObj.versions.push(obj);
+                }
                 continue;
             }
             // Store unknown properties in misc
@@ -236,14 +244,24 @@ export class Compilation {
         // }
         this.name = name;
     }
-    getVersion(): string | null {
-        return this.version;
+    getVersions(): string[] {
+        return this.versions;
     }
 
-    setVersion(version: string): void {
-        // if (!(version instanceof string)) {
-        //     throw new Error(`Error: '${version}' is not of type string`);
+    setVersions(versions: string[]): void {
+        // if (!Array.isArray(versions)) {
+        //     throw new Error("Error: versions is not an array");
         // }
-        this.version = version;
+        // if (!versions.every(x => x instanceof string)) {
+        //     throw new Error(`Error: '${versions}' is not of type string`);
+        // }
+        this.versions = versions;
+    }
+
+    addVersion(versions: string): void {
+        // if (!(versions instanceof string)) {
+        //     throw new Error(`Error: '${versions}' is not of type string`);
+        // }
+        this.versions.push(versions);
     }
 }
