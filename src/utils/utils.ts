@@ -4,8 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { Logger } from './logger';
 
 // Helper export functions
-export function uniqid(prefix: string = ''): string {
-    return `${prefix}${uuidv4()}`;
+export function uniqid(prefix: string = '', moreEntropy: boolean = false): string {
+    let theUniqid: string;
+    
+    if (moreEntropy) {
+        // Generate two UUIDs for extra entropy and combine them
+        const uuid1 = uuidv4().replace(/-/g, '');
+        const uuid2 = uuidv4().replace(/-/g, '').substring(0, 8); // Take first 8 chars of second UUID
+        theUniqid = uuid1 + uuid2;
+    } else {
+        // Standard UUID4 without hyphens
+        theUniqid = uuidv4().replace(/-/g, '');
+    }
+    
+    // Add prefix if provided
+    return (prefix || '') + theUniqid;
 }
 
 export function sanitizeId(id: string): string {

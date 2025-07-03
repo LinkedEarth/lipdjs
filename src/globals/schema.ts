@@ -115,7 +115,8 @@ export const SCHEMA = {
             'name': 'hasName'
         },
         'compilationVersion': {
-            'name': 'hasVersion'
+            'name': 'hasVersion',
+            'multiple': true
         }
     },
     'ChangeLog': {
