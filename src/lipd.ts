@@ -784,12 +784,17 @@ export class LiPD extends RDFGraph {
         }
         zip.file('manifest-sha256.txt', manifestLines.join('\n'));
 
-        // 6. Generate zip
+        // 6. Generate zip with compression
+        const zipOptions = {
+            compression: 'DEFLATE' as const,
+            compressionOptions: { level: 6 } // 1=fastest, 9=best compression, 6=balanced
+        };
+        
         if (isBrowser()) {
-            return await zip.generateAsync({ type: 'blob' });
+            return await zip.generateAsync({ type: 'blob', ...zipOptions });
         }
         // Node – return Buffer/Uint8Array
-        return await zip.generateAsync({ type: 'uint8array' });
+        return await zip.generateAsync({ type: 'uint8array', ...zipOptions });
     }
 
     // ---------------------------------------------------------------------
