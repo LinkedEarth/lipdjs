@@ -25,7 +25,7 @@ import { Dataset } from './classes/dataset';
 import { RDFToJSON } from './utils/rdfToJson';
 import { JSONToRDF } from './utils/jsonToRdf';
 import { v4 as uuidv4 } from 'uuid';
-import { gzipSync } from 'zlib';
+import * as pako from 'pako';
 
 const logger = Logger.getInstance();
 
@@ -521,14 +521,14 @@ export class LiPD extends RDFGraph {
                 }
 
                 // Prepare request
-                let body: Buffer | string = nqData;
+                let body: Uint8Array | string = nqData;
                 const headers: Record<string, string> = {
                     'Content-Type': 'application/n-quads'
                 };
 
                 // gzip if sizable (>10 KB)
                 if (nqData.length > 10_000) {
-                    body = gzipSync(Buffer.from(nqData, 'utf-8'));
+                    body = pako.gzip(nqData);
                     headers['Content-Encoding'] = 'gzip';
                 }
 
