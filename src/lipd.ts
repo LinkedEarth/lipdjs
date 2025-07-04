@@ -140,7 +140,10 @@ export class LiPD extends RDFGraph {
      */
     public async createLipd(dsname: string, lipdFile: string): Promise<any> {
         const converter = new RDFToLiPD(this.store);
-        return await converter.convert(dsname, lipdFile);
+        const lipdJson = await converter.convert(dsname, lipdFile);
+        // Remove values from variables before creating LiPD file
+        // Values should be stored in CSV files, not in metadata.jsonld
+        return this._removeValuesFromVariables(lipdJson);
     }
 
     /**
@@ -732,15 +735,19 @@ export class LiPD extends RDFGraph {
     public async createLipdBrowser(dsname: string, opts: { includeCsv?: boolean } = {}): Promise<Blob | Uint8Array> {
         const includeCsv = opts.includeCsv !== false;
         // 1. Get LiPD JSON for the dataset
-        const lipdJson = this.getLipd(dsname);
-        if (!lipdJson) {
+        const originalLipdJson = this.getLipd(dsname);
+        if (!originalLipdJson) {
             throw new Error(`Dataset ${dsname} not found in LiPD graph`);
         }
 
-        // 2. Build CSV files in-memory if requested
-        const csvMap: Record<string, string> = includeCsv ? this._generateCsvData(lipdJson) : {};
+        // 2. Build CSV files in-memory if requested (use original data with values)
+        const csvMap: Record<string, string> = includeCsv ? this._generateCsvData(originalLipdJson) : {};
 
-        // 3. Assemble BagIt archive with JSZip
+        // Remove values from variables before creating LiPD file
+        // Values should be stored in CSV files, not in metadata.jsonld
+        const lipdJson = this._removeValuesFromVariables(originalLipdJson);
+
+        // 3. Assemble BagIt archive with JSZip (use cleaned lipdJson without values)
         const zip = new JSZip();
         const dataFolder = zip.folder('data')!;
         dataFolder.file('metadata.jsonld', JSON.stringify(lipdJson, null, 2));
@@ -835,5 +842,60 @@ export class LiPD extends RDFGraph {
             rows.push(row.join(','));
         }
         return rows.join('\n');
+    }
+
+    /**
+     * Remove values from variables in a LiPD JSON object.
+     * This is necessary because values are typically stored in CSV files,
+     * not directly in the metadata.jsonld file.
+     * @param lipdJson The LiPD JSON object to process.
+     * @returns A new LiPD JSON object with values removed from variables.
+     * @private
+     */
+    private _removeValuesFromVariables(lipdJson: any): any {
+        if (typeof lipdJson !== 'object' || lipdJson === null) {
+            return lipdJson;
+        }
+
+        if (Array.isArray(lipdJson)) {
+            return lipdJson.map(item => this._removeValuesFromVariables(item));
+        }
+
+        if (typeof lipdJson === 'object') {
+            const newObj: any = {};
+            for (const key in lipdJson) {
+                if (Object.prototype.hasOwnProperty.call(lipdJson, key)) {
+                    // Skip the 'values' key if this looks like a variable object
+                    if (key === 'values' && this._isVariableObject(lipdJson)) {
+                        // Skip copying the values key for variable objects
+                        continue;
+                    }
+                    newObj[key] = this._removeValuesFromVariables(lipdJson[key]);
+                }
+            }
+            return newObj;
+        }
+
+        return lipdJson;
+    }
+
+    /**
+     * Helper to check if an object looks like a variable object.
+     * Variables typically have properties like variableId, variableName, values, units, etc.
+     * @param obj The object to check.
+     * @returns True if it looks like a variable object, false otherwise.
+     * @private
+     */
+    private _isVariableObject(obj: any): boolean {
+        if (!obj || typeof obj !== 'object') {
+            return false;
+        }
+        
+        // Check for common variable properties
+        const variableProps = ['variableId', 'variableName', 'TSid', 'number', 'columnNumber'];
+        const hasVariableProperty = variableProps.some(prop => prop in obj);
+        
+        // If it has values and at least one variable property, treat it as a variable
+        return 'values' in obj && hasVariableProperty;
     }
 } 
