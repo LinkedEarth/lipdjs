@@ -1,4 +1,4 @@
-import { Store } from 'n3';
+import { Store, Writer } from 'n3';
 import * as fs from 'fs';
 import * as path from 'path';
 import JSZip from 'jszip';
@@ -25,6 +25,7 @@ import { Dataset } from './classes/dataset';
 import { RDFToJSON } from './utils/rdfToJson';
 import { JSONToRDF } from './utils/jsonToRdf';
 import { v4 as uuidv4 } from 'uuid';
+import { gzipSync } from 'zlib';
 
 const logger = Logger.getInstance();
 
@@ -475,131 +476,136 @@ export class LiPD extends RDFGraph {
      * lipd.updateRemoteDatasets(["MyDataset1", "MyDataset2"], 100);
      * ```
      */
-    public async updateRemoteDatasets(dsnames: string | string[], batchSize: number = 100): Promise<void> {
+    public async updateRemoteDatasets(dsnames: string | string[], batchSize: number = 100): Promise<void> { // batchSize ignored in bulk loader
         if (!this.endpoint) {
-            throw new Error("No remote endpoint");
+            throw new Error("No remote endpoint set");
         }
 
         const namesList = Array.isArray(dsnames) ? dsnames : [dsnames];
-        
         if (namesList.length === 0) {
-            throw new Error("No dataset names to update");
+            throw new Error("No dataset names provided");
         }
 
         for (const dsname of namesList) {
             const graphUri = `${NSURL}/${dsname}`;
             const backupGraphUri = `${graphUri}_backup_${Date.now()}`;
-            
+
             try {
-                // Check if remote graph exists
+                // ---------------------------------------------
+                // 1. Backup remote graph if it exists
+                // ---------------------------------------------
                 this.setRemote(true);
-                console.log("Checking if remote graph exists: " + graphUri);
                 const graphExists = await this.askQuery(`ASK WHERE { GRAPH <${graphUri}> { ?s ?p ?o } }`);
-                console.log("Graph exists: " + graphExists);
-                
-                // If graph exists, create backup
                 if (graphExists) {
-                    logger.debug(`Creating backup of remote graph: ${graphUri}`);
                     await this.updateQuery(`COPY GRAPH <${graphUri}> TO GRAPH <${backupGraphUri}>`);
                 }
-                
-                // Extract quads for this dataset from local store
+
+                // ---------------------------------------------
+                // 2. Extract local quads and serialise to N-Quads
+                // ---------------------------------------------
                 this.setRemote(false);
                 const quads = this.store.getQuads(null, null, null, graphUri);
-                console.log(`Found ${quads.length} quads for dataset: ${dsname}`);
-                
-                // Validate quads before proceeding
-                const invalidQuads = quads.filter(quad => {
-                    // Check for missing or malformed values
-                    if (!quad.subject || !quad.predicate || !quad.object) {
-                        return true;
-                    }
-                    
-                    // Check for malformed literals
-                    if (quad.object.termType === 'Literal') {
-                        if (quad.object.value === null || quad.object.value === undefined) {
-                            return true;
-                        }
-                    }
-                    
-                    return false;
-                });
-                
-                if (invalidQuads.length > 0) {
-                    console.warn(`Found ${invalidQuads.length} invalid quads that might cause problems`);
-                    console.warn(`Example invalid quad:`, invalidQuads[0]);
-                }
-                
                 if (quads.length === 0) {
                     logger.debug(`No quads found for dataset: ${dsname}`);
-                    console.log("No quads found for dataset: " + dsname);
                     continue;
                 }
-                
-                // Clear the existing remote graph
+
+                const nqData = await this._quadsToNQuads(quads);
+
+                // ---------------------------------------------
+                // 3. Clear remote graph (if existed) and bulk upload
+                // ---------------------------------------------
                 this.setRemote(true);
                 if (graphExists) {
                     await this.updateQuery(`CLEAR GRAPH <${graphUri}>`);
                 }
-                
-                // Insert quads into remote graph in batches
-                const totalBatches = Math.ceil(quads.length / batchSize);
-                console.log(`Processing ${quads.length} quads in ${totalBatches} batches (size ${batchSize})`);
-                
-                for (let i = 0; i < quads.length; i += batchSize) {
-                    const batch = quads.slice(i, i + batchSize);
-                    const batchNum = Math.floor(i / batchSize) + 1;
-                    console.log(`Processing batch ${batchNum}/${totalBatches} with ${batch.length} quads`);
-                    
-                    try {
-                        const insertQuery = this._buildInsertQuery(batch, graphUri);
-                        console.log(`Batch ${batchNum}: Sending query (${insertQuery.length} chars)`);
-                        await this.updateQuery(insertQuery);
-                        console.log(`Batch ${batchNum}: Insertion successful`);
-                    } catch (batchError) {
-                        console.error(`Error in batch ${batchNum}:`, batchError);
-                        // Continue with other batches even if one fails
-                    }
+
+                // Prepare request
+                let body: Buffer | string = nqData;
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/n-quads'
+                };
+
+                // gzip if sizable (>10 KB)
+                if (nqData.length > 10_000) {
+                    body = gzipSync(Buffer.from(nqData, 'utf-8'));
+                    headers['Content-Encoding'] = 'gzip';
                 }
-                
-                logger.debug(`Successfully updated remote graph: ${graphUri}`);
-                console.log("Successfully updated remote graph: " + graphUri);
-                
-                // If everything succeeded, remove backup
+
+                if (this.auth) {
+                    const authStr = Buffer.from(`${this.auth.username}:${this.auth.password}`).toString('base64');
+                    headers['Authorization'] = `Basic ${authStr}`;
+                }
+
+                const statementsEndpoint = this._getStatementsEndpoint();
+                const url = `${statementsEndpoint}?context=${encodeURIComponent(`<${graphUri}>`)}`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers as any,
+                    body: body as any
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error from bulk loader (${response.status}): ${errorText}`);
+                }
+
+                // ---------------------------------------------
+                // 4. Remove backup on success
+                // ---------------------------------------------
                 if (graphExists) {
                     await this.updateQuery(`DROP GRAPH <${backupGraphUri}>`);
                 }
-            } catch (error) {
-                logger.error(`Error updating remote graph for ${dsname}: ${error}`);
-                
-                // Error recovery: try to restore from backup if it exists
+            } catch (err) {
+                logger.error(`Failed to update remote graph for ${dsname}: ${err}`);
+
+                // Attempt rollback from backup
                 try {
                     this.setRemote(true);
-                    // Check if new graph was created and remove it
-                    const newGraphExists = await this.askQuery(`ASK WHERE { GRAPH <${graphUri}> { ?s ?p ?o } }`);
-                    if (newGraphExists) {
-                        await this.updateQuery(`DROP GRAPH <${graphUri}>`);
-                    }
-                    
-                    // Check if backup exists and restore from it
                     const backupExists = await this.askQuery(`ASK WHERE { GRAPH <${backupGraphUri}> { ?s ?p ?o } }`);
                     if (backupExists) {
                         await this.updateQuery(`COPY GRAPH <${backupGraphUri}> TO GRAPH <${graphUri}>`);
                         await this.updateQuery(`DROP GRAPH <${backupGraphUri}>`);
-                        logger.debug(`Restored from backup for ${dsname}`);
                     }
-                } catch (restoreError) {
-                    logger.error(`Failed to restore backup for ${dsname}: ${restoreError}`);
-                    throw new Error(`Failed to update remote dataset ${dsname} and failed to restore backup: ${restoreError}`);
+                } catch (restoreErr) {
+                    logger.error(`Failed to restore backup for ${dsname}: ${restoreErr}`);
                 }
-                
-                throw error;
+
+                throw err;
             } finally {
                 this.setRemote(false);
             }
         }
-        
+
         logger.debug("Remote datasets updated successfully");
+    }
+
+    /**
+     * Convert an array of quads to an N-Quads string
+     */
+    private async _quadsToNQuads(quads: any[]): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const writer = new Writer({ format: 'N-Quads' });
+            writer.addQuads(quads);
+            writer.end((err, result) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result as string);
+                }
+            });
+        });
+    }
+
+    /**
+     * Derive the /statements endpoint from this.endpoint
+     */
+    private _getStatementsEndpoint(): string {
+        if (!this.endpoint) {
+            throw new Error("Endpoint not set");
+        }
+        return this.endpoint.replace(/\/repositories\/([^/]+)$/, '/repositories/$1/statements');
     }
     
     /**
